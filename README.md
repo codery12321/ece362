@@ -26,10 +26,13 @@ circuit board (PCB) design, hardware/software debugging tips
   Now that you know that the hardware in your lab kit works, you are comfortable with creating projects, and you've had some experience typing in programs, you will be expected to complete this lab autonomously. If you need help, ask a teaching assistant. This lab will also not need to be evaluated when you finish it. You will receive a completion code on the serial port as you did with Lab 0.
 - **lab3**: General Purpose I/O
   - In this experiment, you will learn how to connect simple input devices (push buttons and keypad) and simple output devices (LEDs) to an STM32 development board. You will learn how to configure the General Purpose Input/Output (GPIO) subsystems. You will read values from and write values to these pins.
-
+- **lab4**: Interrupts
+  - Microprocessors consistently follow a straight sequence of instructions, and it is likely that you have only worked with this kind of programming until now. In this experiment, you will configure a microprocessor to handle exceptional events. These events will be generated in an expected manner, but the principles are the same for failures, faults, and other unexpected events. These events will invoke Exception Handlers that you write. These Exception Handlers will efficiently respond to events only when needed and will not run continually.
+  
 ##List of Homework Assignments
 - **hw1**: Instructions  
   reference manual, program modification
 - **hw2**: CPU Instruction Encodings and Operation
   Instruction encodings, decoding instructions, flags and conditional branches, selecting branch instructions
 - **hw3**: The Application Binary Interface
+- **hw4**: Assembly language programming (stack allocation and recursion)
