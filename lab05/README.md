@@ -10,32 +10,32 @@ Each timer subsystem allows the microcontroller to produce periodic interrupts w
 - Learn how to drive a multiplexed display  
 
 ## Table of Contents
-Step	Description	Points
-0	Prelab Exercises	15
-1	Background and wiring
-2	Experiment
-2.1	enable_ports
-2.2	Basic Interrupt Service Routine
-2.3	Configure a basic timer and demonstrate	15
-2.4	A display multiplexing and key scanning application
-2.4.1	Data structures for the application
-2.4.2	show_char: Display a single character	10
-2.4.3	Implement keypad scanning	20
-2.4.3.1	drive_column: Update the keypad column being scanned
-2.4.3.2	read_rows: Read the row values
-2.4.3.3	rows_to_key: Translate row of a column to a key
-2.4.4	handle_key: Do something for a particular key	5
-2.4.5	Timer 7 ISR	10
-2.4.6	setup_tim7: Configure timer 7	10
-2.4.7	write_display: Write a formatted message on the display	10
-2.4.8	update_variables: Compute altitude, velocity, and acceleration	10
-2.4.9	setup_timer14: Configure timer 14
-3	Playing the game
-4	Submit your postlab results	*
- 	Total:	100
-* All the points for this lab depend on proper completion of and submission of your post-lab results.
+Step	Description	Points  
+0	Prelab Exercises	15  
+1	Background and wiring  
+2	Experiment  
+2.1	enable_ports  
+2.2	Basic Interrupt Service Routine  
+2.3	Configure a basic timer and demonstrate	15  
+2.4	A display multiplexing and key scanning application  
+2.4.1	Data structures for the application  
+2.4.2	show_char: Display a single character	10  
+2.4.3	Implement keypad scanning	20  
+2.4.3.1	drive_column: Update the keypad column being scanned  
+2.4.3.2	read_rows: Read the row values  
+2.4.3.3	rows_to_key: Translate row of a column to a key  
+2.4.4	handle_key: Do something for a particular key	5  
+2.4.5	Timer 7 ISR	10  
+2.4.6	setup_tim7: Configure timer 7	10  
+2.4.7	write_display: Write a formatted message on the display	10  
+2.4.8	update_variables: Compute altitude, velocity, and acceleration	10  
+2.4.9	setup_timer14: Configure timer 14   
+3	Playing the game  
+4	Submit your postlab results	*  
+ 	Total:	100  
+* All the points for this lab depend on proper completion of and submission of your post-lab results.  
 
-When you are ready for your lab evaluation, review this checklist.
+When you are ready for your lab evaluation, review this checklist.  
 
 ## Step 0: Prelab Exercises:
 Do them in this order...
