@@ -287,7 +287,7 @@ The keypad columns are scanned from right-to-left, where the rightmost column is
         | * | 0 | # | D |        | c | 8 | 4 | 0 |
         +---+---+---+---+        +---+---+---+---+
 
-For instance, if the '8' button is pressed, the number for that button should be 0x9 (an offset of one from the start of column 2: 2\*4 + 1 = 9). When the '*' button is pressed, the offset should be 12 (hexadcimal 0xc) since it is in column 3, row 0 (3*4 + 0 = 12).
+For instance, if the '8' button is pressed, the number for that button should be 0x9 (an offset of one from the start of column 2: 2\*4 + 1 = 9). When the '\*' button is pressed, the offset should be 12 (hexadcimal 0xc) since it is in column 3, row 0 (3\*4 + 0 = 12).
 The function to implement is:
 ```
         char rows_to_key(int rows) {
