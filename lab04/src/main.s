@@ -102,8 +102,8 @@
 .equ CLR0_2_4, 0x3f3
 .equ CLR2_3,   0xf0
 .equ PD2_3,    0xa0
-.equ CLR024, 0xfff0f
-.equ B024,   0x11101
+.equ CLR024, 0xfff0f //1111 1111 1111 0000 1111
+.equ B024,   0x11101 //0001 0001 0001 0000 0001
 //==========================================================
 // nano_wait
 // Loop for approximately the specified number of nanoseconds.
