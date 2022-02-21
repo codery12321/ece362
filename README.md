@@ -36,4 +36,4 @@ circuit board (PCB) design, hardware/software debugging tips
 - **hw2**: CPU Instruction Encodings and Operation  
 - **hw3**: The Application Binary Interface  
 - **hw4**: Assembly language programming (stack allocation and recursion)  
-= **hw5**: Practical preparation  
+- **hw5**: Practical preparation  
