@@ -4,9 +4,9 @@
 Microprocessors consistently follow a straight sequence of instructions, and it is likely that you have only worked with this kind of programming until now. In this experiment, you will configure a microprocessor to handle exceptional events. These events will be generated in an expected manner, but the principles are the same for failures, faults, and other unexpected events. These events will invoke Exception Handlers that you write. These Exception Handlers will efficiently respond to events only when needed and will not run continually.
 
 ## Instructional Objectives
-More assembly language practice
-Learn about the SysTick and External GPIO interrupts (EXTI) of a microcontroller
-Implement Interrupt Service Routines
+- More assembly language practice
+- Learn about the SysTick and External GPIO interrupts (EXTI) of a microcontroller
+- Implement Interrupt Service Routines
 
 ## Table of Contents
 Step	Description	Points
