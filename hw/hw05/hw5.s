@@ -214,26 +214,31 @@ else
 */
 .global action8
 action8:
+  push {r4-r7, lr}
   ldr r0, =GPIOB
-  ldr r1, [r0, #IDR]
-  ldr r3, =0x8 //pb3 is bit 3 of odr binary: 1000
+  ldr r1, [r0, #IDR]	//read from IDR
+  ldr r3, =0x8 			//pb3 binary: 1000
   cmp r1, r3
-  bne else
-  ldr r3, =0x10	//binary: 1 0000
+  bne else				//if not equal to 1 go to else
+  ldr r3, =0x10			//pb4 binary: 1 0000
   cmp r1, r3
   beq else
+
   //set pc8 to 0
   ldr r2, =GPIOC
-  ldr r3, =0x100
-  bics r3, r1         //set bit 8 to 0
-  str r3, [r2, #ODR]
+  ldr r4, [r2, #ODR]
+  ldr r3, =0x100		//1 0000 0000
+  bics r4, r3         	//set bit 8 to 0
+  str r4, [r2, #ODR]
   bl doneaction8
 else:
+  ldr r2, =GPIOC
+  ldr r4, [r2, #ODR]
   ldr r3, =0x100
-  orrs r3, r1         //set pc8 to 1
+  orrs r3, r4         	//set pc8 to 1
   str r3, [r2, #ODR]
 doneaction8:
-  pop {pc}
+  pop {r4-r7,pc}
 
 //====================================================================
 // Q9
@@ -246,25 +251,31 @@ else
 */
 .global action9
 action9:
+  push {r4-r7, lr}
   ldr r0, =GPIOB
   ldr r1, [r0, #ODR]
   //check if pb3 == 0
-  ldr r2, =0x4        //pb3 is bit 3 of ODR
+  ldr r2, =0x4
   cmp r1, r2
   beq else9
-  ldr r2, =0x8        //pb4 is bit 4 of ODR
+  ldr r3, =GPIOC
+  ldr r4, [r3, #ODR]
+  ldr r2, =0x8
   cmp r1, r2
   bne else9
+
   ldr r2, =0x200
   orrs r2, r1         //set bit 9 to 1
-  str r2, [r0, #ODR]
+  str r2, [r3, #ODR]
   bl doneaction9
 else9:
+  ldr r3, =GPIOC
+  ldr r4, [r3, #ODR]
   ldr r2, =0x200
-  bics r2, r1         //set pc9 to 0
-  str r2, [r0, #ODR]
+  bics r4, r2         //set pc9 to 0
+  str r4, [r3, #ODR]
 doneaction9:
-  pop {pc}
+  pop {r4-r7, pc}
 //====================================================================
 // Q10
 //====================================================================
@@ -273,16 +284,15 @@ doneaction9:
 .type EXTI2_3_IRQHandler, %function
 EXTI2_3_IRQHandler:
   push {lr}
-  .equ EXTI_PR_PR2,   1<<2
   ldr r0, =EXTI
   ldr r1, [r0, #PR]
-  ldr r2, =EXTI_PR_PR2
+  ldr r2, =1<<2
   orrs r1, r2
   str r1, [r0, #PR]
   //counter
   ldr r3, =counter
-  ldr r3, [r3]
-  adds r2, r3, #1
+  ldr r2, [r3]
+  adds r2, #1
   str r2, [r3]
   pop {pc}
 //====================================================================
@@ -291,9 +301,6 @@ EXTI2_3_IRQHandler:
 .global enable_exti
 enable_exti:
   push {lr}
-  .equ CLR2, 0xf00
-  .equ B2, 0x100
-
   //enable system clock to the SYSCFG subsystem
   ldr r0, =RCC
   ldr r1, [r0, #APB2ENR]
@@ -304,9 +311,9 @@ enable_exti:
   //set up SYSCFG external interrupt configuration registers
   ldr r0, =SYSCFG
   ldr r1, [r0, EXTICR1]
-  ldr r2, =CLR2
-  bics r2, r1
-  ldr r2, =B2
+  ldr r2, =0xf00
+  bics r1, r2
+  ldr r2, =0x100
   orrs r1, r2
   str r1, [r0, EXTICR1]
 
@@ -314,7 +321,7 @@ enable_exti:
   ldr r0, =EXTI
   ldr r1, [r0, #RTSR]
   ldr r2, =0x4
-	orrs r1, r2
+  orrs r1, r2
   str r1, [r0, #RTSR]
 
   //set the EXTI_IMR to not ignore pin number 2
@@ -365,8 +372,8 @@ donetim3:
 .global enable_tim3
 enable_tim3:
   push {lr}
-  .equ TIM3_DIER_UIE, 1<<0
-  .equ TIM_CR1_CEN,  1<<0
+  //.equ TIM3_DIER_UIE, 1<<0
+  //.equ TIM_CR1_CEN,  1<<0
   //Enables the system clock to the timer 3 subsystem.
   ldr r0, =RCC
   ldr r1, [r0, #APB1ENR]
@@ -376,14 +383,14 @@ enable_tim3:
 
   //Configures the Auto-Reload Register and Prescaler of Timer 3 so that an update event occurs exactly four times per second.
   ldr r0, =TIM3
-  ldr r1, =4800-1   //PSC
-  ldr r2, =2500-1 //assuming its 48Mhz clock, ARR=(10000/4)-1
+  ldr r1, =48000-1   //PSC
+  ldr r2, =250-1 //assuming its 48Mhz clock, ARR=(1000/4)-1
   str r1, [r0, #PSC]
   str r2, [r0, #ARR]
 
   //Set the DIER of Timer 3 so that an interrupt occurs on an update event
   ldr r1, [r0, #DIER]
-  ldr r2, =TIM3_DIER_UIE
+  ldr r2, =1<<0
   orrs r2, r1
   str r2, [r0, #DIER]
 
@@ -394,8 +401,9 @@ enable_tim3:
   str r2, [r0, r1]
 
   //Enable the counter for Timer 3.
+  ldr r0, =TIM3
   ldr r1, [r0, #TIMCR1]
-  ldr r2, =TIM_CR1_CEN
+  ldr r2, =1<<0
   orrs r2, r1
   str r2, [r0, #TIMCR1]
   pop {pc}
