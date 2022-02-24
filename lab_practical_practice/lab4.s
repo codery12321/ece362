@@ -97,26 +97,87 @@
 // nano_wait
 // Loop for approximately the specified number of nanoseconds.
 // Write the entire subroutine below.
-
+.global nano_wait
+nano_wait:
+subs r0, #83
+bgt nano_wait
+bx lr
 
 //==========================================================
 // initc
-// Enable the RCC clock for GPIO C and configure pins as 
+// Enable the RCC clock for GPIO C and configure pins as
 // described in section 2.2.1.
 // Do not modify any other pin configuration.
 // Parameters: none
 // Write the entire subroutine below.
+.global initc
+initc:
+push {lr}
+ldr r0, =RCC
+ldr r1, [r0, #AHBENR]
+ldr r2, =GPIOCEN
+orrs r1, r2
+str r1, [r0, #AHBENR]
 
+//set pc0-pc3 as input pins with the pull down enabled
+ldr r0, =GPIOC
+ldr r1, [r0, #MODER]
+ldr r2, =0xff
+bics r1, r2
+str r1, [r0, #MODER]
+ldr r1, [r0, #PUPDR]
+ldr r2, =0xff
+bics r1, r2
+ldr r2, =0xaa		//1010 1010
+orrs r1, r2
+str r1, [r0, #PUPDR]
+
+//set pc4-pc9 as output pins
+ldr r1, [r0, #MODER]
+ldr r2, =0xffff00
+bics r1, r2
+ldr r2, =0x555500	//0101 0101 0101 0101 0 0
+orrs r1, r2
+str r1, [r0, #MODER]
+pop {pc}
 
 //==========================================================
 // initb
-// Enable the RCC clock for GPIO B and configure pins as 
+// Enable the RCC clock for GPIO B and configure pins as
 // described in section 2.2.2
 // Do not modify any other pin configuration.
 // Parameters: none
 // Write the entire subroutine below.
+.global initb
+initb:
+push {lr}
+//set up RCC clock for GPIOB
+ldr r0, =RCC
+ldr r1, [r0, #AHBENR]
+ldr r2, =GPIOBEN
+orrs r1, r2
+str r1, [r0, #AHBENR]
 
+//pb0, pb2-pb4 as input pins
+ldr r0, =GPIOB
+ldr r1, [r0, #MODER]
+ldr r2, =0x3f3		//11 1111 0011
+bics r1, r2
+str r1, [r0, #MODER]
 
+//enable pull down resistor on PB2 and PB3
+ldr r1, [r0, #PUPDR]
+ldr r2, =0xa0		//1010 0000
+orrs r1, r2
+str r1, [r0, #PUPDR]
+
+//pb8-pb11 as output pins
+ldr r1, [r0, #MODER]
+ldr r2, =0x550000		//0101 0101
+orrs r1, r2
+str r1, [r0, #MODER]
+
+pop {pc}
 //==========================================================
 // togglexn
 // Change the ODR value from 0 to 1 or 1 to 0 for a specified
@@ -125,8 +186,15 @@
 //                to use
 //             r1 holds the pin number to toggle
 // Write the entire subroutine below.
-
-
+.global togglexn
+togglexn:
+push {lr}
+ldr r2, [r0, #ODR]
+movs r3, #1
+lsls r3, r1
+eors r2, r3
+str r2, [r0, #ODR]
+pop {pc}
 //==========================================================
 // Write the EXTI interrupt handler for pins 0 and 1 below.
 // Copy the name from startup/startup_stm32.s, create a label
@@ -134,19 +202,55 @@
 // it to be a function.
 // It acknowledge the pending bit for pin 0, and it should
 // call togglexn(GPIOB, 8).
-
+.global EXTI0_1_IRQHandler
+.type EXTI0_1_IRQHandler, % function
+EXTI0_1_IRQHandler:
+push {lr}
+ldr r0, =EXTI
+ldr r1, [r0, #PR]
+ldr r2, =EXTI_PR_PR0
+orrs r1, r2
+str r1, [r0, #PR]
+ldr r0, =GPIOB
+movs r1, #8
+bl togglexn
+pop {pc}
 
 //==========================================================
 // Write the EXTI interrupt handler for pins 2-3 below.
 // It should acknowledge the pending bit for pin2, and it
 // should call togglexn(GPIOB, 9).
-
+.global EXTI2_3_IRQHandler
+.type EXTI2_3_IRQHandler, % function
+EXTI2_3_IRQHandler:
+push {lr}
+ldr r0, =EXTI
+ldr r1, [r0, #PR]
+ldr r2, =EXTI_PR_PR2
+orrs r1, r2
+str r1, [r0, #PR]
+ldr r0, =GPIOB
+movs r1, #9
+bl togglexn
+pop {pc}
 
 //==========================================================
 // Write the EXTI interrupt handler for pins 4-15 below.
 // It should acknowledge the pending bit for pin4, and it
 // should call togglxn(GPIOB, 10).
-
+.global EXTI4_15_IRQHandler
+.type EXTI4_15_IRQHandler, % function
+EXTI4_15_IRQHandler:
+push {lr}
+ldr r0, =EXTI
+ldr r1, [r0, #PR]
+ldr r2, =EXTI_PR_PR4
+orrs r1, r2
+str r1, [r0, #PR]
+ldr r0, =GPIOB
+ldr r1, #10
+bl togglexn
+pop {pc}
 
 //==========================================================
 // init_exti
@@ -157,21 +261,21 @@
 //     pins 0, 2, 3, and 4.
 // (3) Configure the EXTI_IMR register so that the EXTI
 //     interrupts are unmasked for pins 2, 3, and 4.
-// (4) Enable the three interupts for EXTI pins 0-1, 2-3 and 
-//     4-15. Don't enable any other interrupts.
+// (4) Enable the three interupts for EXTI pins 0-1, 2-3 and
+//     4-15. Dont enable any other interrupts.
 // Parameters: none
 .global init_exti
 init_exti:
-	push {lr}
-	// Student code goes below
+push {lr}
+// Student code goes below
 
-	// Student code goes above
-	pop  {pc}
+// Student code goes above
+pop  {pc}
 
 
 //==========================================================
 // set_col
-// Set the specified column level to logic "high.
+// Set the specified column level to logic "high".
 // Set the other three three columns to logic "low".
 
 
@@ -242,4 +346,3 @@ endless_loop:
 	ldr  r0,=500000000
 	bl   nano_wait
 	b    endless_loop
-
