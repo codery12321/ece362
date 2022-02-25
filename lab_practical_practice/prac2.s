@@ -84,9 +84,9 @@ set_green:
     str r2, [r1, #BSRR]
     bl doneGreen
 greenlow:
+    ldr r1, =GPIOC
     ldr r2, =0x20     //10 0000
     str r2, [r1, #BRR]
-
 doneGreen:
     pop {pc}
 
@@ -159,8 +159,7 @@ TIM17_IRQHandler:
     str r1, [r0, #SR]
     pop {pc}
 
-.global toggle
-toggle:
+    //toggle LED
     push {r4-r7, lr}
     bl get_black
     movs r7, r0
@@ -223,3 +222,29 @@ enab_timer:
 //============================================================
 //Q8 Recursion
 //============================================================
+/*
+if (x >5)
+    return 3*(recurse(x>>3) + 2*(x&2))
+else
+    return x+2
+*/
+.global recursion
+recursion:
+    push {r4-r7, lr}
+    cmp r0, #5
+    bls else
+    movs r7, r0
+    lsrs r0, #3
+    bl recur
+    movs r1, #2
+    ands r7, r1
+    movs r1, #2
+    muls r1, r7
+    adds r0, r1
+    movs r1, #3
+    muls r0, r1
+    bl doneRecur
+else:
+    adds r0, #2
+doneRecur:
+    pop {r4-r7, pc}

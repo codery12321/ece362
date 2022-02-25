@@ -50,6 +50,8 @@ str r1, [r0, #AHBENR]
 //"set pb4 as output"
 ldr r0, =GPIOB
 ldr r1, [r0, #MODER]
+ldr r2,  =0x30
+bics r1, r2
 ldr r2, =0x10         //01 0
 orrs r1, r2
 str r1, [r0, #MODER]
@@ -78,10 +80,12 @@ set_green:
     ldr r1, =GPIOC
     ldr r2, =0x20       //10 0000
     str r2, [r1, #BSRR]
+    bl doneGreen
 setlow:
     ldr r1, =GPIOC
     ldr r2, =0x20
     str r2, [r1, #BRR]
+doneGreen:
     pop {pc}
 
 //============================================================
@@ -99,7 +103,7 @@ set_yellow:
 lowPB4:
     ldr r3, =GPIOB
     ldr r1, = 0x10
-    str r0, [r3, #BRR]
+    str r1, [r3, #BRR]
 doneYellow:
     pop {pc}
 
@@ -153,8 +157,7 @@ TIM17_IRQHandler:
     str r1, [r0, #TIM_SR]
     pop {pc}
 
-.global toggle
-toggle:
+    //toggle LED
     bl get_black
     movs r7, r0
     bl get_red
