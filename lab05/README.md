@@ -75,7 +75,7 @@ You will use a 16-button keypad for this lab experiment. One configuration for s
 The typical concession for keypads is to have multiple common pins that connect to groups of buttons. The logical extension to this trend is to configure a keypad as a matrix of rows and columns. If the number of rows and columns is about equal, this practice minimizes the number of pins on the keypad. The added challenge is that the keypad must be scanned one row or column at a time. For instance, a voltage can be applied to a column of buttons, and the rows can be sensed to detect if any of the buttons in the column are being pressed. Then the voltage can be removed from the column and re-applied to another column. By cycling through all the columns, all keys can eventually be detected. The difficulty is that, not only do the buttons still bounce, the bouncing must be tracked over multiple successive scans.
 
 
-![Figure 1: Keypad schematic](figure1.png)  
+![Figure 1: Keypad schematic](images/figure1.png)  
 
 The schematic for the keypad matrix you will use for this lab experiment is shown in Figure 1. For this experiment, you will implement the 'history' method of debouncing buttons. For each of the 16 keys, an 8-bit variable is used. Each history variable is stored as an element of a 16-byte array in RAM. The array's first 4 elements, 0 – 3 represent the history for the first column of keys, the elements from 4 – 7 represent the history values of the second column of keys and so on. Since buttons will be sampled four at a time, the history values will also be updated four at a time. This is effectively equivalent to sampling a single button at a time except that the samples are further apart. Button presses and releases are still detected the same way.
 
@@ -87,12 +87,12 @@ Another minor downside of this method is that it is not always possible to detec
 A 7-segment display is one that has seven LED segments in the shape of a number "8". By selectively turning segments on, other numbers can be displayed. In practice, such displays have more than seven segments. An eighth segment shows a decimal point. Recall Figure 2, from ECE 270, that shows the names of the segments of a display. The top segment is customarily called "A". Proceeding clockwise, the next ones are named "B", "C", and so on. The middle segment is named "G". The decimal point is named "DP".
 
 
-![Figure 2: Seven-segment display organization](figure2.png)  
+![Figure 2: Seven-segment display organization](images/figure2.png)  
 
 For this lab experiment, you will be using the TDCR1050M 4-digit 7-segment LED display. This device was made to be used in a clock, so it has a middle colon for use in displaying a time. Another dot on the display can be illuminated to indicate things like an alarm setting. For this experiment, we will use only the digits and decimal points.
 
 
-![Figure 3: Picture of physical display](figure3.png)  
+![Figure 3: Picture of physical display](images/figure3.png)  
 
 If you look at a picture of the physical device in Figure 3, you see that it has only two rows of eight pins on each side. Only sixteen pins are used to control more than 30 individual LED segments that must be independently lit to form four distinct digits and decimal points. To do so, it uses a "common anode" configuration so that one pin is connected to the anodes of all the LEDs on one digit. There are four distinct pins connected to the anodes of the four digits. There are another eight pins connected to similar cathodes on all the displays. For instance, one pin is connected to the four "A" cathodes on the four digits. This means it is possible to illuminate all four of the "A" segments on the four digits by applying a positive voltage to the four common anodes and a negative voltage to the pin connected to all of the "A" segments. It is not possible to simultaneously illuminate the "A" segment of all the displays and illuminate the "B" segment of only a single display. Figure 4 shows the schematic for the connections to all of the LED segments for the display.
 
@@ -175,7 +175,7 @@ You might also look ahead to Section 2 of this lab document to find out how to s
 
 As the decimal point illuminates, make sure that the other segments of each digit remain at the same brightness. If the other segments of a digit grow dimmer, it may be that the driver transistor for that digit is backward. A BJT transistor normally amplifies a small base-emitter current with a large collector-emitter current, but a BJT can also work backward so that it amplifies a small base-collector current to a larger emitter-collector current. The amplification is not as high, and it limits the current provided to a digit. The more segments per digit are lit, the dimmer they are. Carefully note the orientation of the transistors connected to the D1, D2, D3, and pins of each display.
 
-![All wiring complete and correct](images/wiring_complete)    
+![All wiring complete and correct](images/wiring_complete.png)    
 
 Once the display is showing the correct digits and the decimal point is repeatedly moving from left to right, try pressing buttons on the keypad. Each button will cause a corresponding letter to be shifted onto the display to the rightmost digit, and the other seven digits will shift left. The asterisk is represented with a Greek Xi (Ξ), and the octothorpe is represented with an "H". (You think I'm inventing a new word here? Go look that up.) If you press the '1' button, and a new 'A' gets shifted in on the right, it means you've switched the Row1 and Row4 wires on the keypad. If you press the '3' button, and a new '0' is shifted in on the right, it means that the wires to Row2 and Row3, as well as the wires to Col1 and Col4, are switched. By pressing buttons and looking at the outcome, you can determine which wires are incorrect.
 
