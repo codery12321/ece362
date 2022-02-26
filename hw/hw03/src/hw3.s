@@ -29,7 +29,7 @@ comp4:
 .global or_into
 or_into:
   ldr r2, [r0]  //load ptr value into r2
-  orrs r2, r1   //*ptr | x
+  orrs r2, r1   //\*ptr | x
   str r2, [r0]  //store value back to *ptr
   bx lr
 
