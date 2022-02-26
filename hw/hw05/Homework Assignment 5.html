@@ -1,0 +1,774 @@
+
+<!-- saved from url=(0054)https://engineering.purdue.edu/ece362/submit/?item=hw5 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+
+
+<title>Homework Assignment 5</title>
+</head>
+<body>
+<h1>Homework Assignment 5</h1>
+<small>
+Due: Fri, 18 Feb 2022 17:30:00 (approximately 7 days ago)
+<br>
+</small>
+[Score: 11 / 13 points possible]
+<br>
+Weight = 1.00
+<form action="https://engineering.purdue.edu/ece362/submit/?item=hw5" method="post" id="form">
+
+
+<!--
+<table><tr><td>
+<p style="background-color:orange">Do you know
+what day the midterm practical will be and
+<a href="/ece362/submit/?item=reg-prac1">
+what time you are expected to take it</a>?</p>
+</td></tr></table>
+-->
+
+<p>This homework is a review of assembly language programming for
+GPIO, Interrupt handling, and basic recursion.  To complete this
+homework, you should create a project in System Workbench with the
+Standard Peripheral firmware.  Write the following subroutines, and
+put them all in the same file named hw5.s.  You will find a template
+for hw5.s on the homework web page.  To test your subroutines, you
+can link hw5.s against the test.c file (that can be found at some
+point) on the homework web page.  The test module will exercise
+these subroutines and check their results and effects.
+</p><p>
+</p><p>
+<b><font color="red">Give yourself an hour to do these
+problems.</font></b> If you can complete them correctly in an
+hour, then you can rest assured that you are well-prepared for the
+programming portion of the lab practical.  For several questions,
+you will need to look things up in manuals.  When you do this, be
+sure to use the <i>index</i> of the manual to find things rather than
+pressing &lt;ctrl&gt;-F a million times.  Knowing where something
+is located, and in which manual, is the major part of completing
+any exercise in this class.  This prepares you for the concept
+questions of the lab practical exam.
+</p><p>
+</p><p>
+If you look at the test.c file, you will see an example of the
+kinds of actions that will be done to test your subroutines.  In a
+lab practical, you will not have access to this code and you might
+not be told <em>why</em> a subroutine is not working as specified.
+It is important to follow the instructions carefully.  You should
+particularly note that sometimes the test code will deliberately
+set fields to non-default values just to make sure you're not
+accidentally changing things you were asked not to modify.
+</p><p>
+</p><p>
+The test.c file provides many good examples of how to manipulate
+configuration registers using the C language.  Almost everything
+we do in the class after the midterm lab practical exam will be
+done using C.
+
+<br></p><hr>
+<table><tbody><tr><td>
+<h2>Q1: recur [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 5_files/correct.png">
+</td>
+</tr></tbody></table>
+
+<p>Translate ("hand compile") the following C function into assembly language.
+<b><code></code></b></p><pre><b><code>// Just another strange recursive function.
+unsigned int recur(unsigned int x) {
+	if (x &lt; 3)
+		return x;
+	if ((x &amp; 0xf) == 0)
+		return 1 + recur(x - 1);
+	return recur(x &gt;&gt; 1) + 2;
+}
+</code></b></pre>
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q2: enable_portb [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 5_files/correct.png">
+</td>
+</tr></tbody></table>
+
+<p>Write an assembly language subroutine named <b>enable_portb</b> that
+configures the RCC to enable the clock to GPIO Port B but leaves the
+other clock control bits as they were.
+
+<br></p><hr>
+<table><tbody><tr><td>
+<h2>Q3: enable_portc [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 5_files/correct.png">
+</td>
+</tr></tbody></table>
+
+<p>Write an assembly language subroutine named <b>enable_portc</b> that
+configures the RCC to enable the clock to GPIO Port C but leaves the
+other clock control bits as they were.
+
+<br></p><hr>
+<table><tbody><tr><td>
+<h2>Q4: setup_pb3 [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 5_files/correct.png">
+</td>
+</tr></tbody></table>
+
+<p>Write an assembly language subroutine named <b>setup_pb3</b> that
+configures pin PB3 for the following:
+</p><ul>
+<li>Input
+</li><li>Pull-down resistor enabled
+</li></ul>
+It should not change any other configuration for any other pins.
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q5: setup_pb4 [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 5_files/correct.png">
+</td>
+</tr></tbody></table>
+
+<p>Write an assembly language subroutine named <b>setup_pb4</b> that
+configures pin PB4 for the following:
+</p><ul>
+<li>Input
+</li><li>Neither pull-down nor pull-up resistor enabled
+</li></ul>
+It should not change any other configuration for any other pins.
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q6: setup_pc8 [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 5_files/correct.png">
+</td>
+</tr></tbody></table>
+
+<p>Write an assembly language subroutine named <b>setup_pc8</b> that
+configures pin PC8 for the following:
+</p><ul>
+<li>Output
+</li><li>Output Speed: High Speed
+</li></ul>
+It should not change any other configuration for any other pins.
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q7: setup_pc9 [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 5_files/correct.png">
+</td>
+</tr></tbody></table>
+
+<p>Write an assembly language subroutine named <b>setup_pc9</b> that
+configures pin PC9 for the following:
+</p><ul>
+<li>Output
+</li><li>Output Speed: Medium Speed
+</li></ul>
+It should not change any other configuration for any other pins.
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q8: action8 [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 5_files/wrong.png">
+</td>
+</tr></tbody></table>
+
+Write an assembly language subroutine named <b>action8</b> that reads
+the state of PB3 and PB4.  If PB3 is high and PB4 is low, then set
+PC8 to 0.  Otherwise, set PC8 to 1.
+<br>
+To test this, you should wire a push buttons to PB3 and PB4 as you did
+in lab experiment 4.  When either button is pressed, it should connect
+the appropriate pin to a logic high.
+The green LED should be illuminated except
+when PB3 is high and PB4 is low.
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q9: action9 [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 5_files/wrong.png">
+</td>
+</tr></tbody></table>
+
+Write an assembly language subroutine named <b>action9</b> that reads
+the state of PB3 and PB4.  If PB3 is low and PB4 is high, then set
+PC9 to 1.  Otherwise, set PC9 to 0.  The blue LED should illuminate
+only when the button for PB4 is pressed and PB3 is not.
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q10: External Interrupt Handler [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 5_files/correct.png">
+</td>
+</tr></tbody></table>
+
+Write an assembly language subroutine to act as the Interrupt
+Service Routine (ISR) for line 2 (pin 2 of the selected port).
+You should look up the name for this ISR in the startup/startup_stm32.s
+file and <b>copy and paste it</b> to avoid making any mistakes.
+It should <em>acknowledge</em>
+the interrupt by writing a 1 to the appropriate bit of the EXTI_PR
+register.  It should also increment the global variable named
+'counter'.
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q11: enable_exti [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 5_files/correct.png">
+</td>
+</tr></tbody></table>
+
+Write an assembly language subroutine named <b>enable_exti</b> that
+does the following:
+<ul>
+<li>enable the system clock to the SYSCFG subsystem.
+</li><li>set up the apprpriate SYSCFG external interrupt configuration register (see
+the FRM, page 177) to use pin PB2 for the interrupt source
+</li><li>configure the EXTI_RTSR (see the FRM, page 224) to trigger on
+the rising edge of PB2
+</li><li>set the EXTI_IMR to not ignore pin number 2
+</li><li>configure the NVIC to enable the interrupt for the ISR
+</li></ul>
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q12: (the interrupt handler for Timer 3) [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 5_files/correct.png">
+</td>
+</tr></tbody></table>
+
+Write an assembly language subroutine that acts as an Interrupt Service
+Routine (ISR) for the Timer 3 update interrupt.  You must look up the
+name for this interrupt and add the proper assembler directives to
+indicate that it consists of Thumb instructions.  It should do the following:
+<ul>
+<li>Toggles PC9 (the blue LED).
+</li><li>Acknowledges the interrupt by clearing the Timer 3 update interrupt flag.
+</li></ul>
+<b>Timer 3, for what you're doing here,
+   works just like Timer 6.</b>  It has more features, but if you're not using
+   them, you don't have to pay any attention to them.  You know how to
+   turn on the update event interrupt for Timer 6.  It works the same way
+   for Timer 3.  You should be ready to use any timer in this way.
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q13: enable_tim3 [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 5_files/correct.png">
+</td>
+</tr></tbody></table>
+
+Write an assembly language subroutine named <b>enable_tim3</b> that
+does the following:
+<ul>
+<li>Enables the system clock to the timer 3 subsystem.
+</li><li>Configures the Auto-Reload Register and Prescaler of Timer 3
+    so that an update event occurs exactly four times per second.
+</li><li>Set the DIER of Timer 3 so that an interrupt occurs on an update event.
+</li><li>Write the appropriate bit to the NVIC ISER so that the interrupt for
+    the Timer 3 update event is enabled.
+</li><li>Enable the counter for Timer 3.
+</li></ul>
+
+<br><hr>
+<h2>Academic Honesty Statement [0 ... -100 points]</h2>
+<p>
+By typing my name, below, I hereby certify that the work on
+this homework is my own and that I have not copied the work of any
+other student (past or present) while completing it.
+I understand that if I fail to honor this agreement, I will receive
+a score of zero for the assignment, a one letter drop in my final
+course grade, and be subject to possible disciplinary action.
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="cert" size="80" value="Tzu Yu Chen">
+</td>
+<td>
+<img src="./Homework Assignment 5_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Your hw5.s file</h2>
+<p>
+
+Turn in your hw5.s file here.
+
+</p>
+<table><tbody><tr><td>
+<textarea readonly="" onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+&#39;	&#39;+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" name="code" cols="80" rows="50">.cpu cortex-m0
+.thumb
+.syntax unified
+.fpu softvfp
+
+.equ RCC,       0x40021000
+.equ GPIOA,     0x48000000
+.equ GPIOB,     0x48000400
+.equ GPIOC,     0x48000800
+.equ AHBENR,    0x14
+.equ APB2ENR,   0x18
+.equ APB1ENR,   0x1c
+.equ IOPAEN,    0x20000
+.equ IOPBEN,    0x40000
+.equ IOPCEN,    0x80000
+.equ SYSCFGCOMPEN, 1
+.equ TIM3EN,    2
+.equ MODER,     0
+.equ OSPEEDR,   8
+.equ PUPDR,     0xc
+.equ IDR,       0x10
+.equ ODR,       0x14
+.equ BSRR,      0x18
+.equ BRR,       0x28
+.equ PC8,       0x100
+
+// SYSCFG control registers
+.equ SYSCFG,    0x40010000
+.equ EXTICR1,   0x8
+.equ EXTICR2,   0xc
+.equ EXTICR3,   0x10
+.equ EXTICR4,   0x14
+
+// NVIC control registers
+.equ NVIC,      0xe000e000
+.equ ISER,      0x100
+
+// External interrupt control registers
+.equ EXTI,      0x40010400
+.equ IMR,       0x00
+.equ RTSR,      0x08
+.equ PR,        0x14
+
+.equ TIM3,      0x40000400
+.equ TIMCR1,    0x00
+.equ DIER,      0x0c
+.equ TIMSR,     0x10
+.equ PSC,       0x28
+.equ ARR,       0x2c
+
+// Popular interrupt numbers
+.equ EXTI0_1_IRQn,   5
+.equ EXTI2_3_IRQn,   6
+.equ EXTI4_15_IRQn,  7
+.equ EXTI4_15_IRQn,  7
+.equ TIM2_IRQn,      15
+.equ TIM3_IRQn,      16
+.equ TIM6_DAC_IRQn,  17
+.equ TIM7_IRQn,      18
+.equ TIM14_IRQn,     19
+.equ TIM15_IRQn,     20
+.equ TIM16_IRQn,     21
+.equ TIM17_IRQn,     22
+
+//====================================================================
+// Q1
+//====================================================================
+.global recur
+recur:
+  push {lr}
+if1:
+  movs r1, #3
+  cmp r0, r1
+  bhs if2
+  bl done
+if2:
+  movs r1, #0xf
+  movs r2, r0
+  ands r2, r1
+  movs r1, #0
+  cmp r2, r1
+  bne return
+  subs r0, #1
+  bl recur
+  adds r0, #1
+  bl done
+return:
+  lsrs r0, #1
+  bl recur
+  adds r0, #2
+done:
+  pop {pc}
+
+//====================================================================
+// Q2
+//====================================================================
+.global enable_portb
+enable_portb:
+  push {lr}
+  ldr r0, =RCC
+  ldr r1, [r0, #AHBENR]
+  ldr r2, =IOPBEN
+  orrs r2, r1
+  str r2, [r0, #AHBENR]
+  pop {pc}
+//====================================================================
+// Q3
+//====================================================================
+.global enable_portc
+enable_portc:
+  push {lr}
+  ldr r0, =RCC
+  ldr r1, [r0, #AHBENR]
+  ldr r2, =IOPCEN
+  orrs r2, r1
+  str r2, [r0, #AHBENR]
+  pop {pc}
+//====================================================================
+// Q4
+//====================================================================
+.global setup_pb3
+setup_pb3:
+  //push {lr}
+  //.equ CLR3, 0xc0  //1100 0000
+  //.equ IN3,  0x100
+  //.equ PD3, 0x80
+
+  ldr r0, =GPIOB
+  ldr r1, [r0, #MODER]
+  ldr r2, =0xc0
+  bics r1, r2
+  str r1, [r0, #MODER]
+
+  ldr r1, [r0, #PUPDR]
+  ldr r2, =0xc0
+  bics r1, r2
+  ldr r2, =0x80
+  orrs r1, r2
+  str r1, [r0, #PUPDR]
+	bx lr
+  //pop {pc}
+//====================================================================
+// Q5
+//====================================================================
+.global setup_pb4
+setup_pb4:
+  push {lr}
+  ldr r0, =GPIOB
+  ldr r1, [r0, #MODER]
+  ldr r2, =0x300
+  bics r1, r2
+  str r1, [r0, #MODER]
+  ldr r1, [r0, #PUPDR]
+  ldr r2, =0x300
+  bics r1, r2
+  str r1, [r0, #PUPDR]
+  pop {pc}
+//====================================================================
+// Q6
+//====================================================================
+.global setup_pc8
+setup_pc8:
+  push {lr}
+  //.equ CLR8, 0x30000
+  //.equ OUT8, 0x10000
+  //.equ SPD8, 0x30000
+  ldr r0, =GPIOC
+  ldr r1, [r0, #MODER]
+  ldr r2, =0x30000
+  bics r1, r2
+  str r1, [r0, #MODER]
+  ldr r2, =0x10000
+  orrs r1, r2
+  str r1, [r0, #MODER]      //is this necessary? store 2 times?
+  ldr r1, [r0, #OSPEEDR]
+  ldr r2, =0x30000
+  orrs r1, r2
+  str r1, [r0, #OSPEEDR]
+  pop {pc}
+//====================================================================
+// Q7
+//====================================================================
+.global setup_pc9
+setup_pc9:
+  //push {lr}
+  //.equ CLR9, 0xc0000 //1100 0000 0000 0000 0000
+  //.equ OUT9, 0x40000
+  //.equ SPD9, 0x80000
+  ldr r0, =GPIOC
+  ldr r1, [r0, #MODER]
+  ldr r2, =0xc0000
+  bics r1, r2
+  str r1, [r0, #MODER]
+  ldr r2, =0x40000
+  orrs r1, r2
+  str r1, [r0, #MODER]
+  ldr r1, [r0, #OSPEEDR]
+  ldr r2, =0xc0000
+  bics r1, r2
+  ldr r2, =0x40000
+  orrs r1, r2
+  str r1, [r0, #OSPEEDR]
+  bx lr
+  //pop {pc}
+//====================================================================
+// Q8
+//====================================================================
+//c code
+/*
+if (pb3 == 1 &amp;&amp; pb4 == 0)
+  set pc8 = 0
+else
+  set pc8 = 1
+*/
+.global action8
+action8:
+  push {r4-r7, lr}
+  ldr r0, =GPIOB
+  ldr r1, [r0, #IDR]	//read from IDR
+  ldr r3, =0x8 			//pb3 binary: 1000
+  cmp r1, r3
+  bne else				//if not equal to 1 go to else
+  ldr r3, =0x10			//pb4 binary: 1 0000
+  cmp r1, r3
+  beq else
+
+  //set pc8 to 0
+  ldr r2, =GPIOC
+  ldr r4, [r2, #ODR]
+  ldr r3, =0x100		//1 0000 0000
+  bics r4, r3         	//set bit 8 to 0
+  str r4, [r2, #ODR]
+  bl doneaction8
+else:
+  ldr r2, =GPIOC
+  ldr r4, [r2, #ODR]
+  ldr r3, =0x100
+  orrs r3, r4         	//set pc8 to 1
+  str r3, [r2, #ODR]
+doneaction8:
+  pop {r4-r7,pc}
+
+//====================================================================
+// Q9
+//====================================================================
+/*
+if (pb3 == 0 &amp;&amp; pb4 == 1)
+  set pc9 = 1
+else
+  set pc9 = 0
+*/
+.global action9
+action9:
+  push {r4-r7, lr}
+  ldr r0, =GPIOB
+  ldr r1, [r0, #ODR]
+  //check if pb3 == 0
+  ldr r2, =0x4
+  cmp r1, r2
+  beq else9
+  ldr r3, =GPIOC
+  ldr r4, [r3, #ODR]
+  ldr r2, =0x8
+  cmp r1, r2
+  bne else9
+
+  ldr r2, =0x200
+  orrs r2, r1         //set bit 9 to 1
+  str r2, [r3, #ODR]
+  bl doneaction9
+else9:
+  ldr r3, =GPIOC
+  ldr r4, [r3, #ODR]
+  ldr r2, =0x200
+  bics r4, r2         //set pc9 to 0
+  str r4, [r3, #ODR]
+doneaction9:
+  pop {r4-r7, pc}
+//====================================================================
+// Q10
+//====================================================================
+// Do everything needed to write the ISR here...
+.global EXTI2_3_IRQHandler
+.type EXTI2_3_IRQHandler, %function
+EXTI2_3_IRQHandler:
+  push {lr}
+  ldr r0, =EXTI
+  ldr r1, [r0, #PR]
+  ldr r2, =1&lt;&lt;2
+  orrs r1, r2
+  str r1, [r0, #PR]
+  //counter
+  ldr r3, =counter
+  ldr r2, [r3]
+  adds r2, #1
+  str r2, [r3]
+  pop {pc}
+//====================================================================
+// Q11
+//====================================================================
+.global enable_exti
+enable_exti:
+  push {lr}
+  //enable system clock to the SYSCFG subsystem
+  ldr r0, =RCC
+  ldr r1, [r0, #APB2ENR]
+  ldr r2, =SYSCFGCOMPEN
+  orrs r1, r2
+  str r1, [r0, APB2ENR]
+
+  //set up SYSCFG external interrupt configuration registers
+  ldr r0, =SYSCFG
+  ldr r1, [r0, EXTICR1]
+  ldr r2, =0xf00
+  bics r1, r2
+  ldr r2, =0x100
+  orrs r1, r2
+  str r1, [r0, EXTICR1]
+
+  //configure the EXTI_RTSR
+  ldr r0, =EXTI
+  ldr r1, [r0, #RTSR]
+  ldr r2, =0x4
+  orrs r1, r2
+  str r1, [r0, #RTSR]
+
+  //set the EXTI_IMR to not ignore pin number 2
+  ldr r0, =EXTI
+  ldr r1, [r0, #IMR]
+  ldr r2, =0x4
+  orrs r2, r1
+  str r2, [r0, #IMR]
+
+  //configure the NVIC to enable the interrupt for the ISR
+  ldr r0, =1&lt;&lt;EXTI2_3_IRQn
+  ldr r1, =NVIC
+  ldr r2, =ISER
+  str r0, [r1, r2]
+  pop {pc}
+//====================================================================
+// Q12
+//====================================================================
+// Do everything needed to write the ISR here...
+.global TIM3_IRQHandler
+.type TIM3_IRQHandler, %function
+TIM3_IRQHandler:
+  push {lr}
+  .equ TIM_SR_UIF,   1&lt;&lt;0
+  ldr r0, =TIM3
+  ldr r1, [r0, #TIMSR]
+  ldr r2, =TIM_SR_UIF
+  bics r2, r1
+  str r2, [r0, #TIMSR]
+
+  //toggle PC9
+  ldr r0, =GPIOC
+  ldr r1, [r0, ODR]
+  movs r2, #1
+  lsls r2, #9
+  ands r1, r2
+  cmp r1, #0
+  beq elsetim3
+  str r2, [r0, #BRR]
+  bl donetim3
+elsetim3:
+  str r2, [r0, #BSRR]
+donetim3:
+  pop {pc}
+//====================================================================
+// Q13
+//====================================================================
+.global enable_tim3
+enable_tim3:
+  push {lr}
+  //.equ TIM3_DIER_UIE, 1&lt;&lt;0
+  //.equ TIM_CR1_CEN,  1&lt;&lt;0
+  //Enables the system clock to the timer 3 subsystem.
+  ldr r0, =RCC
+  ldr r1, [r0, #APB1ENR]
+  ldr r2, =TIM3EN
+  orrs r2, r1
+  str r2, [r0, #APB1ENR]
+
+  //Configures the Auto-Reload Register and Prescaler of Timer 3 so that an update event occurs exactly four times per second.
+  ldr r0, =TIM3
+  ldr r1, =48000-1   //PSC
+  ldr r2, =250-1 //assuming its 48Mhz clock, ARR=(1000/4)-1
+  str r1, [r0, #PSC]
+  str r2, [r0, #ARR]
+
+  //Set the DIER of Timer 3 so that an interrupt occurs on an update event
+  ldr r1, [r0, #DIER]
+  ldr r2, =1&lt;&lt;0
+  orrs r2, r1
+  str r2, [r0, #DIER]
+
+  //Write the appropriate bit to the NVIC ISER so that the interrupt for the Timer 3 update event is enabled.
+  ldr r0, =NVIC
+  ldr r1, =ISER
+  ldr r2, =(1&lt;&lt;TIM3_IRQn)
+  str r2, [r0, r1]
+
+  //Enable the counter for Timer 3.
+  ldr r0, =TIM3
+  ldr r1, [r0, #TIMCR1]
+  ldr r2, =1&lt;&lt;0
+  orrs r2, r1
+  str r2, [r0, #TIMCR1]
+  pop {pc}</textarea>
+</td>
+</tr></tbody></table>
+<br>
+<h2>Grading log</h2>
+<pre>Starting tests for chen3633
+recur: appears to work
+enable_portb: appears to work
+enable_portc: appears to work
+setup_pb3: appears to work
+setup_pb4: appears to work
+setup_pc8: appears to work
+setup_pc9: appears to work
+action8: does not properly configure PC8 ODR field
+action9: does not properly configure PC9 ODR field
+EXTI 2 ISR: appears to work
+enable_exti: appears to work
+Timer 3 ISR: appears to work
+enable_tim3: appears to work
+q1:1
+q2:1
+q3:1
+q4:1
+q5:1
+q6:1
+q7:1
+q8:0
+q9:0
+q10:1
+q11:1
+q12:1
+q13:1
+total:11
+</pre>
+
+
+</form>
+
+
+</body></html>

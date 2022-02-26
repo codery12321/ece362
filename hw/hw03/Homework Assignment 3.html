@@ -1,0 +1,792 @@
+
+<!-- saved from url=(0054)https://engineering.purdue.edu/ece362/submit/?item=hw3 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+
+
+<title>Homework Assignment 3</title>
+</head>
+<body>
+<h1>Homework Assignment 3</h1>
+<small>
+Due: Fri, 04 Feb 2022 17:30:00 (approximately 21 days ago)
+<br>
+</small>
+[Score: 12 / 12 points possible]
+<br>
+Weight = 0.50
+<form action="https://engineering.purdue.edu/ece362/submit/?item=hw3" method="post" id="form">
+
+<p>The goal of this homework is translate meaningful C
+subroutines and functions into equivalent ARM Cortex-M0 assembly language.
+We often refer to this as "hand compliation".  And the expectation is that
+you will do this by hand.  Although it is possible to use GCC to compile
+these programs into assembly language, it will be immediately obvious
+to a grader that you've done so.  You won't get credit for such submissions.
+Beyond that, these exercises will be graded on whether or not they work.
+We will assemble them and run them in the simulator.  They must do what
+they are supposed to to get the points they are worth.  No partial credit.
+</p><h2>The Application Binary Interface</h2>
+<p>Keep in mind the three basic rules about the ABI:
+</p><ul>
+<li>When a subroutine is called, the expectation is that the first four
+arguments will be in R0, R1, R2, and R3.  (If the subroutine accepts more
+than four arguments, then arguments five and beyond are pushed onto the
+stack before the subroutine is called.  We'll try that in later exercises.)
+</li><li>When a subroutine returns, the value it returns is expected to be in R0.
+</li><li>A subroutine may overwrite R0, R1, R2, R3, and R12, but the calling
+subroutine demands that all the other registers are the same upon return
+as they were just before calling the subroutine.  If you intend to change
+the value of R4 in a subroutine, you should use
+<b><code>PUSH {R4,LR}</code></b> at the beginning of
+the subroutine when you push LR.  You can restore it and return to the
+caller with <b><code>POP {R4,PC}</code></b>.
+</li></ul>
+<p>
+Most of the following exercises are independent of the others.
+You can write all of your functions in a single .s file in System Workbench
+or in the simulator and test them there.
+If you want to test them to make sure they work when they are called from
+a C function, you can create a main() function in a C
+program in System Workbench.  Your translated subroutines must still be in a
+separate .s file.  I.e., you cannot put assembly language directly into a
+C file.  Each subroutine should be prefaced with a
+<em>.global subroutine_name</em> to make it visible to other modules.
+For instance:
+<table border="1">
+<tbody><tr>
+<td>Example</td><td>Your Translation</td><td>You can call it like this:</td>
+</tr>
+
+<tr>
+<td>
+<code>
+<pre>void nothing(void) {
+}
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>.global nothing
+nothing:
+	push {lr} // let's use push...
+	pop  {pc} // ...and pop for this example
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>void nothing(void);
+int main(void) {
+	nothing();
+	return 0;
+}
+</pre>
+</code>
+</td>
+</tr>
+
+<tr>
+<td>
+<code>
+<pre>int always_six(void) {
+	return 6;
+}
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>.global always_six
+always_six:
+	push {lr}
+	movs r0,#6
+	pop  {pc}
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>int always_six(void);
+int main(void) {
+	int check = always_six();
+	// you can examine 'check' to
+	// tell that the result is 6.
+	return 0;
+}
+</pre>
+</code>
+</td>
+</tr>
+
+<tr>
+<td>
+<code>
+<pre>int add3(int x) {
+	return x + 3;
+}
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>.global add3
+add3:
+	adds r0,#3
+	// as long as we don't call anything
+	// else in a subroutine, we can use
+	// the bx lr instruction instead of
+	// push {lr} and pop {pc}.
+	bx lr
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>int add3(void);
+int main(void) {
+	int check = add3(5);
+	// you can examine check to
+	// tell that the result is 8.
+	return 0;
+}
+</pre>
+</code>
+</td>
+</tr>
+
+<tr>
+<td>
+<code>
+<pre>int max(int a, int b) {
+	if (a &gt; b)
+		return a;
+	return b;
+}
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>.global max
+max:
+	cmp r0,r1
+	ble returnb
+	// we return r0.  That's already the max.
+	bx lr // so just return
+returnb:
+	movs r0,r1 // return value of r1 in r0
+	bx lr
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>void max(int,int);
+int main(void) {
+	int check = max(12,42);
+	// you can examine check to
+	// tell that the result is 42.
+	return 0;
+}
+</pre>
+</code>
+</td>
+</tr>
+
+<tr>
+<td>
+<code>
+<pre>void zeroptr(int *x) {
+	*x = 0;
+}
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>.global zeroptr
+zeroptr:
+	movs r1,#0 // It's OK to overwrite r1
+	str r1,[r0]
+	bx lr
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>void zeroptr(int *);
+int main(void) {
+	int value = 42;
+	zeroptr(&amp;value);
+	// you can examine value to
+	// check that it is now zero.
+	return 0;
+}
+</pre>
+</code>
+</td>
+</tr>
+
+</tbody></table>
+</p><p>For each translated subroutine, you need only provide the assembly
+language for it, much like is shown in the "Your Translation" column
+in the table above.
+
+<br></p><hr>
+<h2>Academic Honesty Statement [0 ... -10 points]</h2>
+<p>
+By typing my name, below, I hereby certify that the work on
+this homework is my own and that I have not copied the work of any
+other student (past or present) while completing it.
+I understand that if I fail to honor this agreement, I will receive
+a score of zero for the assignment, a one letter drop in my final
+course grade, and be subject to possible disciplinary action.
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="cert" size="80" value="Tzu Yu Chen">
+</td>
+<td>
+<img src="./Homework Assignment 3_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Implement the following C subroutines [12 points]</h2>
+<p>
+
+</p>
+<table>
+<tbody><tr>
+<td>
+<p>
+
+</p>
+<table>
+<tbody><tr>
+<td>
+<br><hr>
+<table><tbody><tr><td>
+<h2>1. twentyone [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 3_files/correct.png">
+</td>
+</tr></tbody></table>
+<p>
+ 
+Translate ("hand compile") the following C function into assembly language.
+<b><code></code></b></p><pre><b><code>// Just return the value 21.
+int twentyone(void) {
+	return 21; // Remember: return value in R0
+}
+</code></b></pre>
+ <p></p>
+</td>
+</tr>
+<tr>
+<td>
+<br><hr>
+<table><tbody><tr><td>
+<h2>2. first [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 3_files/correct.png">
+</td>
+</tr></tbody></table>
+<p>
+ 
+Translate ("hand compile") the following C function into assembly language.
+<b><code></code></b></p><pre><b><code>// Return the single argument passed in.
+int first(int x) { // Remember: first argument is in R0
+	return x;
+}
+</code></b></pre>
+ <p></p>
+</td>
+</tr>
+<tr>
+<td>
+<br><hr>
+<table><tbody><tr><td>
+<h2>3. comp4 [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 3_files/correct.png">
+</td>
+</tr></tbody></table>
+<p>
+ 
+Translate ("hand compile") the following C function into assembly language.
+<b><code></code></b></p><pre><b><code>// Compute an expression for the four arguments passed in.
+int comp4(int a, int b, int c, int d) {
+	return a * b - a * c + a * d;
+}
+</code></b></pre>
+ <p></p>
+</td>
+</tr>
+<tr>
+<td>
+<br><hr>
+<table><tbody><tr><td>
+<h2>4. or_into [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 3_files/correct.png">
+</td>
+</tr></tbody></table>
+<p>
+ 
+Translate ("hand compile") the following C subroutine into assembly language.
+</p><p>
+If you have not seen a pointer in C before, try not to panic here.
+A pointer is just an address, and you know how to load from and
+store to addresses.  If the point is in R0, then you can load its
+value into R2 with the instruction ldr r2,[r0], and you can store
+the value of r2 into that address with str r2,[r0].
+
+<b><code></code></b></p><pre><b><code>// OR the bits of x into the pointed-to-value.
+void or_into(int *ptr, int x) {
+	*ptr = *ptr | x;
+}
+</code></b></pre>
+ <p></p>
+</td>
+</tr>
+<tr>
+<td>
+<br><hr>
+<table><tbody><tr><td>
+<h2>5. getbit [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 3_files/correct.png">
+</td>
+</tr></tbody></table>
+<p>
+ 
+Translate ("hand compile") the following C function into assembly language.
+<b><code></code></b></p><pre><b><code>// Return 1 if bit n of the pointed-to-value is set.  Else return 0.
+int getbit(int *ptr, int n) {
+	// Shift right by n bits, then AND with 1.
+	return (*ptr &gt;&gt; n) &amp; 1;
+}
+</code></b></pre>
+ <p></p>
+</td>
+</tr>
+<tr>
+<td>
+<br><hr>
+<table><tbody><tr><td>
+<h2>6. setbit [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 3_files/correct.png">
+</td>
+</tr></tbody></table>
+<p>
+ 
+Translate ("hand compile") the following C subroutine into assembly language.
+<b><code></code></b></p><pre><b><code>// Set bit n of pointed-to-value to 1.
+void setbit(int *ptr, int n) {
+	// Shift '1' left by n bits, then OR with value.
+	*ptr = *ptr | (1 &lt;&lt; n);
+}
+</code></b></pre>
+ <p></p>
+</td>
+</tr>
+<tr>
+<td>
+<br><hr>
+<table><tbody><tr><td>
+<h2>7. clrbit [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 3_files/correct.png">
+</td>
+</tr></tbody></table>
+<p>
+ 
+Translate ("hand compile") the following C subroutine into assembly language.
+<b><code></code></b></p><pre><b><code>// Clear bit n of the pointed-to-value.
+// Leave the rest of the bits the same!
+void clrbit(int *ptr, int n) {
+	// Shift '1' left by n bits,
+	// invert the shifted 1 &lt;&lt; n,
+	// then AND with value.
+	*ptr = *ptr &amp; ~(1 &lt;&lt; n);
+}
+</code></b></pre>
+ <p></p>
+</td>
+</tr>
+<tr>
+<td>
+<br><hr>
+<table><tbody><tr><td>
+<h2>8. inner/outer [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 3_files/correct.png">
+</td>
+</tr></tbody></table>
+<p>
+ 
+Translate ("hand compile") the following C functions into assembly language.
+Note that you will need to use PUSH/POP for the "outer" function, below.
+You should also push an extra register to save argument 1.  Remember the
+rules: A subroutine is always allowed to modify R0 - R3, and you should
+expect it to do so.  A subroutine must always return with the same values
+for R4 - R7 that it was called with.  Otherwise, the caller may not function
+properly.
+<b><code></code></b></p><pre><b><code>// This function is called by outer().
+int inner(int x) {
+	return x - 4;
+}
+int outer(int x) {
+	return x * inner(x+3) * inner(x+5);
+}
+</code></b></pre>
+ <p></p>
+</td>
+</tr>
+<tr>
+<td>
+<br><hr>
+<table><tbody><tr><td>
+<h2>9. set4 [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 3_files/correct.png">
+</td>
+</tr></tbody></table>
+<p>
+ 
+Translate ("hand compile") the following C subroutine into assembly language.
+(It uses <b>setbit</b>, which you write above .) 
+<b><code></code></b></p><pre><b><code>// Use setbit() to set bit 4 of *ptr.
+void set4(int *ptr) {
+	setbit(ptr, 4);
+}
+</code></b></pre>
+ <p></p>
+</td>
+</tr>
+<tr>
+<td>
+<br><hr>
+<table><tbody><tr><td>
+<h2>10. get6 [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 3_files/correct.png">
+</td>
+</tr></tbody></table>
+<p>
+ 
+Translate ("hand compile") the following C function into assembly language.
+(It uses <b>getbit</b>, which you write above .) 
+<b><code></code></b></p><pre><b><code>// Use getbit() to get bit 6 of *ptr.
+int get6(int *ptr) {
+	return getbit(ptr, 6);
+}
+</code></b></pre>
+ <p></p>
+</td>
+</tr>
+<tr>
+<td>
+<br><hr>
+<table><tbody><tr><td>
+<h2>11. largest_weird [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 3_files/correct.png">
+</td>
+</tr></tbody></table>
+<p>
+ 
+Translate ("hand compile") the following C functions into assembly
+language.  Remember to obey the ABI rules for this and all other
+exercises.  In particular, if largest_weird() changes the values of
+R4-R7 that were set by the caller, it's incorrect.  Also, be sure
+to create two functions for this exercise.  The largest_weird function
+must call the weird function.  It's certainly possible to write
+largest_weird without using two functions, but that's not what we're
+asking for here, and it won't get credit.
+<b><code></code></b></p><pre><b><code>int weird(int x, int y) {
+        return (x*3) &amp; ~(y*5);
+}
+int largest_weird(int x, int y) {
+        // You will need lots of registers to implement this function.
+        // Use PUSH to save R4,R5,R6,R7 along with LR.
+        // Use R4,R5,R6,R7 for a, b, y, and big.
+        // Upon return, POP R4,R5,R6,R7 along with PC.
+        int big = 0;
+        for(int a=x; a &lt;= y; a++)
+                for(int b=a; b &lt;= y; b++) {
+                        int temp = weird(a,b);
+                        if (temp &gt; big)
+                                big = temp;
+                }
+        return big;
+}
+</code></b></pre>
+ <p></p>
+</td>
+</tr>
+<tr>
+<td>
+<br><hr>
+<table><tbody><tr><td>
+<h2>12. mulvec [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 3_files/correct.png">
+</td>
+</tr></tbody></table>
+<p>
+ 
+Translate ("hand compile") the following C function into assembly language.
+This function multiplies one "vector" (b) by a constant (m) and writes
+the result to another vector (a).  Both vectors are of size n.  The sum
+of all the vector entries is returned.  You may not modify the elements
+of b[] because it is declared as "const".  This array may be in flash
+memory, and an attempt to modify it would cause a HardFault.
+<b><code></code></b></p><pre><b><code>int mulvec(int a[], const int b[], int n, int m) {
+        int sum = 0;
+        for(int i=0; i &lt; n; i++) {
+                a[i] = m * b[i];
+                sum += a[i];
+        }
+        return sum;
+}
+</code></b></pre>
+ <p></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+<td>
+<p>
+
+</p>
+<table><tbody><tr><td>
+<textarea readonly="" onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+&#39;	&#39;+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" name="hw3" cols="80" rows="180">.cpu cortex-m0
+.thumb
+.syntax unified
+.fpu softvfp
+.data
+
+.text
+
+.global twentyone
+twentyone:
+	movs r0,#21
+  bx lr
+
+.global first
+first:
+  movs r0, r0
+  bx lr
+
+.global comp4
+comp4:
+  muls r1, r0   //r1 = b * a
+  muls r2, r0   //r2 = c * a
+  muls r3, r0   //r3 = d * a
+  subs r1, r2   //r1 = b*a - c*a
+  adds r1, r3   //r1 = b*a + d*a
+  movs r0, r1   //r0 = r1 //return value
+  bx lr
+
+.global or_into
+or_into:
+  ldr r2, [r0]  //load ptr value into r2
+  orrs r2, r1   //*ptr | x
+  str r2, [r0]  //store value back to *ptr
+  bx lr
+
+.global getbit
+getbit:
+  ldr r2, [r0]
+  lsrs r2, r1
+  movs r1, #1
+  ands r2, r1
+  movs r0, r2
+  
+  bx lr
+
+.global setbit
+setbit:
+  ldr r2, [r0]
+  movs r3, #1
+  lsls r3, r1   
+  orrs r2, r3
+  str r2, [r0]
+  bx lr
+
+.global clrbit
+clrbit:
+  movs r3, #1
+  lsls r3, r1
+  ldr r2, [r0]
+  bics r2, r3
+  str r2, [r0]
+  bx lr
+
+.global inner
+inner:
+  subs r0, #4
+  bx lr
+
+.global outer
+outer: //r0 = x
+  push {lr}
+  movs r1, r0   //both r1 and r0 = x
+  adds r0, #5   //r0 = x + 5
+  bl inner      //returns r0
+  movs r2, r0   //r2 stores return value from inner(x+5)
+  movs r0, r1   //r0 = original x
+  adds r0, #3   //r0 = x+3
+  bl inner
+  movs r3, r0   //r3 stores return value from inner(x+3)
+  muls r2, r3
+  muls r1, r2
+  movs r0, r1
+  pop  {pc}
+
+.global set4
+set4:
+  push {lr}
+  //ldr r2, [r0] //can i just use r0? but r0 is an address, but I cant do ldr r0, [r0]?
+  //movs r0, r2 //confused about this
+  movs r1, #4
+  bl setbit
+  pop {pc}
+
+.global get6
+get6:
+  push {lr}
+  movs r1, #6
+  bl getbit
+  pop {pc}
+
+.global weird
+weird:
+  movs r3, #3
+  muls r0, r3
+  movs r3, #5
+  muls r1, r3
+  bics r0, r1
+  bx lr
+
+.global largest_weird
+largest_weird:
+  push {R4,R5,R6,R7, lr}
+  //a, b, y, big
+  //r0=x, r1 = y
+  movs r7, #0   //big = 0
+  movs r4, r0   //a = x
+  movs r6, r1   //r6 = y
+forloop1:
+  cmp r4, r6    //a&lt;=y
+  bgt done      //if false then done
+  movs r5, r4   //if a&lt;=y, set b=a
+forloop2:
+  cmp r5, r6    //b&lt;=y
+  bgt endloop1
+  movs r0, r4
+  movs r1, r5
+  bl weird
+  movs r2, r0   //temp = weird(a,b)
+if:
+  cmp r2, r7    //temp &gt; big
+  ble endloop2
+  movs r7, r2   //big = temp
+endloop2:
+  adds r5, #1
+  b forloop2
+endloop1:
+  adds r4, #1
+  b forloop1
+done:
+  movs r0, r7
+  pop  {R4-R7, pc}
+
+.global mulvec
+mulvec:
+	push {R4-R7, lr}
+	//r0 = a[], r1= b[], r2=n, r3=m
+	//r4= i*4, r5=addr of a[], r6=i, r7=sum
+	movs r7, #0 //r7 = sum
+	movs r6, #0 //r6 = i counter
+loop:
+	cmp r6, r2
+	bge done		    //exit loop if i&gt;=n
+
+	//ldr r5, [r0]        //r5= array addr //gotta keep r0, r1, r2,r3
+	movs r4, r6         //copy r6 value into r4
+	lsls r4, r4, #2 	//r4 = i*4
+	//ldr r5, [r0,r4] 	//r0 = a[i]
+	ldr r5, [r1, r4]    //r1 = b[i]
+	muls r5, r3			//m*b[i]
+	//movs r0, r3			//r0 = m*b[i]
+	str r5, [r0, r4]       //a[i] = m * b[i]; r4 is free
+	adds r7, r5	        //sum += a[i]; r5 is free
+endloop:
+	adds r6, #1
+	bl loop
+done:
+	movs r0, r7
+	pop {R4,R5,R6,R7, pc}
+	
+	
+// We put this down here just in case
+// you forget to return from a subroutine.
+// If you hit this, you'll know you forgot.
+bkpt
+
+// Because this array is "const", we can
+// put it in the text segment (which is
+// in the Flash ROM.  It cannot be modified.
+// This is an example of a const array that the
+// first few functions might refer to.
+.global global_array
+.align 4
+global_array:
+.word 2, 3, 5, 7, 11, 13, 17, 19, 23, 29</textarea>
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+</tbody></table>
+<p>
+ You can try the code you wrote in the simulator using the
+	link at the bottom of the page.  Basic
+	testcases are built in to the simulator.  When all tests are
+	passed, the numbers
+</p><pre>12 11 10 09 08 07 06 05 04 03 02 01
+</pre>
+	should appear in the
+	upper right area of the Memory Browser.  If any the first
+	ten memory bytes are shown as 'ff', the testcase for that
+	problem failed. <p></p>
+<p>
+ 
+	<font color="red">Remember to copy things back into the textbox
+	if you make modifications to your code in the simulator.
+ </font></p><font color="red">
+<a href="https://engineering.purdue.edu/ece362/submit/?item=hw3&amp;synhtml=sim.html" target="_blank">Save first.  Then click here to try it in the simulator</a>
+
+
+
+</font></form></body></html>

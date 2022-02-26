@@ -1,0 +1,3875 @@
+
+<!-- saved from url=(0054)https://engineering.purdue.edu/ece362/submit/?item=hw2 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+
+
+<title>Homework Assignment 2</title>
+</head>
+<body>
+<h1>Homework Assignment 2</h1>
+<small>
+Due: Fri, 28 Jan 2022 17:30:00 (approximately 28 days ago)
+<br>
+</small>
+[Score: 135 / 150 points possible]
+<br>
+Weight = 1.00
+<form action="https://engineering.purdue.edu/ece362/submit/?item=hw2" method="post" id="form">
+<p>For the following questions, assume that each code segment is
+independent of the others.  Each one can be tried with the simulator or
+System Workbench by adding a global main label to the beginning of the
+code segment and single stepping through the code.
+
+<br></p><hr>
+<h2>Academic Honesty Statement [0 ... -150 points]</h2>
+<p>
+By typing my name, below, I hereby certify that the work on
+this homework is my own and that I have not copied the work of any
+other student (past or present) while completing it.
+I understand that if I fail to honor this agreement, I will receive
+a score of zero for the assignment, a one letter drop in my final
+course grade, and be subject to possible disciplinary action.
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="cert" size="80" value="Tzu Yu Chen">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>(1) Instruction encodings [60 points]</h2>
+<p>
+
+For each ARM Cortext-M0 instruction below, write its instruction encoding.
+For instance, the encoding for the <b><code>MOVS R6,R0</code></b> instruction
+would be <b><code>0x0006</code></b>.  For each instruction, also write a C
+statement to represent the operation it performs in the box below the
+encoding.  For instance, the
+<b><code>MOVS R6,R0</code></b> instruction might be represented as
+<b><code>r6 = r0;</code></b>.  You should omit the terminating semicolon.
+You will need only one C statement to implement each instruction.
+Furthermore, for the purposes of describing the operation,
+treat registers as though they were variables.  You can also assume that
+the following C variable declarations are in place:</p>
+<pre>	signed int r0;
+	signed int r1;
+	signed int r2;
+	signed int r3;
+	signed int r4;
+	signed int r5[1000]; // each element is 4 bytes in size
+	signed short int r6[1000]; // each element is 2 bytes in size
+	signed char r7[1000]; // each element is 1 byte in size
+</pre>
+<p>The array size declaration is important.  It means, for instance,
+that the address for r5[7] is four bytes higher than r5[6].  Take this
+into account with the LDRx and STRx instructions.  Also note that
+the <em>signed</em> load instructions do the natural thing and
+preserve the sign of the loaded 8- or 16-bit value as it is promoted
+to a 32-bit space in a register.  An <em>unsigned</em> load will
+set the extended bits to zero.
+</p>
+<p>
+If you want to disassemble these instructions in System Workbench or
+on the simulator, feel free to do so, but <b>you should be prepared to
+come up with the encoding all on your own simply by looking at the
+<em>ARMv6-M Architecture Reference Manual</em></b>.  That's what you'll
+have to do on the midterm lab practical exam.
+</p><p>
+When recording your answers, use a 4-digit hexadecimal number
+(with no 0x prefix) for the encoding.  Don't get too creative with
+the C statement.  This work will be graded by computer.
+</p><p>
+A few hints:
+</p><p>
+When thinking about the difference between LDRB and LDRBS,
+remember that LDRBS will turn a signed 8-bit integer into a signed 32-bit
+integer---just like C will if you say "r0 = r7[n];".  LDRB will AND the
+value assigned to the register with 0xff to zero off the upper 24 bits.
+Something similar happens with LDRH for the upper 16 bits.  See that
+example?  Pay attention to that.
+</p><p>
+In the LDRSH example below, the remember that C accesses the nth entry
+in an array with arr[n].  Square brackets in ARM Cortex-M0 assembly
+language represent a byte offset.  That's why the LDRSH example below
+divides r3 by 2 for the C description.  Ask a TA for some examples about
+this if you need some help with this concept.
+<!--
+<font color="red">Note that some of the instructions you were asked to
+represent with a C expression do not make any sense.  For instance,
+SUBS r5,#19 is a reasonable instruction, and its operation is clear.
+Nevertheless, r5 is an array, and there is no way to subtract a
+value from an array.  That question, and questions like it, were excluded
+from grading.  Sorry.  We hope you didn't spend too much time on those.
+</font>
+-->
+
+</p>
+<table style="border-width: 1px; border-collapse: collapse">
+<tbody><tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ Question </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Instruction&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ Encoding </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ C statement </p>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ example </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;movs r3,#17</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2311 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>r3 = 17</pre> <p></p>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ example </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;ldrsh r0,[r6,r3]</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 5ef0 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>r0 = r6[r3/2]</pre> <p></p>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ example </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;ldrh r1,[r6,#12]</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 89b1 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>r1 = r6[12/2] &amp; 0x0000ffff</pre> <p></p>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.01 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;negs    r3, r1&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.01e" size="10" value="424b">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.01c" size="50" value="r3 = 0 - r1">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.02 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;muls    r1, r3&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.02e" size="10" value="4359">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.02c" size="50" value="r1 = r1 * r3">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.03 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;negs    r3, r2&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.03e" size="10" value="4253">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.03c" size="50" value="r3 = 0 - r2">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.04 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;bics    r2, r4&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.04e" size="10" value="43a2">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.04c" size="50" value="r2 = r2 &amp; ~r4">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.05 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;eors    r2, r3&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.05e" size="10" value="405a">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.05c" size="50" value="r2 = r2 ^ r3">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.06 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;mvns    r2, r4&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.06e" size="10" value="43e2">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.06c" size="50" value="r2 = ~r4">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.07 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;adds    r4, r0, #5&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.07e" size="10" value="1d44">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.07c" size="50" value="r4 = r0 + 5">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.08 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;uxth    r2, r3&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.08e" size="10" value="b29a">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.08c" size="50" value="r2 = r3 &amp; 0x0000ffff">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.09 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;adds    r1, #8&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.09e" size="10" value="3108">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.09c" size="50" value="r1 = r1 + 8">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.10 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;ands    r3, r1&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.10e" size="10" value="400b">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.10c" size="50" value="r3 = r3 &amp; r1">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.11 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;asrs    r3, r2, #4&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.11e" size="10" value="1113">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.11c" size="50" value="r3 = r2 &gt;&gt; 4">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.12 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;movs    r2, #25&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.12e" size="10" value="2219">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.12c" size="50" value="r2 = 25">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.13 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;lsls    r2, r1, #3&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.13e" size="10" value="00ca">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.13c" size="50" value="r1 = r1 &lt;&lt; 3">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.14 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;subs    r4, #17&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.14e" size="10" value="3c11">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.14c" size="50" value="r4 = r4 - 17">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.15 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;movs    r4, r3&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.15e" size="10" value="001c">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.15c" size="50" value="r4 = r3">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.16 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;ldr     r1, [r5]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.16e" size="10" value="6829">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.16c" size="50" value="r1 =r5[0]">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.17 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;ldr     r1, [r5, #0]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.17e" size="10" value="6829">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.17c" size="50" value="r1=r5[0]">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.18 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;ldr     r1, [r5, #12]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.18e" size="10" value="68e9">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.18c" size="50" value="r1 = r5[3]">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.19 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;str     r1, [r5, #16]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.19e" size="10" value="6129">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.19c" size="50" value="r5[4] = r1">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.20 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;str     r1, [r5, #32]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.20e" size="10" value="6229">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.20c" size="50" value="r5[8]=r1">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.21 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;str     r1, [r5, #60]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.21e" size="10" value="63e9">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.21c" size="50" value="r5[15]=r1">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.22 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;strh    r1, [r6, r0]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.22e" size="10" value="5231">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.22c" size="50" value="r6[r0/2]=r1">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.23 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;ldr     r3, [r5, r2]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.23e" size="10" value="58ab">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.23c" size="50" value="r3=r5[r2/4]">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.24 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;ldrsb   r1, [r7, r0]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.24e" size="10" value="5639">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.24c" size="50" value="r1 = r7[r0] &amp; 0x000000ff">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.25 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;strh    r3, [r6, #34]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.25e" size="10" value="8473">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.25c" size="50" value="r3=r6[17]">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.26 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;ldrh    r2, [r6, r2]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.26e" size="10" value="5ab2">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.26c" size="50" value="r2=r6[r2/2] &amp; 0x000000ff">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.27 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;ldrb    r2, [r7, #5]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.27e" size="10" value="797a">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.27c" size="50" value="r2=r7[5] &amp; 0x000000ff">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.28 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;str     r3, [r5, r1]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.28e" size="10" value="506b">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.28c" size="50" value="r5[r1/4] = r3">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.29 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;ldrsh   r2, [r6, r1]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.29e" size="10" value="5e72">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.29c" size="50" value="r2 = r6[r1/2] &amp; 0x0000ffff">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 1.30 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ </p><pre>&nbsp;&nbsp;strb    r1, [r7, #8]&nbsp;</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.30e" size="10" value="7239">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="1.30c" size="50" value="r7[8] = r1">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><hr>
+<h2>(2) Decoding Instructions [20 points]</h2>
+<p>
+
+For each of the 16-bit hexadecimal numbers below, decode it to the
+corresponding ARM Cortex-M0 "Thumb2" instruction.  Remember that you
+can look at page 84 to decide what to do with the most significant 6
+bits, and then look at the tables on the pages you are referred to.
+</p>
+<p>
+For instance, the hexadecimal value 0x0006 has the binary representation
+0000000000000110.  The top six bits are 000000, which matches the pattern
+00xxxx, so it is a <em>Shift (immediate), add, subtract, move, and
+compare</em> instruction described on page A5-85.
+</p>
+<p>
+Table A5.2.1 on
+page 85 shows a new opcode field which consists of bits 13-9.  For
+this instruction, these are also 00000, which matches the pattern
+000xx indicating that it is a Logical Shift Left "LSL (immedate)"
+instruction described on page A6-150.
+</p>
+<p>
+Section A6.7.35 on page A6-150 lets us interpret the LDL instruction
+as having an imm5 field of 00000, an Rm field of 000, and an Rd field
+of 110.  This represents an instruction of "LSLS R6,R0,#0".  We know
+from lecture that this is also known as a "MOVS R6,R0" instruction.
+</p>
+<p>
+You can, of course, use System Workbench or the simulator to check
+your work or do it entirely for you by writing the words into memory
+with assembler directives like this:
+</p>
+<pre>.global main:
+main:
+    .hword 0x0006
+</pre>
+<p>
+You should feel free to do so, but <b>you should be prepared to
+do the decoding all on your own</b> simply by looking at the
+<em>ARMv6-M Architecture Reference Manual</em>.
+</p>
+<table style="border-width: 1px; border-collapse: collapse">
+<tbody><tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ Question </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ Encoding </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ Instruction </p>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ example </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x0006</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>MOVS R6,R0</pre> <p></p>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.01 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x7c4b</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.01" size="50" value="LDRB r3, [r1, #17]">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.02 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x00ea</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.02" size="50" value="LSLS r2, r5, #3">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.03 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x8293</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.03" size="50" value="STRH r3, [r2, #20]">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.04 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x1277</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.04" size="50" value="ASRS r7, r6, #9">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.05 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x3383</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.05" size="50" value="ADDS r6, #131">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.06 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x1ce5</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.06" size="50" value="ADDS r5, r4, #3">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.07 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x628a</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.07" size="50" value="STR r2, [r1, #40]">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.08 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x245b</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.08" size="50" value="MOVS r4, #91">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.09 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x6c48</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.09" size="50" value="LDR r0, [r1, #68]">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.10 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x1f53</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.10" size="50" value="SUBS r3, r2, #5">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.11 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x4061</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.11" size="50" value="EORS r1, r4">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.12 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x434f</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.12" size="50" value="MULS r7, r1">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.13 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x5959</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.13" size="50" value="LDR r1, [r3,r5]">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.14 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x51ac</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.14" size="50" value="STR r4, [r5, r6]">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.15 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x4323</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.15" size="50" value="ORRS r3, r4">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.16 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x1903</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.16" size="50" value="ADDS r3, r0, r4">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.17 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0xb2da</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.17" size="50" value="UXTB r2, r3">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.18 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x41ea</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.18" size="50" value="RORS r2, r5">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.19 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x46f3</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.19" size="50" value="MOV r11, r14">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ 2.20 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<p>
+ </p><pre>0x4014</pre> <p></p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: center">
+<table cellspacing="0"><tbody><tr><td>
+</td>
+<td>
+<input type="text" readonly="" name="2.20" size="50" value="ANDS r4, r2">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><hr>
+<h2>(3) Flags and Conditional Branches [60 points]</h2>
+<p>
+
+It can be difficult to understand the effects that instructions have on the
+Application Program Status Register (APSR) flags: NZCV.  Luckily, we can
+take a higher-level view of the system by looking at the relationship
+between instructions and the effect that we expect them to have on
+subsequent conditional branches.</p>
+<p>
+Consider the following sequence of instructions:
+</p>
+<pre>.global main
+main:   movs r1, #5
+        movs r0, #0
+        beq  label       // is this branch taken?
+        adds r1, r2, r3
+	bkpt #1 // If we stop here, it means the branch was not taken
+label:  bkpt #2 // If we stop here, it means the branch was taken
+</pre>
+<p>
+The BEQ instruction looks at the APSR's Z flag.  If the Z flag was set by
+the most recent flag-setting operation, BEQ will cause the Program Counter
+(PC) to be set to the address of <b><code>label</code></b>.
+If the Z flag is false (not set), then execution will continue
+with the ADDS instruction and anything else that follows the BEQ.
+</p>
+<p>
+We know that the first instruction, <b><code>MOVS R1,#5</code></b>,
+modifies the flags because it has an 'S' suffix in its mnemonic.
+This instruction is moving a <b>non-zero</b> value into R1, so it <b>clears</b>
+the zero flag of the APSR.  The second instruction also modifies the flags,
+and this time it <b>is</b> a zero, so it <b>sets</b> the Z flag to true.
+Only the most recent operation that updated the Z flag matters; the first
+MOVS instruction is now irrelevant.  Therefore, this code sequence will
+cause the BEQ instruction to jump to <b><code>label</code></b>.  In this
+case, we say that this branch was "taken."
+</p>
+<p>
+If, however, we were to reverse the order of the two MOVS instructions,
+then the BEQ would continue with the ADDS instruction and anything else
+that follows it.  In that case, we would say that the branch was "not
+taken."
+</p>
+<p>
+For the following instruction sequences, look at the Operation section
+of the instruction descriptions in section A6.7, and in Table A6-1
+"Condition Codes" in section A6.3, of the <em>ARMv6-M Architecture
+Reference Manual</em>, and decide if the single conditional branch in
+the sequence is "<b>taken</b>" or "<b>not taken</b>."  There will be
+some questions where there is not enough information to know whether
+the branch is taken or not.  These are situations where you don't
+know the initial flag state and the instructions before the branch
+either do not modify the flags that the branch depends on or do not
+modify the flags at all.  In these cases, write "<b>unknowable</b>."
+If you want to try these sequences on the STM32 or on the simulator,
+feel free to do so, but <b>you should be able to decide what happens
+only by looking at the instructions' Operation description.</b>
+</p>
+<p>
+In the simulator, the values of the NZCV flags are 0000 at startup.
+<font color="red">For the code segments below, you should not assume
+you know what the initial flag values are.</font>
+You should try setting the flags to different values to see what happens.
+For instance, you might want to precede
+each of the code segments with instructions that set them to be non-zero.
+For instance, you can set the Z, C, and V flags using the following two
+instructions:
+<b><code></code></b></p><pre><b><code>ldr r0,=0x80000000
+adds r0,r0,r0
+</code></b></pre>
+<p>
+By adding those instructions to the beginning of a code segment, you
+can initialize the flags to _ZCV.
+</p><p>
+If you want to clear all of the flags, try:
+<b><code></code></b></p><pre><b><code>movs r0,#0
+adds r0,#1
+</code></b></pre>
+<p>
+If you want to set only the N flag try, instead:
+<b><code></code></b></p><pre><b><code>movs r0,#0
+subs r0,#1
+</code></b></pre>
+<p>It is better if you assume all of the initial flag values are unknown.
+Manually trace through the instructions, one at a time, and identify the
+changes to the flags as you go.  Then consider which flags a particular
+branch examines.  If there are cases that cannot be resolved due to
+unknown flag values, then you know the branch outcome is "Unknowable".
+</p><p>
+<b>Examples:</b>
+<table border="1">
+<tbody><tr>
+<td><em>Instruction Sequence</em></td><td>Flags (NZCV)</td><td><em>Branch Outcome</em></td>
+</tr>
+<tr>
+<td>
+<b><code><pre>                NZCV
+                ????
+movs r0, #0     01??
+beq label       01??
+</pre></code></b>
+</td>
+<td style="text-align:right">
+01??&nbsp;
+</td>
+<td><b>taken</b><br>(because we know MOVS set the Z flag)</td>
+</tr>
+<tr>
+<td>
+<b><code><pre>                NZCV
+                ????
+beq label       ????
+</pre></code></b>
+</td>
+<td style="text-align:right">
+????&nbsp;
+</td>
+<td><b>unknowable</b><br>(because we don't know what the Zero flag is)</td>
+</tr>
+<tr>
+<td>
+<b><code><pre>                NZCV
+                ????
+movs r0, #0     01??
+bcc label       01??
+</pre></code></b>
+</td>
+<td style="text-align:right">
+01??&nbsp;
+</td>
+<td><b>unknowable</b><br>(because MOVS does not modify the Carry flag,<br>and we don't know what happened before the MOVS)</td>
+</tr>
+<tr>
+<td>
+<b><code><pre>                NZCV
+                ????
+movs r0, #0     01??
+adds r0, #5     0000
+subs r0, #2     0010
+subs r0, #3     0110
+bne label       0110
+</pre></code></b>
+</td>
+<td style="text-align:right">
+0110&nbsp;
+</td>
+<td><b>not taken</b><br>(because the last SUBS set the Z flag)</td>
+</tr>
+</tbody></table>
+<br>
+<br>
+
+For each of the code segments below, specify what the flag values are
+at the time the particular branch instruction occurs.  Specify them
+in the order NZCV.  Based on that value, say whether the branch is
+taken, not taken, or unknowable.
+
+<br>
+
+</p>
+<table>
+<tbody><tr>
+<td>
+<p>
+ 3.01 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>b label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.01fl" size="6" value="????">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.01" value="taken" checked="">
+taken
+<input type="radio" disabled="" name="3.01" value="not taken">
+not taken
+<input type="radio" disabled="" name="3.01" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.02 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#0
+movs r0,#5
+beq label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.02fl" size="6" value="00??">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.02" value="taken">
+taken
+<input type="radio" disabled="" name="3.02" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.02" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.03 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#0xff
+bmi label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.03fl" size="6" value="00??">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.03" value="taken">
+taken
+<input type="radio" disabled="" name="3.03" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.03" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.04 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#52
+eors r0,r0
+beq label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.04fl" size="6" value="01??">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.04" value="taken" checked="">
+taken
+<input type="radio" disabled="" name="3.04" value="not taken">
+not taken
+<input type="radio" disabled="" name="3.04" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.05 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#0x23
+blo label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.05fl" size="6" value="00??">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.05" value="taken">
+taken
+<input type="radio" disabled="" name="3.05" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.05" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.06 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#5
+bvc label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.06fl" size="6" value="00??">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.06" value="taken">
+taken
+<input type="radio" disabled="" name="3.06" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.06" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.07 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#29
+eors r0,r0
+bmi label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.07fl" size="6" value="01??">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.07" value="taken">
+taken
+<input type="radio" disabled="" name="3.07" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.07" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.08 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#12
+subs r0,#18
+beq label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.08fl" size="6" value="1000">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.08" value="taken">
+taken
+<input type="radio" disabled="" name="3.08" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.08" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.09 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r1,#3
+subs r1,#2
+movs r0,#1
+bhi label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.09fl" size="6" value="00?0">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.09" value="taken" checked="">
+taken
+<input type="radio" disabled="" name="3.09" value="not taken">
+not taken
+<input type="radio" disabled="" name="3.09" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.10 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r1,#1
+movs r0,#1
+bhi label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.10fl" size="6" value="00??">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.10" value="taken">
+taken
+<input type="radio" disabled="" name="3.10" value="not taken">
+not taken
+<input type="radio" disabled="" name="3.10" value="unknowable" checked="">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.11 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>eors r0,r0
+movs r0,#5
+bls label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.11fl" size="6" value="00??">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.11" value="taken">
+taken
+<input type="radio" disabled="" name="3.11" value="not taken">
+not taken
+<input type="radio" disabled="" name="3.11" value="unknowable" checked="">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.12 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#1
+bge label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.12fl" size="6" value="00??">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.12" value="taken">
+taken
+<input type="radio" disabled="" name="3.12" value="not taken">
+not taken
+<input type="radio" disabled="" name="3.12" value="unknowable" checked="">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.13 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#1
+adds r1,r0,#1
+bge label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.13fl" size="6" value="0000">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.13" value="taken" checked="">
+taken
+<input type="radio" disabled="" name="3.13" value="not taken">
+not taken
+<input type="radio" disabled="" name="3.13" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.14 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#0x45
+eors r0,r0
+bgt label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.14fl" size="6" value="01??">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.14" value="taken">
+taken
+<input type="radio" disabled="" name="3.14" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.14" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.15 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>eors r1,r1
+adds r1,#1
+movs r0,#1
+bgt label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.15fl" size="6" value="0000">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.15" value="taken" checked="">
+taken
+<input type="radio" disabled="" name="3.15" value="not taken">
+not taken
+<input type="radio" disabled="" name="3.15" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.16 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r1,#1
+subs r1,#3
+bgt label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.16fl" size="6" value="1000">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.16" value="taken">
+taken
+<input type="radio" disabled="" name="3.16" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.16" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.17 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#23
+orrs r0,r0
+bvc label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.17fl" size="6" value="1000">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.17" value="taken">
+taken
+<input type="radio" disabled="" name="3.17" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.17" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.18 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#9
+adds r0,#8
+bvc label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.18fl" size="6" value="0000">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.18" value="taken" checked="">
+taken
+<input type="radio" disabled="" name="3.18" value="not taken">
+not taken
+<input type="radio" disabled="" name="3.18" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.19 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#43
+subs r0,#14
+blo label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.19fl" size="6" value="0010">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.19" value="taken">
+taken
+<input type="radio" disabled="" name="3.19" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.19" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.20 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>eors r0,r0
+ble label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.20fl" size="6" value="01??">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.20" value="taken" checked="">
+taken
+<input type="radio" disabled="" name="3.20" value="not taken">
+not taken
+<input type="radio" disabled="" name="3.20" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.21 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#73
+ands r0,r0
+ble label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.21fl" size="6" value="00??">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.21" value="taken">
+taken
+<input type="radio" disabled="" name="3.21" value="not taken">
+not taken
+<input type="radio" disabled="" name="3.21" value="unknowable" checked="">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.22 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#73
+adds r0,#0
+ble label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.22fl" size="6" value="0000">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.22" value="taken">
+taken
+<input type="radio" disabled="" name="3.22" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.22" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.23 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>ldr r0,=0xffffff42
+cmp r0,#0x43
+ble label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.23fl" size="6" value="1010">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.23" value="taken" checked="">
+taken
+<input type="radio" disabled="" name="3.23" value="not taken">
+not taken
+<input type="radio" disabled="" name="3.23" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.24 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>ldr r0,=0xffffff42
+cmp r0,#0x43
+bls label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.24fl" size="6" value="1010">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.24" value="taken">
+taken
+<input type="radio" disabled="" name="3.24" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.24" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.25 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#5
+subs r0,#7
+cmp r0,#2
+blt label // Note: not the same as BLS
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.25fl" size="6" value="1010">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.25" value="taken" checked="">
+taken
+<input type="radio" disabled="" name="3.25" value="not taken">
+not taken
+<input type="radio" disabled="" name="3.25" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.26 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#5
+subs r0,#7
+cmp r0,#2
+bls label // Note: not the same as BLT
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.26fl" size="6" value="1010">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.26" value="taken">
+taken
+<input type="radio" disabled="" name="3.26" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.26" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.27 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>eors r0,r0
+adds r3,r0,#2
+subs r0,#2
+cmp  r0,r3
+bhi label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.27fl" size="6" value="1010">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.27" value="taken">
+taken
+<input type="radio" disabled="" name="3.27" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.27" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.28 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#18
+subs r0,#23
+bpl label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.28fl" size="6" value="1000">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.28" value="taken">
+taken
+<input type="radio" disabled="" name="3.28" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.28" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.29 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#7
+adds r1,r0,#4
+subs r0,#5
+cmp  r0,r1
+bgt label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.29fl" size="6" value="1000">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.29" value="taken" checked="">
+taken
+<input type="radio" disabled="" name="3.29" value="not taken">
+not taken
+<input type="radio" disabled="" name="3.29" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 3.30 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>movs r0,#5      // i.e., r0 = 0x00000005
+movs r1,#1
+rors r0,r1      // i.e., r0 = 0x80000002
+lsrs r0,r0,#1   // i.e., r0 = 0x40000001
+tst r0,r1
+bcs label
+             </code></b></pre> <p></p>
+</td>
+<td>
+<table cellspacing="0"><tbody><tr><td>
+NZCV:
+</td>
+<td>
+<input type="text" readonly="" name="3.30fl" size="6" value="000?">
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+</td>
+<td>
+<table><tbody><tr><td>
+</td>
+<td>
+<fieldset>
+<input type="radio" disabled="" name="3.30" value="taken">
+taken
+<input type="radio" disabled="" name="3.30" value="not taken" checked="">
+not taken
+<input type="radio" disabled="" name="3.30" value="unknowable">
+unknowable
+</fieldset>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+</tbody></table>
+<p>
+ Did this section seem meaningless and you're just glad it's
+	over?  It's probably worthwhile going through it one more time
+	to try to understand it better.  Understanding flag outcome is
+	one of the most important concepts in assembly language
+	programming.  The better you understand it, the fewer mistakes
+	you will make when writing programs. </p>
+<br><hr>
+<h2>(4) Selecting branch instructions [10 points]</h2>
+<p>
+
+Now that you perfectly understand flag generation, you are prepared to
+use this knowledge to select the right instruction sequences to implement
+C <em>control flow</em> statements.  For instance, let's say you need
+to implement the following C expression in assembly language:
+<b></b></p><pre><b>	int item;
+	...
+	if (item == 6) {
+		...
+	}
+</b></pre>
+
+You would write an instruction to load the 32-bit value of the "item"
+variable (which is a label, which is the same thing as an address),
+and then check it to see if it is six.  For instance:
+
+<b><pre>	ldr r0,=item
+	ldr r0,[r0]
+	cmp r0,#6
+	bne endif1
+	...
+endif1: ...
+</pre></b>
+
+Remember that you should always pick the opposite kind of branch for
+an 'if' statement, so that it takes the branch to the 'endif' when the
+test fails.
+<p>
+For the tests below, select an appropriate branch instruction to
+implement the 'if' statement.  Pay careful attention to whether
+variables are <em>signed</em> or <em>unsigned</em>.  (An 'int' in C
+is signed by default.)
+
+</p>
+<table>
+<tbody><tr>
+<td>
+<p>
+ 4.01 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>int abc;
+...
+if (abc &lt; 0) {
+...
+}
+</code></b></pre> <p></p>
+</td>
+<td>
+<p>
+
+</p>
+<table style="border: solid; border-width: 1px; text-align: left">
+<tbody><tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>ldr r0,=abc
+ldr r0,[r0]
+cmp r0,#0
+</code></b></pre> <p></p>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<table><tbody><tr><td>
+</td>
+<td>
+<select name="4.01">
+<option value="" disabled=""></option>
+<option value="B endif1" disabled="">B endif1</option>
+<option value="BEQ endif1" disabled="">BEQ endif1</option>
+<option value="BNE endif1" disabled="">BNE endif1</option>
+<option value="BCS endif1" disabled="">BCS endif1</option>
+<option value="BCC endif1" disabled="">BCC endif1</option>
+<option value="BMI endif1" disabled="">BMI endif1</option>
+<option value="BPL endif1" disabled="">BPL endif1</option>
+<option value="BVS endif1" disabled="">BVS endif1</option>
+<option value="BVC endif1" disabled="">BVC endif1</option>
+<option value="BHI endif1" disabled="">BHI endif1</option>
+<option value="BLS endif1" disabled="">BLS endif1</option>
+<option value="BGE endif1" disabled="" selected="">BGE endif1</option>
+<option value="BLT endif1" disabled="">BLT endif1</option>
+<option value="BGT endif1" disabled="">BGT endif1</option>
+<option value="BLE endif1" disabled="">BLE endif1</option>
+</select>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>...
+endif1:</code></b></pre> <p></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 4.02 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>int abc;
+...
+if (abc &gt;= 5) {
+...
+}
+</code></b></pre> <p></p>
+</td>
+<td>
+<p>
+
+</p>
+<table style="border: solid; border-width: 1px; text-align: left">
+<tbody><tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>ldr r0,=abc
+ldr r0,[r0]
+cmp r0,#5
+</code></b></pre> <p></p>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<table><tbody><tr><td>
+</td>
+<td>
+<select name="4.02">
+<option value="" disabled=""></option>
+<option value="B endif1" disabled="">B endif1</option>
+<option value="BEQ endif1" disabled="">BEQ endif1</option>
+<option value="BNE endif1" disabled="">BNE endif1</option>
+<option value="BCS endif1" disabled="">BCS endif1</option>
+<option value="BCC endif1" disabled="">BCC endif1</option>
+<option value="BMI endif1" disabled="">BMI endif1</option>
+<option value="BPL endif1" disabled="">BPL endif1</option>
+<option value="BVS endif1" disabled="">BVS endif1</option>
+<option value="BVC endif1" disabled="">BVC endif1</option>
+<option value="BHI endif1" disabled="">BHI endif1</option>
+<option value="BLS endif1" disabled="">BLS endif1</option>
+<option value="BGE endif1" disabled="">BGE endif1</option>
+<option value="BLT endif1" disabled="" selected="">BLT endif1</option>
+<option value="BGT endif1" disabled="">BGT endif1</option>
+<option value="BLE endif1" disabled="">BLE endif1</option>
+</select>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>...
+endif1:</code></b></pre> <p></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 4.03 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>int abc;
+int xyz;
+...
+if (abc != xyz) {
+...
+}
+</code></b></pre> <p></p>
+</td>
+<td>
+<p>
+
+</p>
+<table style="border: solid; border-width: 1px; text-align: left">
+<tbody><tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>ldr r0,=abc
+ldr r0,[r0]
+ldr r1,=xyz
+ldr r1,[r1]
+cmp r0,r1
+</code></b></pre> <p></p>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<table><tbody><tr><td>
+</td>
+<td>
+<select name="4.03">
+<option value="" disabled=""></option>
+<option value="B endif1" disabled="">B endif1</option>
+<option value="BEQ endif1" disabled="" selected="">BEQ endif1</option>
+<option value="BNE endif1" disabled="">BNE endif1</option>
+<option value="BCS endif1" disabled="">BCS endif1</option>
+<option value="BCC endif1" disabled="">BCC endif1</option>
+<option value="BMI endif1" disabled="">BMI endif1</option>
+<option value="BPL endif1" disabled="">BPL endif1</option>
+<option value="BVS endif1" disabled="">BVS endif1</option>
+<option value="BVC endif1" disabled="">BVC endif1</option>
+<option value="BHI endif1" disabled="">BHI endif1</option>
+<option value="BLS endif1" disabled="">BLS endif1</option>
+<option value="BGE endif1" disabled="">BGE endif1</option>
+<option value="BLT endif1" disabled="">BLT endif1</option>
+<option value="BGT endif1" disabled="">BGT endif1</option>
+<option value="BLE endif1" disabled="">BLE endif1</option>
+</select>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>...
+endif1:</code></b></pre> <p></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 4.04 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>int abc;
+int xyz;
+...
+if (abc &lt;= xyz) {
+...
+}
+</code></b></pre> <p></p>
+</td>
+<td>
+<p>
+
+</p>
+<table style="border: solid; border-width: 1px; text-align: left">
+<tbody><tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>ldr r0,=abc
+ldr r0,[r0]
+ldr r1,=xyz
+ldr r1,[r1]
+cmp r0,r1
+</code></b></pre> <p></p>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<table><tbody><tr><td>
+</td>
+<td>
+<select name="4.04">
+<option value="" disabled=""></option>
+<option value="B endif1" disabled="">B endif1</option>
+<option value="BEQ endif1" disabled="">BEQ endif1</option>
+<option value="BNE endif1" disabled="">BNE endif1</option>
+<option value="BCS endif1" disabled="">BCS endif1</option>
+<option value="BCC endif1" disabled="">BCC endif1</option>
+<option value="BMI endif1" disabled="">BMI endif1</option>
+<option value="BPL endif1" disabled="">BPL endif1</option>
+<option value="BVS endif1" disabled="">BVS endif1</option>
+<option value="BVC endif1" disabled="">BVC endif1</option>
+<option value="BHI endif1" disabled="">BHI endif1</option>
+<option value="BLS endif1" disabled="">BLS endif1</option>
+<option value="BGE endif1" disabled="">BGE endif1</option>
+<option value="BLT endif1" disabled="">BLT endif1</option>
+<option value="BGT endif1" disabled="" selected="">BGT endif1</option>
+<option value="BLE endif1" disabled="">BLE endif1</option>
+</select>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>...
+endif1:</code></b></pre> <p></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 4.05 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>unsigned int val; // NOTE: unsigned
+...
+if (value &gt; 6) {
+...
+}
+</code></b></pre> <p></p>
+</td>
+<td>
+<p>
+
+</p>
+<table style="border: solid; border-width: 1px; text-align: left">
+<tbody><tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>ldr r0,=value
+ldr r0,[r0]
+cmp r0,#6
+</code></b></pre> <p></p>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<table><tbody><tr><td>
+</td>
+<td>
+<select name="4.05">
+<option value="" disabled=""></option>
+<option value="B endif1" disabled="">B endif1</option>
+<option value="BEQ endif1" disabled="">BEQ endif1</option>
+<option value="BNE endif1" disabled="">BNE endif1</option>
+<option value="BCS endif1" disabled="">BCS endif1</option>
+<option value="BCC endif1" disabled="">BCC endif1</option>
+<option value="BMI endif1" disabled="">BMI endif1</option>
+<option value="BPL endif1" disabled="">BPL endif1</option>
+<option value="BVS endif1" disabled="">BVS endif1</option>
+<option value="BVC endif1" disabled="">BVC endif1</option>
+<option value="BHI endif1" disabled="">BHI endif1</option>
+<option value="BLS endif1" disabled="" selected="">BLS endif1</option>
+<option value="BGE endif1" disabled="">BGE endif1</option>
+<option value="BLT endif1" disabled="">BLT endif1</option>
+<option value="BGT endif1" disabled="">BGT endif1</option>
+<option value="BLE endif1" disabled="">BLE endif1</option>
+</select>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>...
+endif1:</code></b></pre> <p></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 4.06 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>unsigned int val; // NOTE: unsigned
+...
+// Note that I use 8 here...
+if (value &gt; 8) {
+...
+}
+</code></b></pre> <p></p>
+</td>
+<td>
+<p>
+
+</p>
+<table style="border: solid; border-width: 1px; text-align: left">
+<tbody><tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>ldr r0,=value
+ldr r0,[r0]
+cmp r0,#9 // ... but I use a 9 here
+</code></b></pre> <p></p>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<table><tbody><tr><td>
+</td>
+<td>
+<select name="4.06">
+<option value="" disabled=""></option>
+<option value="B endif1" disabled="">B endif1</option>
+<option value="BEQ endif1" disabled="">BEQ endif1</option>
+<option value="BNE endif1" disabled="">BNE endif1</option>
+<option value="BCS endif1" disabled="">BCS endif1</option>
+<option value="BCC endif1" disabled="">BCC endif1</option>
+<option value="BMI endif1" disabled="">BMI endif1</option>
+<option value="BPL endif1" disabled="">BPL endif1</option>
+<option value="BVS endif1" disabled="">BVS endif1</option>
+<option value="BVC endif1" disabled="">BVC endif1</option>
+<option value="BHI endif1" disabled="">BHI endif1</option>
+<option value="BLS endif1" disabled="" selected="">BLS endif1</option>
+<option value="BGE endif1" disabled="">BGE endif1</option>
+<option value="BLT endif1" disabled="">BLT endif1</option>
+<option value="BGT endif1" disabled="">BGT endif1</option>
+<option value="BLE endif1" disabled="">BLE endif1</option>
+</select>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/wrong.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>...
+endif1:</code></b></pre> <p></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 4.07 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>int fgh;
+...
+if (6 &gt;= fgh) {
+...
+}
+</code></b></pre> <p></p>
+</td>
+<td>
+<p>
+
+</p>
+<table style="border: solid; border-width: 1px; text-align: left">
+<tbody><tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>ldr r0,=fgh
+ldr r0,[r0]
+cmp r0,#6
+</code></b></pre> <p></p>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<table><tbody><tr><td>
+</td>
+<td>
+<select name="4.07">
+<option value="" disabled=""></option>
+<option value="B endif1" disabled="">B endif1</option>
+<option value="BEQ endif1" disabled="">BEQ endif1</option>
+<option value="BNE endif1" disabled="">BNE endif1</option>
+<option value="BCS endif1" disabled="">BCS endif1</option>
+<option value="BCC endif1" disabled="">BCC endif1</option>
+<option value="BMI endif1" disabled="">BMI endif1</option>
+<option value="BPL endif1" disabled="">BPL endif1</option>
+<option value="BVS endif1" disabled="">BVS endif1</option>
+<option value="BVC endif1" disabled="">BVC endif1</option>
+<option value="BHI endif1" disabled="">BHI endif1</option>
+<option value="BLS endif1" disabled="">BLS endif1</option>
+<option value="BGE endif1" disabled="">BGE endif1</option>
+<option value="BLT endif1" disabled="">BLT endif1</option>
+<option value="BGT endif1" disabled="" selected="">BGT endif1</option>
+<option value="BLE endif1" disabled="">BLE endif1</option>
+</select>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>...
+endif1:</code></b></pre> <p></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 4.08 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>unsigned int jkl;
+...
+if (6 &lt; jkl) {
+...
+}
+</code></b></pre> <p></p>
+</td>
+<td>
+<p>
+
+</p>
+<table style="border: solid; border-width: 1px; text-align: left">
+<tbody><tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>ldr r0,=jkl
+ldr r0,[r0]
+cmp r0,#6
+</code></b></pre> <p></p>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<table><tbody><tr><td>
+</td>
+<td>
+<select name="4.08">
+<option value="" disabled=""></option>
+<option value="B endif1" disabled="">B endif1</option>
+<option value="BEQ endif1" disabled="">BEQ endif1</option>
+<option value="BNE endif1" disabled="">BNE endif1</option>
+<option value="BCS endif1" disabled="">BCS endif1</option>
+<option value="BCC endif1" disabled="">BCC endif1</option>
+<option value="BMI endif1" disabled="">BMI endif1</option>
+<option value="BPL endif1" disabled="">BPL endif1</option>
+<option value="BVS endif1" disabled="">BVS endif1</option>
+<option value="BVC endif1" disabled="">BVC endif1</option>
+<option value="BHI endif1" disabled="">BHI endif1</option>
+<option value="BLS endif1" disabled="" selected="">BLS endif1</option>
+<option value="BGE endif1" disabled="">BGE endif1</option>
+<option value="BLT endif1" disabled="">BLT endif1</option>
+<option value="BGT endif1" disabled="">BGT endif1</option>
+<option value="BLE endif1" disabled="">BLE endif1</option>
+</select>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>...
+endif1:</code></b></pre> <p></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 4.09 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>unsigned int topbit;
+...
+// How can you tell if the leftmost bit is set?
+if ( topbit &amp; 0x80000000 ) {
+...
+}
+</code></b></pre> <p></p>
+</td>
+<td>
+<p>
+
+</p>
+<table style="border: solid; border-width: 1px; text-align: left">
+<tbody><tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>ldr  r0,=topbit
+ldr  r0,[r0]
+lsls r0,r0,#1
+</code></b></pre> <p></p>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<table><tbody><tr><td>
+</td>
+<td>
+<select name="4.09">
+<option value="" disabled=""></option>
+<option value="B endif1" disabled="">B endif1</option>
+<option value="BEQ endif1" disabled="">BEQ endif1</option>
+<option value="BNE endif1" disabled="">BNE endif1</option>
+<option value="BCS endif1" disabled="">BCS endif1</option>
+<option value="BCC endif1" disabled="" selected="">BCC endif1</option>
+<option value="BMI endif1" disabled="">BMI endif1</option>
+<option value="BPL endif1" disabled="">BPL endif1</option>
+<option value="BVS endif1" disabled="">BVS endif1</option>
+<option value="BVC endif1" disabled="">BVC endif1</option>
+<option value="BHI endif1" disabled="">BHI endif1</option>
+<option value="BLS endif1" disabled="">BLS endif1</option>
+<option value="BGE endif1" disabled="">BGE endif1</option>
+<option value="BLT endif1" disabled="">BLT endif1</option>
+<option value="BGT endif1" disabled="">BGT endif1</option>
+<option value="BLE endif1" disabled="">BLE endif1</option>
+</select>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>...
+endif1:</code></b></pre> <p></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td>
+<p>
+ 4.10 </p>
+</td>
+<td style="border: solid; border-width: 1px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>unsigned int bits;
+...
+// Is bit 6 set?
+if ( (bits &amp; (1&lt;&lt;6)) != 0) {
+...
+}
+</code></b></pre> <p></p>
+</td>
+<td>
+<p>
+
+</p>
+<table style="border: solid; border-width: 1px; text-align: left">
+<tbody><tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>ldr  r0,=bits
+ldr  r0,[r0]
+movs r1,#64
+tst  r0,r1
+</code></b></pre> <p></p>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<table><tbody><tr><td>
+</td>
+<td>
+<select name="4.10">
+<option value="" disabled=""></option>
+<option value="B endif1" disabled="">B endif1</option>
+<option value="BEQ endif1" disabled="" selected="">BEQ endif1</option>
+<option value="BNE endif1" disabled="">BNE endif1</option>
+<option value="BCS endif1" disabled="">BCS endif1</option>
+<option value="BCC endif1" disabled="">BCC endif1</option>
+<option value="BMI endif1" disabled="">BMI endif1</option>
+<option value="BPL endif1" disabled="">BPL endif1</option>
+<option value="BVS endif1" disabled="">BVS endif1</option>
+<option value="BVC endif1" disabled="">BVC endif1</option>
+<option value="BHI endif1" disabled="">BHI endif1</option>
+<option value="BLS endif1" disabled="">BLS endif1</option>
+<option value="BGE endif1" disabled="">BGE endif1</option>
+<option value="BLT endif1" disabled="">BLT endif1</option>
+<option value="BGT endif1" disabled="">BGT endif1</option>
+<option value="BLE endif1" disabled="">BLE endif1</option>
+</select>
+</td>
+<td>
+<img src="./Homework Assignment 2_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+</td>
+</tr>
+<tr>
+<td style="border-width: 0px; text-align: left">
+<p>
+ <b><code></code></b></p><pre><b><code>...
+endif1:</code></b></pre> <p></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</form>
+
+
+</body></html>

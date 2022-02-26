@@ -1,0 +1,947 @@
+
+<!-- saved from url=(0054)https://engineering.purdue.edu/ece362/submit/?item=hw4 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+
+
+<title>Homework Assignment 4</title>
+</head>
+<body>
+<h1>Homework Assignment 4</h1>
+<small>
+Due: Fri, 11 Feb 2022 17:30:00 (approximately 14 days ago)
+<br>
+</small>
+[Score: 6 / 10 points possible]
+<br>
+Weight = 1.00
+<form action="https://engineering.purdue.edu/ece362/submit/?item=hw4" method="post" id="form">
+<p>The goal of this homework is translate more complicated C
+functions and subroutines that contain stack-allocated data into ARM
+Cortex-M0 assembly language.  You will also experiment with functions
+that have more than four arguments.  This requires some additional
+understanding of how the stack works as well as how to reserve and
+free space on the stack.  One of the easiest ways to interact with
+a microprocessor is using a <em>serial port</em>.  This time, we give
+you some initialization code (stdio.s) that you can use to configure
+a serial port of the STM32.  Connect the USB-to-serial adapter to
+your microcontroller as you did in labs 0 - 4.
+Remember that detailed instructions on how to use serial communication can be
+found on
+<a target="_blank" href="https://engineering.purdue.edu/ece362/refs/ftdi-serial/">the serial
+port setup page</a>.
+
+</p><p>
+The simulator won't do you a bit of good for this assignment
+since we don't have a serial port or terminal emulator for it.
+
+
+</p><h2>More than four arguments</h2>
+<p>
+You've had much experience using subroutines that take at most four
+arguments that are passed in R0 - R3.  Subroutines with more than four
+arguments are still called with the first four arguments in R0 - R3, and
+the excess arguments are passed on the stack.  For example, consider
+the following function that accepts five arguments, and a main function
+that calls it:
+
+<table border="1">
+<tbody><tr>
+<td>Example</td><td>Assembly Translation</td><td>Call it like this:</td>
+</tr>
+
+<tr>
+<td>
+<code>
+<pre>int addfive(int a, int b, int c, int d, int e)
+{
+	return a + b + c + d + e;
+}
+
+int main() {
+	addfive(2,4,6,8,10);
+}
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>.global addfive
+addfive:
+	adds r0, r1       // a += b
+	adds r0, r2       // a += c
+	adds r0, r3       // a += d
+        ldr  r1, [sp,#0]  // Load e from the stack.
+	adds r0, r1       // a += e
+	bx lr             // Return
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>.global main
+main:
+	movs r0,#10    // Argument 5 is 10
+	sub  sp,#4     // Allocate 4 bytes on stack.
+	str r0,[sp,#0] // Store 5 on the stack.
+        movs r0,#2     // Argument 1 is 2
+        movs r1,#4     // Argument 2 is 4
+        movs r2,#6     // Argument 3 is 6
+        movs r3,#8     // Argument 4 is 8
+	bl addfive     // Call addfive()
+	// <b>IMPORTANT:</b> Deallocate 4 bytes from stack.
+	add  sp,#4
+	wfi
+</pre>
+</code>
+</td>
+</tr>
+</tbody></table>
+
+</p><p>You know that PUSH and POP make the stack grow downward and shrink
+upward, respectively.  The amount of the change is proportional to
+the number of registers saved and restored---four bytes per register.
+We can do the same with subroutines, but must do so with one
+rule: Any called subroutine must restore the stack to the same it was
+when it was called.  Similarly, the caller may allocate space on the
+stack before calling a function as it did in the example above.
+</p><p>This manner of passing more than four arguments is completely
+compatible with saving and restoring registers as well.  We only
+need to keep track of how many additional space is allocated on the
+stack with the saved registers.  For example, we could rewrite the
+example, above, with PUSH and POP, and we can (uselessly) save R4 -- R7:
+
+<table border="1">
+<tbody><tr>
+<td>Example</td><td>Assembly Translation</td><td>Call it like this:</td>
+</tr>
+
+<tr>
+<td>
+<code>
+<pre>int addfive(int a, int b, int c, int d, int e)
+{
+	return a + b + c + d + e;
+}
+
+int main() {
+	addfive(2,4,6,8,10);
+}
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>.global addfive
+addfive:
+	push {r4-r7,lr}
+	adds r0, r1       // a += b
+	adds r0, r2       // a += c
+	adds r0, r3       // a += d
+        ldr  r1, [sp,#20] // Load e from the stack.
+	adds r0, r1       // a += e
+	pop  {r4-r7,pc}   // Return
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>.global main
+main:
+	movs r0,#10    // Argument 5 is 10
+	sub  sp,#4     // Allocate 4 bytes on stack.
+	str r0,[sp,#0] // Store 5 on the stack.
+        movs r0,#2     // Argument 1 is 2
+        movs r1,#4     // Argument 2 is 4
+        movs r2,#6     // Argument 3 is 6
+        movs r3,#8     // Argument 4 is 8
+	bl addfive     // Call addfive()
+	// <b>IMPORTANT:</b> Deallocate 4 bytes from stack.
+	add  sp,#4
+	wfi
+</pre>
+</code>
+</td>
+</tr>
+</tbody></table>
+
+</p><h2>Allocating space on the stack for local variables</h2>
+<p>A caller allocates space on the stack for extra arguments.  A subroutine
+can allocate space on the stack for a <em>local variable</em> such as an
+array.  To do so, we need only keep track of how much space was allocated
+and deallocate it before returning.  For example, consider the following
+example:
+
+<table border="1">
+<tbody><tr>
+<td>Example</td><td>Assembly Translation</td><td>Call it like this:</td>
+</tr>
+
+<tr>
+<td>
+<code>
+<pre>int addfive(int a, int b, int c, int d, int e)
+{
+	int x;
+	int sum = 0;
+	int array[100];
+	for(x=0; x &lt; 100; x++)
+		array[x] = x;
+	for(x=a; x &lt;= b; x++)
+		sum += array[x];
+	sum += a + b + c + d + e;
+	return sum;
+}
+
+int main() {
+	addfive(2,4,6,8,10);
+}
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>.global addfive
+addfive:
+	push {r4-r7,lr}
+	sub  sp,#400      // Allocate 100 integers
+	mov  r7,sp        // R7 is the beginning of "array"
+	movs r5,#0        // Let R5 be "sum"
+	movs r4,#0        // Let R4 be "x"
+for1:
+	cmp  r4,#100
+	beq done1
+	lsls r6,r4,#2     // R6 is 4*x
+	str  r4,[r7,r6]   // array[x] = x
+	adds r4,#1        // x++
+	b for1
+done1:
+	movs r4, r0       // x = a
+for2:
+	cmp  r4, r1       // x &lt;= b?
+	bgt done2
+	lsls r6,r4,#2     // r6 = r4 * 4
+	ldr  r6,[r7,r6]   // r6 = array[x]
+	adds r5,r6        // sum += array[x]
+	adds r4,#1        // x++
+	b for2
+done2:
+	adds r5, r0       // sum += a
+	adds r5, r1       // sum += b
+	adds r5, r2       // sum += c
+	adds r5, r3       // sum += d
+        ldr  r1, [sp,#420] // Load e from the stack.
+	adds r5, r1       // a += e
+	movs r0, r5       // Want to return value in r5
+	add  sp,#400      // Deallocate 100 integers
+	pop  {r4-r7,pc}   // Return
+</pre>
+</code>
+</td>
+<td>
+<code>
+<pre>.global main
+main:
+	movs r0,#10    // Argument 5 is 10
+	sub  sp,#4     // Allocate 4 bytes on stack.
+	str r0,[sp,#0] // Store 5 on the stack.
+        movs r0,#2     // Argument 1 is 2
+        movs r1,#4     // Argument 2 is 4
+        movs r2,#6     // Argument 3 is 6
+        movs r3,#8     // Argument 4 is 8
+	bl addfive     // Call addfive()
+	// <b>IMPORTANT:</b> Deallocate 4 bytes from stack.
+	add  sp,#4
+	wfi
+</pre>
+</code>
+</td>
+</tr>
+</tbody></table>
+
+</p><p>One important thing to keep in mind with stack allocation is that
+the SP register can only be incremented or decremented by 4.  If you
+wanted to make space for an array of characters such as
+<b><code>char buffer[13];</code></b> then you would need to
+round <b>up</b> the size of the allocation to <b>16</b>.  The fundamental
+reason for this is that the lower two bits of the SP register are always
+zero.  The special SUB and ADD instructions that work with SP also only
+work with values divisible by four.
+
+</p><h2>Standard I/O on the STM32</h2>
+<p>One of the best reasons to use the serial port is that the STM32
+Standard Peripheral firmware allows you to use it with the C Standard I/O
+library calls.  The stdio.s functions set these up to work with the
+serial port.  As you know, one of the most common C functions to call
+is <b><code>printf()</code></b>.  Now, we can call it in assembly
+language.  For instance:
+
+<code>
+</code></p><pre><code>.global main
+main:
+	bl serial_init
+	ldr r0,=greeting
+	bl printf
+	wfi
+greeting:
+	.string "Hello, World.\n"
+	.balign 2 // Align anything after this.
+</code></pre><code>
+</code>
+
+<p>
+Of course, the primary reason we use <b><code>printf()</code></b> is so
+that we can print the values of variables in a formatted manner.  The
+firmware for the STM32 is no less capable:
+
+<code>
+</code></p><pre><code>.global main
+main:
+	bl serial_init
+	ldr r0,=format
+	movs r1,#34
+	ldr r2,=0xdecafbad
+	bl printf
+	wfi
+format:
+	.string "The value of x=%03d.  Beverage preference is 0x%08x!\n"
+	.balign 2
+</code></pre><code>
+</code>
+
+<p>
+Each of the following exercises are independent of the others, but you
+should write and test all of your functions in a single .s file in System
+Workbench.  A code skeleton has been provided for you in the
+<b><code>hw4.s</code></b> file.
+These subroutines will be called by a C program, so you should
+<b>definitely</b> be sure that you don't overwrite R4 - R11 without
+saving them first.  Each subroutine should be prefaced with a
+<em>.global subroutine_name</em> to make it visible to other modules.
+An example C that calls each function is provided for you in the
+<b><code>main.c</code></b> file.  This time, when you are done, you can
+submit the entire <b><code>hw4.s</code></b> file that contains all of your
+subroutines.
+</p><p>
+You should assume, for each subroutine, that <b><code>serial_init</code></b>
+has already been called for you by <b><code>main()</code></b>.
+You don't have to do that in your code.
+
+<br></p><hr>
+<table><tbody><tr><td>
+<h2>Q1: hello [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 4_files/correct.png">
+</td>
+</tr></tbody></table>
+
+<p>Translate ("hand compile") the following C function into assembly language.
+First, let's just make sure that Standard I/O is working and you have
+your serial port wired correctly.  What we expect to see here is an
+assembly language subroutine that sets up the first and second
+arguments as strings and does a <b><code>bl printf</code></b>.
+
+</p><p>When you implement this, you should put the <b><code>login</code></b>
+string, as well as the format string (the first argument to printf),
+in the .text segment.  Be sure to put a .balign 2 between any string and any
+assembly language instructions.  Character strings can start on any address
+and have any length, but each instruction must reside at an address
+that is evenly divisible by 2.
+
+<b><code></code></b></p><pre><b><code>const char login[] = "xyz";
+void hello(void) {
+    printf("Hello, %s!\n", login);  // Here, printf is given two arguments
+}
+</code></b></pre>
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q2: showsub2 [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 4_files/wrong.png">
+</td>
+</tr></tbody></table>
+
+<p>Translate ("hand compile") the following C function into assembly language.
+More difficult this time.  The first argument given to printf() is the string
+with the format statements.  The second argument will be the value of the 'a'
+variable (which was passed in as argument 1).  The fourth argument will be
+the difference of the 'a' and 'b' variables.  Make sure that the spacing in the
+format string exactly the way it is presented below.
+<b><code></code></b></p><pre><b><code>void showsub2(int a, int b)
+{
+    printf("%d - %d = %d\n", a, b, a-b); // Here, printf is given four args
+}
+</code></b></pre>
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q3: showsub3 [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 4_files/wrong.png">
+</td>
+</tr></tbody></table>
+
+<p>Translate ("hand compile") the following C function into assembly language.
+Since there are five arguments, you'll need to put one of them in stack
+memory.
+<b><code></code></b></p><pre><b><code>void showsub3(int a, int b, int c)
+{
+    printf("%d - %d - %d = %d\n", a, b, c, a-b-c); // five args
+}
+</code></b></pre>
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q4: listing [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 4_files/correct.png">
+</td>
+</tr></tbody></table>
+
+<p>Translate ("hand compile") the following C function into assembly language.
+<b><code></code></b></p><pre><b><code>void listing(const char *school, int course, const char *verb,
+             int enrollment, const char *season, int year)
+{
+    // You need to allocate space on the stack to hold some of the
+    // seven parameters to printf().  Then move the arguments around
+    // to call printf() with the proper arguments.
+    printf("%s %05d %s %d students in %s, %d\n",
+           school, course, verb, enrollment, season, year);
+}
+</code></b></pre>
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q5: trivial [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 4_files/correct.png">
+</td>
+</tr></tbody></table>
+
+<p>Translate ("hand compile") the following C function into assembly language.
+This function requires you to allocate a 100-word on the stack.
+<b><code></code></b></p><pre><b><code>int trivial(unsigned int n)
+{
+    int tmp[100]; // a stack-allocated array of 100 words
+    for(int x=0; x &lt; sizeof tmp / sizeof tmp[0]; x += 1)
+        tmp[x] = x+1;
+    if (n &gt;= sizeof tmp / sizeof tmp[0])
+        n = sizeof tmp / sizeof tmp[0] - 1;
+    return tmp[n];
+}
+</code></b></pre>
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q6: depth [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 4_files/correct.png">
+</td>
+</tr></tbody></table>
+
+<p>Translate ("hand compile") the following C function into assembly language.
+The <b><code>depth()</code></b> subroutine is an example of a <i>recursive</i>
+function.  It calls itself.  Although it is possible to create a version
+of this function that is not recursive, we want you to create a faithful
+recursive assembly language translation.
+</p><p>There are two important things that must be done when making a
+recursive function:
+</p><ul>
+<li>There must be a decision mechanism that stops the recursion from
+going on forever.  Here, the first argument given to depth() is decremented
+by one each time it calls itself.  When it is called with a zero, it
+returns immediately without making further calls to itself.
+</li><li>Since registers like R0 may be modified by each call to a recursive
+function, it is important to save the values still needed after the call
+returns.  For instance, in the call below, R0 is replaced by the return
+value of each recursive invocation.  It is also replaced by the call to
+<b><code>strlen()</code></b>.  It is important to save R0, which is the
+<b><code>x</code></b> argument value.  One way of saving it is to put it
+in a high register such as R4 and be sure to push/pop it on each invocation.
+Another way is to allocate space on the stack and store it there.
+</li></ul>
+<b><code><pre>int depth(int x, const char *s)
+{
+    int len = strlen(s);
+    if (x == 0)
+        return len;
+    puts(s);
+    return len + depth(x-1, s);
+}
+</pre></code></b>
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q7: collatz [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 4_files/correct.png">
+</td>
+</tr></tbody></table>
+
+<p>Translate ("hand compile") the following C function into assembly language.
+This function counts the steps of the
+<a href="https://en.wikipedia.org/wiki/Collatz_conjecture" target="_blank">Collatz
+Conjecture</a>.  This famous problem has many other names.  It is
+impossible to prove a closed-form solution, but it is easy to compute.
+Don't call this with zero.
+<b><code></code></b></p><pre><b><code>unsigned int collatz(unsigned int n) {
+    if (n == 1)
+        return 0;
+    if ((n &amp; 1) == 0)
+        return 1 + collatz(n/2);
+    return 1 + collatz(3*n+1);
+}
+</code></b></pre>
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q8: permute [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 4_files/wrong.png">
+</td>
+</tr></tbody></table>
+
+<p>Translate ("hand compile") the following C function into assembly language.
+This is difficult because you must store two of the arguments on the stack,
+and it is recursive, so the stack is always growing.
+<b><code></code></b></p><pre><b><code>int permute(int a, int b, int c, int d, int e, int f) {
+    if (a &lt;= 0)
+        return f + e + d + c + b + a;
+    return permute(f-1,a,b,c,d,e) + 1;
+}
+</code></b></pre>
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q9: bizarre [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 4_files/correct.png">
+</td>
+</tr></tbody></table>
+
+<p>Translate ("hand compile") the following C function into assembly language.
+Here, a pointer to a function is being
+passed into <b><code>qsort()</code></b>.  The <b><code>qsort()</code></b>
+function exists in the standard library -- like <b><code>printf()</code></b>.
+It sorts an array of n entries, each of which are m bytes in size, given
+a <i>comparison function</i>
+That means that <b><code>qsort()</code></b> will call it using a
+<b><code>bx</code></b> instruction at some point.  The address must be
+an odd number so that it is regarded as Thumb code.
+<b><code></code></b></p><pre><b><code>int compare(const void *a, const void *b) {
+    return *(int*)a - *(int*)b;
+}
+int bizarre(int base, int nth) {
+    int array[200];
+    int x;
+    for(x=0; x &lt; 200; x++)
+        array[x] = ((base+x+1) * 255) &amp; 0xff;
+    qsort(array, 200, 4, compare);
+    return array[nth];
+}
+</code></b></pre>
+<p><b>Hint:</b> Here's the <b><code>compare()</code></b> function for you:
+</p><pre>.type compare, %function  // You know why you need this line, right?
+compare:
+    ldr  r0,[r0]
+    ldr  r1,[r1]
+    subs r0,r1
+    bx lr
+</pre>
+
+<br><hr>
+<table><tbody><tr><td>
+<h2>Q10: easy [1 point]</h2>
+</td>
+<td>
+<img src="./Homework Assignment 4_files/wrong.png">
+</td>
+</tr></tbody></table>
+
+<p>Translate ("hand compile") the following C function into assembly language.
+This subroutine is easy.  That's it's name.  Break it down into its
+components, and implement one piece at a time.
+</p><p>It's not really that difficult.  It's just tedious, and
+very good practice.
+<b><code></code></b></p><pre><b><code>int easy(int a, int b, int shift, int mask, int skip)
+{
+    int save[64];
+    int result = 0;
+    save[0] = 1;
+    for(int x=1; x &lt; sizeof save / sizeof save[0]; x += 1)
+        save[x] = (save[x-1] ^ (x &amp; mask)) &lt;&lt; shift;
+    for(int x=a; x!=b; x = (x * 5 + skip) &amp; 63)
+        result ^= save[x];
+    return result;
+} 
+</code></b></pre>
+
+<br><hr>
+<h2>Academic Honesty Statement [0 ... -10 points]</h2>
+<p>
+By typing my name, below, I hereby certify that the work on
+this homework is my own and that I have not copied the work of any
+other student (past or present) while completing it.
+I understand that if I fail to honor this agreement, I will receive
+a score of zero for the assignment, a one letter drop in my final
+course grade, and be subject to possible disciplinary action.
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="cert" size="80" value="Tzu Yu Chen">
+</td>
+<td>
+<img src="./Homework Assignment 4_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Your hw4.s file</h2>
+<p>
+
+Turn in your hw4.s file here.
+
+</p>
+<table><tbody><tr><td>
+<textarea readonly="" onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+&#39;	&#39;+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" name="code" cols="80" rows="100">.cpu cortex-m0
+.thumb
+.syntax unified
+.fpu softvfp
+
+.global login
+login: .string "chen3633"
+hello_str: .string "Hello, %s!\n"
+.balign 2
+
+//step1
+.global hello
+hello:
+	push {lr}
+	ldr r0, =hello_str
+	ldr r1, =login
+	bl printf
+	pop  {pc}
+
+//step2
+.global showsub2
+showsub2:
+	push {lr}
+	movs r3, r0 					//move a into r3 //free r0
+	movs r2, r1 					//move b into r2 //free r1
+	movs r1, r3 					//move a into r1 //free r3
+	muls r3, r2 				//move a*b into r3
+	ldr r0, =showsub2_str 		//load string into r0
+	bl printf
+	pop  {pc}
+showsub2_str:
+	.string "%d - %d = %d\n"
+	.balign  2
+
+// Add the rest of your subroutines below
+//step3
+.global showsub3
+showsub3:
+	push {r4-r7, lr}
+	sub sp, #4 					//allocate space for 1 integer
+	str r4, [sp, #0]			//store r4 onto stack
+	movs r3, r2 				//move c into r3 //free r2
+	movs r2, r1 				//move b into r2 //free r1
+	movs r1, r0 				//move a into r1 //free r0
+	ldr r0, =showsub3_str 		//load string into r0
+	subs r4, r2, r3 			//r4 = b-c
+	movs r5, r1 				//r5 = a
+	subs r5, r5, r4 			//r5 = a-b-c
+	movs r4, r5 				//r4 = a-b-c
+
+	bl printf
+	add sp, #4						//deallocate space for1 integer
+	pop {r4-r7, pc}
+showsub3_str:
+	.string "%d - %d 0 %d = %d\n"
+	.balign 2
+
+//step4
+.global listing
+listing:
+	push {r4-r7, lr}
+	//input args: r0=*school, r1=course,r2=*verb,r3=enrollment,r4=*season, r5=year
+	//for printf: r1 = school, r2=course, r3=verb, r4=enrollment, r5=season, r6=year
+	ldr r4, [sp, #20]		//loading r4 of input to stack
+	ldr r5, [sp, #24]		//loading r5 of input to stack
+	sub sp, #12				//allocate space for 3 extra arguments
+	str r3, [sp, #0]		//storing r3 of input to stack
+	str r4, [sp, #4]		//storing r4 of input to stack
+	str r5, [sp,#8]			//storing r5 of input to stack
+	movs r3, r2
+	movs r2, r1
+	movs r1, r0
+	ldr r0, =listing_str	//load string into r0
+	bl printf				//call printf
+	add sp, #12
+	pop {r4-r7, pc}
+listing_str:
+	.string "%s %05d %s %d students in %s, %d\n"
+	.balign 2
+
+//step5
+.global trivial
+trivial:
+	push {r4-r7, lr}
+	sub sp, #400
+	mov r7, sp				//r7 is start of array
+	movs r6, #0				//r6: x=0
+loop5:
+	movs r5, #100			//sizeof tmp/sizeof tmp[0]
+	cmp r6, r5				//x &lt; sizeof tmp/sizeoftemp[0]
+	bge if5
+
+	lsls r5, r6, #2		//r5 is 4*x
+	adds r3, r6, #1		//r3 = x+1
+	str r3, [r7, r5]	//tmp[x] = x+1
+	adds r6, #1				//x += 1
+	bl loop5
+if5:
+	movs r5, #100			//r5 = sizeof tmp / sizeof tmp[0]
+	cmp r0,r5					//n &gt;= sizeof tmp / sizeof tmp[0]
+	blt returntrivial
+
+	subs r0, r5, #1		//r0 = n = sizeof tmp / sizeof tmp[0] - 1
+
+returntrivial:
+	lsls r0, #2
+	ldr r0, [r7,r0]		//loading tmp[n] into r0
+	//str r0, [r7, r0]	//storing n? in tmp[n] //this isnt right bruh
+	//movs r0, r7
+	add sp, #400
+	pop {r4-r7, pc}
+
+//step6
+.global depth
+depth:
+	push {r4-r7,lr}
+	//r0 is x r1 is *s
+	movs r7, r0			//save original value of x into r7
+	movs r5, r1			//save original value of s into r5
+	movs r0, r5			//move s into r0 for function call
+	bl strlen			//r0 = strlen(s)
+	cmp r7, #0			//if (x == 0)
+	bne callputs		//false, go to callputs
+	bl returnlen		//true, return len
+callputs:
+	movs r6, r0			//move len into r6
+	movs r0, r5			//move s into r0
+	bl puts				//puts(s)
+returnrecursive:
+	movs r1, r5			//move s into arg2
+	subs r0, r7, #1		//r0 = x-1
+	bl depth			// goes back to depth, r0 is return value
+	adds r0,r6 			//return len+depth(x-1,s)
+returnlen:
+	pop {r4-r7,pc}
+
+//step7
+.global collatz
+collatz:
+	push {r4-r7, lr}
+	movs r7, r0			//store original value of n in r7
+if1:
+	cmp r7, #1			//n == 1 ?
+	bne if2
+	movs r0, #0
+	bl done7
+
+//go to if2 only if if1 is false. if if1 is true then return and exit function
+if2:
+	movs r1, #1			//r1 = 1
+	ands r0, r1			//r0 = n &amp; 1
+	cmp r0, #0			//(n &amp; 1) == 0 ?
+	bne returncollatz			//go to return if if2 is false
+	movs r6, r7
+	lsrs r6,#1			//div by 2 so right shift by 1 //n/2
+	movs r0, r6
+	bl collatz			//collatz(n/2)
+	adds r0, #1			//return 1+collatz(n/2)
+	bl done7
+//go to return only if if1 and if2 are both false
+returncollatz:
+	movs r5, #3
+	movs r6, r7			//r6 = n
+	muls r6, r5			//r6 = n*3
+	adds r6, #1			//r6 = 3*n+1
+	movs r0, r6
+	bl collatz			//collatz(3*n+1)
+	//do this
+	//movs r7, r0
+	//adds r0, r7, #1
+	//or this?
+	adds r0, #1		//r0 = 1 + collatz(3*n+1)
+done7:
+	pop  {r4-r7, pc}
+
+//step8
+.global permute
+permute:
+	push {r4-r7,lr}
+	movs r7, r0			//store a in r7
+	cmp r7, #0
+	bgt return8
+	adds r0, r5			//r0 = f
+	adds r0, r4			//r0 = f+e
+	adds r0, r3			//r0 = f+e+d
+	adds r0, r2			//r0 = f+e+d+c
+	adds r0, r1			//r0 = f+e+d+c+b
+	adds r0, r7			//r0 = f+e+d+x+b+a
+	bl done8			//return
+return8:
+	subs r0, r5, #1		//r0 = f-1
+	movs r1, r7			//a
+	movs r2, r1			//b
+	movs r3, r2			//c
+	movs r4, r3			//d
+	movs r5, r4			//e
+	bl permute			//call permute, result in r0
+	adds r0, r0,#1		//return r0 + 1
+done8:
+	pop  {r4-r7,pc}
+
+//step9
+.global bizarre
+bizarre:
+	push {r4-r7, lr}
+	ldr r3, =-800		//complaining about sub cos sub doesnt have sp register but add does
+	add sp, r3			//allocate 200 integers which is #800
+	mov r7, sp			//r7 is the beginning of "array"
+	movs r4, #0			//r4 is x
+loop9:
+	cmp r4, #200
+	bge callqsort		//if x !&lt; 200 then go to callqsort
+	adds r6, r4, #1		//r6 = x + 1
+	adds r6, r0			//r6 = base + x+ 1 //r0 is free
+	movs r5, #255
+	muls r6, r5			//r6 = ((base+x+1)*255)	//r5 is free
+	movs r5, #0xff
+	ands r6, r5			//r6 = ((base+x+1) * 255) &amp; 0xff //r5 is free
+	lsls r5, r4, #2		//r5 = x*4
+	str r6, [r7, r5]	//array[x] = ((base+x+1)*255) &amp; 0xff
+	adds r4, #1			//x++
+	bl loop9
+callqsort:
+	movs r0, r7				//move or load? array into r0
+	movs r5, r1				//move nth to r5
+	movs r1, #200
+	movs r2, #4
+	ldr r3, =compare		//ta said
+	//how to call compare using bx
+	bl qsort
+return9:
+	//load array[nth]?
+	lsls r5, #2
+	ldr r0, [r7, r5]		//return array[nth]
+done9:
+	ldr r3, =800
+	add sp,r3		//deallocate 200 integers
+	pop {r4-r7, pc}
+.type compare, %function  // You know why you need this line, right?
+compare:
+    ldr  r0,[r0]		//load value of a
+    ldr  r1,[r1]		//load value of b
+    subs r0,r1			//r0 = a-b
+    bx lr
+
+//step10
+.global easy
+easy:
+	push {r4-r7, lr}
+	ldr r4, [sp, #20]
+	sub sp, #256			//allocate space for 64 integers
+	sub sp, #12				//allocating space for r2,r3,r4 input arguments //if i want the value the just do ldr r0, [sp, #0]
+	str r2, [sp, #0]		//store shift onto the stack
+	str r3, [sp, #4]		//store mask onto the stack
+	str r4, [sp, #8]		//store skip onto the stack
+	mov r7, sp				//r7 is save array
+	movs r6, #0				//r6 is result
+	movs r4, #1				//r4 is 1
+	str r4, [r7]			//save[0] = 1 //r4 is free
+	movs r5, #1				//x = 1
+loopEasy1:
+	cmp r5, #64				//x &lt; sizeof save / sizeof save[0]?
+	bge loopEasy2
+	movs r4, r5				//r4 = x //r5 is original value for index
+	subs r4, #1				//r4 = x-1
+	lsls r4, #2				//r4 = (x-1)*4
+	ldr r4, [r7, r4]		//r4 = save[x-1]
+	ldr r3, [sp, #260]		//load mask from stack // 256+4 = 260
+	ands r3, r5				//r3 = mask &amp; x
+	eors r4, r3				//r4 = (save[x-1] ^ (x &amp; mask)) //r3 is free
+	ldr r3, [sp, #256]		//loading shift from stack
+	lsls r4, r3				//r4 = (save[x-1] ^ (x &amp; mask)) &lt;&lt; shift
+	movs r3, r5				//duplicate x into r3
+	lsls r3, #2				//r3 = x*4
+	str r4, [r7, r3]		//save[x] = (save[x-1] ^ (x &amp; mask)) &lt;&lt; shift
+	adds r5, #1				//x += 1
+	bl loopEasy1
+
+loopEasy2:
+	movs r5, r0				//x = a //r0 is free
+forloopEasy2:
+	cmp r5, r1				//x != b //r1 is free
+	beq returneasy
+	movs r4, r5				//keep original value of x in r5
+	lsls r4, #2				//r4 = x*4
+	ldr r3, [r7, r4]		//r3 = save[x]
+	eors r6, r3				//r6 is result //r3 is free
+	//incrementation for loop 	//x = (x*5+skip) &amp; 63)
+	movs r3, #5				//r0 = 5
+	movs r4, r5				//move original value of x into r4
+	muls r4, r3				//r4 = x*5	//r3 is free
+	ldr r3, [sp, #264]		//load skip from stack
+	adds r4, r3				//r4 = (x*5+skip)
+	movs r3, #63
+	ands r4, r3				//r4 = (x*5+skip) &amp; 63
+	movs r5, r4				//movs value back into x
+	bl forloopEasy2
+
+returneasy:
+	movs r0, r6				//move result into return value
+	add sp, #268				//deallocate space for array
+	pop {r4-r7, pc}</textarea>
+</td>
+</tr></tbody></table>
+<br>
+<h2>Grading log</h2>
+<pre>Starting tests for chen3633
+showsub2: Wrong string produced.
+showsub3: Wrong string produced.
+permute: incorrect value for permute(7,5,4,3,3,3)
+ERROR: faulted or timed out.  Restarting next test.
+Fault or timeout in q10
+q1:1
+q2:0
+q3:0
+q4:1
+q5:1
+q6:1
+q7:1
+q8:0
+q9:1
+q10:0
+total:6
+</pre>
+
+
+</form>
+
+
+</body></html>

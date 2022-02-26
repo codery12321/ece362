@@ -1,0 +1,89 @@
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background-color: rgb(250, 250, 250);
+	text-align: left;
+	font: 16pt/1.5 Arial, sans-serif;
+	color: rgb(90, 90, 90);
+	padding: 5% 12% 5% 12%;
+}
+
+div, footer, header {
+	background-color: inherit;
+	margin: 2% 1% 2% 1%;
+}
+
+div {
+	border: 1px solid rgb(90, 90, 90);
+	border-radius: 1em;
+	padding: 0.5% 2% 0.5% 2%;
+}
+
+footer, header {
+	text-align: center;
+	border: 1px solid inherit;
+	padding: 0.1% 0.4% 0.1% 0.4%;
+}
+
+header {
+	font-size: 20pt;
+}
+
+footer {
+	font-size: 10pt;
+}
+
+nav {
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+nav a {
+	flex-grow: 1;
+	text-align: center;
+	border: 1px solid inherit;
+	border-radius: 0.1%;
+	margin: 0;
+	padding: 0 3% 0 3%;
+}
+
+p {
+	padding: 0;
+	width: 100%;
+}
+
+ul {
+	list-style-type: disc;
+}
+
+a, a:visited {
+	color: rgb(30, 30, 300);
+	text-decoration: none;
+}
+
+a:hover, a:visited:hover {
+	text-decoration: underline;
+	text-decoration-color: rgb(30, 30, 300);
+}
+
+figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+figcaption {
+    text-align: center;
+}
+
+img {
+    width: 50vw;
+}
+

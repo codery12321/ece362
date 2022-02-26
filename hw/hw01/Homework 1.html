@@ -1,0 +1,556 @@
+
+<!-- saved from url=(0054)https://engineering.purdue.edu/ece362/submit/?item=hw1 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="https://engineering.purdue.edu/ece362/images/favicon362.png">
+
+
+<title>Homework 1</title>
+</head>
+<body>
+<h1>Homework 1</h1>
+<small>
+Due: Fri, 21 Jan 2022 17:30:00 (approximately 35 days ago)
+<br>
+</small>
+[Score: 16 / 20 points possible]
+<br>
+Weight = 1.00
+<form action="https://engineering.purdue.edu/ece362/submit/?item=hw1" method="post" id="form">
+<p>The first part of this homework consists of some simple
+thought questions for which you can (mostly) look up the answers in
+the reference manuals or the lecture notes.  It's best if you can
+use the reference manuals.
+The second part of the homework involves modifying an existing
+assembly language program to do what we're asking.  You can use
+either <a href="https://engineering.purdue.edu/ece362/lecture/sim.html">the simulator</a> or the
+actual microcontroller with System Workbench to do this exercise.
+We will evaluate your work with the simulator so be sure to adhere
+to the limitations imposed by its wimpy parser:
+</p><ul>
+<li>If you write comments, use only "//".
+</li><li>Type all instructions and registers with lowercase letters.
+</li></ul>
+
+<br><hr>
+<h2>Academic Honesty Statement [0 ... -20 points]</h2>
+<p>
+By typing my name, below, I hereby certify that the work on
+this homework is my own and that I have not copied the work of any
+other student (past or present) while completing it.
+I understand that if I fail to honor this agreement, I will receive
+a score of zero for the assignment, a one letter drop in my final
+course grade, and be subject to possible disciplinary action.
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="cert" size="80" value="Tzu Yu Chen">
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 1 [1 point]</h2>
+<p>
+
+For the form of assembly language we use for this class, if you want
+the assembler to create an instruction that adds the contents of two
+registers and stores the result in a third register like this:
+</p><p>
+<b></b></p><pre><b>r6 = r5 + r0</b></pre>
+<p>
+as well as set the flags,
+how would you write that instruction so that the assembler would produce
+the right thing?  Are you sure?  Did you try it?  There's no partial
+credit for being close.  The assembler program will never say "Oh, that's
+an error, but I'll just forgive you for it."  It is important to type
+exactly the right thing.
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q1" size="30" value="adds r6,r5,r0">
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 2 [1 point]</h2>
+<p>
+
+For the form of assembly language we use for this class, if you want
+the assember to create an instruction that adds the contents of two
+registers and stores the result in a third register like this:
+</p><p>
+<b></b></p><pre><b>r1 = r1 + r2</b></pre>
+<p>
+but <b>not</b> change any flags,
+how would you write that instruction so that the assembler would produce
+the right thing?
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q2" size="30" value="add r1,r2">
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 3 [1 point]</h2>
+<p>
+
+For either form of the add (immedate) instruction described in section
+A6.7.2 of the Architecture Reference Manual, what registers
+can be used for the source and destination?  Express your answer as
+a comma-separated list of registers.
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q3" size="30" value="r0, r1, r2, r3, r4, r5, r6">
+</td>
+<td>
+<img src="./Homework 1_files/wrong.png" title="Expected something like &quot;r0,r1,r2,r3,r4,r5,r6,r7&quot;">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 4 [1 point]</h2>
+<p>
+ Suppose you want to write an instruction that takes the
+value stored in register <b>r5</b>, add an immediate value to it
+and store it in <b>r2</b>.  What is the largest immediate value
+you can use?  Express your answer as a positive decimal number.
+(Hint: See A6.7.2.  Should you use instruction encoding T1 or T2?
+How do you decide?)  Be sure to check your answer.  Try setting
+the immediate value to one larger than what you think the largest
+answer should be and make sure it produces an error.
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q4" size="30" value="7">
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 5 [1 point]</h2>
+<p>
+
+List the flags that may be affected by the instruction
+</p><p>
+<b></b></p><pre><b>adds r1,r6,r3</b></pre>
+<p>
+Express your answer as an unpunctuated list of flags in the order
+they appear in the xPSR.  (xPSR means any of the three forms of
+the Processor Status Register.  The top four bits are the ALU
+flags.)
+Read the documentation carefully, and try
+examples in the simulator.  If you cannot think of a way to change
+the value of a flag, maybe it cannot be changed.  (Write "none" if
+the instruction never changes any flags.)
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q5" size="30" value="Z">
+</td>
+<td>
+<img src="./Homework 1_files/wrong.png" title="Expected something like &quot;NZCV&quot;">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 6 [1 point]</h2>
+<p>
+
+List the flags that may be affected by the instruction
+</p><p>
+<b></b></p><pre><b>mov r3,r4</b></pre>
+<p>
+Express your answer as an unpunctuated list of flags in the order
+they appear in the xPSR.
+(Write "none" if the instruction never changes any flags.)
+Read the documentation carefully, and try
+examples in the simulator.
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q6" size="30" value="none">
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 7 [1 point]</h2>
+<p>
+
+List the flags that may be affected by the instruction
+</p><p>
+<b></b></p><pre><b>movs r6,r5</b></pre>
+<p>
+Express your answer as an unpunctuated list of flags in the order
+they appear in the xPSR.
+(Write "none" if the instruction never changes any flags.)
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q7" size="30" value="Z">
+</td>
+<td>
+<img src="./Homework 1_files/wrong.png" title="Expected something like &quot;NZ&quot;">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 8 [1 point]</h2>
+<p>
+
+Is the following a valid ARM Cortex-M0 instruction?
+</p><p>
+<b></b></p><pre><b>mov r4,#191</b></pre>
+<p>
+
+</p>
+<table><tbody><tr><td>
+<select name="q8">
+<option value="" disabled=""></option>
+<option value="valid" disabled="">valid</option>
+<option value="invalid" disabled="" selected="">invalid</option>
+</select>
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+<br><hr>
+<h2>Question 9 [1 point]</h2>
+<p>
+
+Is the following a valid ARM Cortex-M0 instruction?
+</p><p>
+<b></b></p><pre><b>movs r3,#267</b></pre>
+<p>
+
+</p>
+<table><tbody><tr><td>
+<select name="q9">
+<option value="" disabled=""></option>
+<option value="valid" disabled="">valid</option>
+<option value="invalid" disabled="" selected="">invalid</option>
+</select>
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+<br><hr>
+<h2>Question 10 [1 point]</h2>
+<p>
+For the conditional branch instruction, <b><tt>B</tt></b>,
+what 4-bit value in the "cond" field should be used to implement the
+"Signed less than or equal" branch comparison?  For instance, the "branch if equal" instruction
+would have a "cond" field of 0000.
+Look at lecture 03 to understand how the conditional branch instruction
+works.  Look at the instruction encoding in A6.7.10, and see the
+branch condition field encodings on pages A6-98 and A6-99.
+(Express your answer in four sequential digits that are one or zero.)
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q10" size="10" value="1101">
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 11 [1 point]</h2>
+<p>
+For the branch described in the previous question, what
+three-letter instruction mnemonic would be used in an assembly
+language program to produce the instruction?  For instance, if
+you wanted to "branch if equal", the mnemonic would be "BEQ".
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q11" size="10" value="BLE">
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 12 [1 point]</h2>
+<p>
+What is the <em>stated</em> range, in bytes, for the
+permitted offset of a conditional branch?  For instance:
+</p><p>
+<b></b></p><pre><b>start:  beq  dest
+        adds r0,#1
+        subs r1,#2
+        ...
+dest:   muls r0,r1
+</b></pre>
+<p>
+How far apart, in bytes, can the "start" label be from the "dest" label?
+This may not be quite an accurate way to specify the problem.  What we
+really want you to do is look up the <em>state</em> range.
+Express your answer as a range of negative to positive values like:
+"-abc to xyz"
+(Hint: See A6.7.10 instruction encoding T1.  It states it right there.)
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q12" size="30" value="-256 to 254">
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 13 [1 point]</h2>
+<p>
+What is the <em>stated</em> range, in bytes,
+for the permitted offset of an <b>unconditional</b> branch?  For instance:
+</p><p>
+<b></b></p><pre><b>b target</b></pre>
+<p>
+Express your answer as a range of negative to positive values in a
+similar manner as the previous question.
+(Hint: See A6.7.10 instruction encoding T2.)
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q13" size="50" value="-2048 to 2046">
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 14 [1 point]</h2>
+<p>
+Write the full instruction that <em>compares</em> values in the
+registers, r3 and r0, by subtracting them like (r3 - r0),
+and sets the flags according to the result of the instruction
+(and throws away the 32-bit result without updating any of the
+general-purpose registers).
+Did you try this?  Are you certain you expressed it correctly?
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q14" size="20" value="cmp r3, r0">
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 15 [1 point]</h2>
+<p>
+What single instruction (that involves an assembler trick described
+in lecture) can you use to set register r2 to the value 0xd9b3983e?
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q15" size="20" value="ldr r2, =0xd9b3983e">
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 16 [1 point]</h2>
+<p>
+
+Write a single (logical) instruction that
+clears all bits in r2 that are set in r1 regardless
+of whether they were previously set in r2 or not.
+For instance, if the initial register values are
+</p><p>
+</p><pre>	r2 = 0x00000000
+	r1 = 0x00008421
+</pre>
+<p>
+the resulting value in r2 after execution of the instruction
+should be 0.
+If, however, the initial register values are
+</p><p>
+</p><pre>	r2 = 0xffffffff
+	r1 = 0x00008421
+</pre>
+<p>
+then the resulting value in r2 after execution of the instruction
+should be 0xffff7bde.
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q16" size="30" value="bics r2,r1">
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 17 [1 point]</h2>
+<p>
+Write a single (logical) instruction that
+sets the bits in r2 that are also set in r7 regardless
+of whether those bits were previously set in r2 or not.
+For instance, if the initial register values are
+</p><p>
+</p><pre>	r2 = 0x44444444
+	r7 = 0x00008210
+</pre>
+<p>
+the
+resulting value of r2 after execution of the instruction
+should be 0x4444C654.  If, however, the initial register
+values were
+</p><p>
+</p><pre>	r2 = 0x44444444
+	r7 = 0x00000040
+</pre>
+<p>
+then the resulting value of r2 after
+execution of the instruction should be 0x44444444.
+</p><p>
+Try writing code in the simulator to set up the initial register
+values and the instruction you choose.  Make sure it works.
+
+</p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q17" size="30" value="orrs r2,r7">
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 18 [1 point]</h2>
+<p>
+Write a single (logical) instruction such that,
+given the following initial register values:<br>
+</p><pre>	r2 = 0x12345678
+	r7 = 0xFFFFFFFF
+</pre>
+the instruction would write the result 0xedcba987 to r2.
+And for the following initial register values:<br>
+<pre>	r2 = 0x11111111
+	r7 = 0xFFFFFFFF
+</pre>
+the instruction would write the result 0xeeeeeeee to r2.
+(Hint: Look at the values 0x12345678 and 0xedcba987 as binary
+values.  How are they related?)
+
+<p></p>
+<table><tbody><tr><td>
+<input type="text" readonly="" name="q18" size="30" value="mvns r2,r7">
+</td>
+<td>
+<img src="./Homework 1_files/wrong.png" title="Expected &quot;eors r2,r7&quot;">
+</td>
+</tr></tbody></table>
+<br><hr>
+<h2>Question 19: Program Modification [2 points]</h2>
+<p>
+
+Consider the code below that has many typographical errors:</p>
+<b><pre>.cpu cortext-m0
+.thumb2
+.syntax unify
+.fpu softvfp
+
+.globel main
+
+main:
+    movs   r0, #6
+    move   r1, #20
+    movv   r2, #0 // This is a loop counter
+    mov    r3, #0 // This stores a sum.
+loop:
+    nop    // nop 1
+    nop    // nop 2
+    nop    // nop 3
+    nop    // nop 4
+    nop    // nop 5
+done:
+    bkpt   // Stop the debugger (breakpoint)
+    b done
+</pre></b>
+<p>
+Modify this code, one step at a time.  You can type it into
+<a href="https://engineering.purdue.edu/ece362/lecture/sim.html" target="_blank">the simulator</a> and try it.
+</p><ul>
+<li>First, fix the syntax errors!  And don't laugh.
+These are the kind of errors you will make someday,
+so get used to finding and correcting them.
+</li><li>Replace the first "nop" with an instruction that compares
+the values of registers R2 and R0.  (i.e., it should set the flags as if
+it subtracted R0 from R2:  (R2-R0))</li>
+<li>Replace the second "nop" with an instruction that redirects
+execution to the instruction following the "done:" label if and only if the
+result of the comparison in the previous instruction is greater than
+zero.</li>
+<li>Replace the third "nop" with an instruction that adds the value
+of register R1 to R3 and stores the result in R3.</li>
+<li>Replace the fourth "nop" with an instruction that increments the
+value of r2 by 1.</li>
+<li>Replace the fifth "nop" with an instruction that will send
+execution back to the instruction at the "loop:" label.</li>
+</ul>
+<p>
+When the program reaches the <b></b></p><pre><b>bkpt</b></pre> instruction, the value
+of the R3 register should be 0x0000008c (decimal 140).
+<p>
+<b>Important note: You should actually type in, run, and test this program.
+Then you should copy the whole thing (including the .cpu, .thumb, .syntax,
+and .fpu directives) from System Workbench or the simulator, and
+paste into the box below.  There is a link below the text box that will
+invoke whatever you submit in the simulator.  (Be sure to save it first.)
+That's what we will use to grade your work.
+If we can't assemble it, and see it run as specified, you don't
+get partial credit.  It either works or it doesn't.
+</b></p><p><b>
+<font color="red">If you make updates in the simulator, remember to copy
+it back into the box below.</font>
+</b>
+
+</p>
+<table><tbody><tr><td>
+<textarea readonly="" onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+&#39;	&#39;+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" name="q19" cols="80" rows="25">.cpu cortex-m0
+.thumb
+.syntax unified
+.fpu softvfp
+
+.text
+.global main
+
+main:
+    movs   r0, #6
+    movs   r1, #20
+    movs   r2, #0 // This is a loop counter
+    movs   r3, #0 // This stores a sum.
+loop:
+    cmp r2, r0    // nop 1
+    bgt done    // nop 2
+    adds r3, r3, r1    // nop 3
+    adds r2, #1    // nop 4
+    b loop    // nop 5
+done:
+    bkpt   // Stop the debugger (breakpoint)</textarea>
+</td>
+<td>
+<img src="./Homework 1_files/correct.png">
+</td>
+</tr></tbody></table>
+<br>
+<a href="https://engineering.purdue.edu/ece362/submit/?item=hw1&amp;synhtml=sim.html" target="_blank">Click here to try it in the simulator</a>
+</form>
+
+
+</body></html>
