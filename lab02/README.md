@@ -102,7 +102,7 @@ Since we want to observe the address 0x20000000, we enter the address in hex int
 To make it easier to observe changes and byte boundaries we shall make the following configuration changes to the memory browser. To make these changes right click within the Memory Browser >> Columns >> 4. Similarly right click on the Memory Browser >> Cell Size >> 4 Bytes. And similarly right click Memory Browser >> Radix >> Decimal Signed. Now step through your program. When a change is made to a memory location, it is highlighted in red as seen in Figure 3.
 
 
-![Figure 3: Changes to memory are highlighted in red](figure3.jpg)  
+![Figure 3: Changes to memory are highlighted in red](images/figure3.jpg)  
 
 Memory browser is a versatile tool. A lot more features are baked into the Memory browser in Eclipse, however the tutorial provided here should be more than sufficient to see you through ECE 362.
 
