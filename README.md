@@ -30,6 +30,8 @@ circuit board (PCB) design, hardware/software debugging tips
   - Microprocessors consistently follow a straight sequence of instructions, and it is likely that you have only worked with this kind of programming until now. In this experiment, you will configure a microprocessor to handle exceptional events. These events will be generated in an expected manner, but the principles are the same for failures, faults, and other unexpected events. These events will invoke Exception Handlers that you write. These Exception Handlers will efficiently respond to events only when needed and will not run continually.
 - **lab5**: Timers
     - Each timer subsystem allows the microcontroller to produce periodic interrupts while the CPU is busy with other operations. In this experiment, we will use timer interrupts to periodically scan a matrix keypad and reliably report button presses.
+- **lab6**: Analog Input/Output
+
 
 ## List of Homework Assignments
 - **hw1**: Instructions  
@@ -37,3 +39,4 @@ circuit board (PCB) design, hardware/software debugging tips
 - **hw3**: The Application Binary Interface  
 - **hw4**: Assembly language programming (stack allocation and recursion)  
 - **hw5**: Practical preparation  
+- **hw5.2**: C language warmup for GPIO, timers, and interrupts
