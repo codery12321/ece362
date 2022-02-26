@@ -320,13 +320,13 @@ Our tradition is to give you code with the expectation that you will type it in.
 Type in the following .equ definitions just below the comment in main.s for Step 6.
 
 
-[Figure 2: Some .equ initializations](figure2.jpg)
+[Figure 2: Some .equ initializations](images/figure2.jpg)
 
 #### Configure GPIO
 Type in the following assembly language subroutine to initialize the RCC clock for Port C and set up the mode register for Port C to configure four pins for output.
 
 
-[Figure 3: Configure Port C](figure3.jpg)
+[Figure 3: Configure Port C](images/figure3.jpg)
 
 #### Toggle LEDs
 Type in the following assembly language subroutine that will toggle all four of the pins connected to the LEDs.

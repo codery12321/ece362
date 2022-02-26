@@ -92,12 +92,12 @@ System Workbench allows you to use the debugger to observe memory locations in r
 
 You will only see the memory browser in the "debug perspective" of SystemWorkbench. By default, the memory browser may not be open, if not, go to Window >> Show View >> Memory Browser. When open, you will see a tab as in Figure 1.
 
-[Figure 1: Memory Browser](figure1.jpg)  
+[Figure 1: Memory Browser](images/figure1.jpg)  
 
 Since we want to observe the address 0x20000000, we enter the address in hex into the text box next to the "*". This should start rendering the memory from the microcontroller (see Figure 2). On the left most side of the tab is the address in memory, followed by the contents of that memory location. The default rendering is hexadecimal and ASCII text (the text is rendered at the right most side of the memory browser).
 
 
-[Figure 2: Memory at address 0x20000000](figure2.jpg)  
+[Figure 2: Memory at address 0x20000000](images/figure2.jpg)  
 
 To make it easier to observe changes and byte boundaries we shall make the following configuration changes to the memory browser. To make these changes right click within the Memory Browser >> Columns >> 4. Similarly right click on the Memory Browser >> Cell Size >> 4 Bytes. And similarly right click Memory Browser >> Radix >> Decimal Signed. Now step through your program. When a change is made to a memory location, it is highlighted in red as seen in Figure 3.
 

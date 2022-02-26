@@ -97,7 +97,7 @@ For this lab experiment, you will be using the TDCR1050M 4-digit 7-segment LED d
 If you look at a picture of the physical device in Figure 3, you see that it has only two rows of eight pins on each side. Only sixteen pins are used to control more than 30 individual LED segments that must be independently lit to form four distinct digits and decimal points. To do so, it uses a "common anode" configuration so that one pin is connected to the anodes of all the LEDs on one digit. There are four distinct pins connected to the anodes of the four digits. There are another eight pins connected to similar cathodes on all the displays. For instance, one pin is connected to the four "A" cathodes on the four digits. This means it is possible to illuminate all four of the "A" segments on the four digits by applying a positive voltage to the four common anodes and a negative voltage to the pin connected to all of the "A" segments. It is not possible to simultaneously illuminate the "A" segment of all the displays and illuminate the "B" segment of only a single display. Figure 4 shows the schematic for the connections to all of the LED segments for the display.
 
 
-[Figure 4: Schematic for the TDCR1050M display](figure4.png)   
+[Figure 4: Schematic for the TDCR1050M display](images/figure4.png)   
 
 If it is not possible to independently turn on and off individual segments at the same time, how is it possible to display distinct numerals on the four groups of segments? This display is made to be multiplexed. In a manner similar to how we cannot detect the exact moment that a button in a matrix is pressed, we cannot simultaneously turn on every LED segment we need. Instead, the segments of the first digit are turned on, then the segments of the next digit are turned on, then the third, then the fourth. If each individual digit is illuminated for one second, then the display will not be perceived as a four-digit number. If, however, the cycling through the digits is done quickly enough, it will appear that all of the numbers are shown simultaneously. This is because of the human eye's persistence of vision. A flickering light—as long as the flickering is rapid enough—is perceived as continually on, although maybe dimmer than normal.
 
@@ -115,41 +115,42 @@ How rapidly must you cycle through each digit to achieve the effect of persisten
 Most students, when they approach the idea of multiplexing, would be more comfortable with a "common cathode" display instead since it could be configured so that a positive voltage applied to the pin connected to the anodes of all "A" segments would illuminate that segment when a negative voltage is applied to the pin connected to all the cathodes of the digit. If you were connecting the pins directly to your microcontroller, that might even make sense. Nevertheless, the current-flow requirements for the LEDs make it impractical to illuminate many of them using only the capabilities of the microcontroller. Instead, it is common use sink driver connected to the cathodes of each type of segment (e.g., "A", "B", "C", etc...). A sink driver is a device that is capable of sinking (connecting to ground) a connection with a large current flow. 47Ω limiting resistors will be placed in between the sink driver and each cathode to prevent too much current from flowing through each segment. Conveniently, the sink driver will sink current through an output pin when its corresponding input pin is high. In this way, it acts as an open-drain inverter. (A sink driver cannot push an output pin high.) Using the sink driver, a logic high applied to the driver will cause the particular segment to illuminate, which is how you would like to think about it.
 
 
-[Figure 5: Typical LED display circuit](figure5.png)  
+[Figure 5: Typical LED display circuit](images/figure5.png)  
 
 Consider the circuit in Figure 5 that appears in the TLC59211 datasheet. In this lab experiment, you will wire the microcontroller to the sink driver rather than an 8-bit shift register. The device at the top of the diagram is a PNP bipolar junction transistor (BJT). This device will conduct current through the top pin (the emitter) in the direction of the arrow, and out the bottom pin (the collector) when the middle left pin (the base) has a voltage lower than the emitter (and a small current coming out of it). It is conceptually similar to a P-Channel MOSFET except that a MOSFET does not require a substantial current flow through its gate. By contrast, the collector current for a BJT is directly proportional to its base current.
 
-[capacitor we will use](pn2907a.png)  
+[capacitor we will use](images/pn2907a.png)  
 
 You will use one PN2907A PNP BJT (in a TO-92 package) for each anode of each digit of the display. Pay careful attention to the designations for the pins (E,B,C for emitter, base, collector) on the device. Pin 1 is the emitter, pin 2—in the middle—is the base, and pin 3 is the collector. The anode of a digit must be able to supply enough current for all eight segments of the digit simultaneously. The datasheet for the TDCR1050M shows that each of the eight segments of each digit could use as much as 25 mA, although you won't have that much current flow for this experiment. A microcontroller pin would not be able to supply enough current to illuminate all of the segments of a digit, but a PN2907 transistor will provide at least 200mA if needed. Because the transistor is driving the positive voltage to the display, it is referred to as the "high-side" driver for the display. You may think of the sink driver as the "low-side" driver for the display.
 
 Rather than try to deal with low voltage to enable current flow through each PNP transistor, we will add one more device: a 3-to-8 decoder with active-low outputs. Three input pins select one of eight outputs to be driven low. Each one of these outputs will be connected, through a series resistor, to the base of one high-side driver transistor. Altogether, eleven pins of the microcontroller will be used to drive the display: three to select the digit to turn on through the decoder and high-side driver transistors, and eight more to turn on the segments of the selected digit. A full schematic of the wiring for the display and keypad is shown in Figure 6.
 
 
-[Figure 6: Schematic for lab experiment wiring](figure6.png)  
+[Figure 6: Schematic for lab experiment wiring](images/figure6.png)  
 
 It can be difficult to follow all of the connections as they cross over each other. A second schematic, with most of the wires replaced by symbolic connections is shown in Figure 7. That should offer slightly more clarity in how the connections are made. A schematic is normally intended for a high-level understanding of the logical connections, and has few details about the physical layout of components. Nevertheless, some nuances of the physical construction are preserved in these schematics. In particular, note that the transistors are numbered, from left to right, Q1, Q0, Q3, Q2, and so on. This is intentional since that is the way they will be placed on the breadboard.
 
 
-[Figure 7: Simplified schematic for lab experiment wiring](figure7.png)  
+[Figure 7: Simplified schematic for lab experiment wiring](images/figure7.png)  
 
 ### 1.5 Tips for wiring the circuit
 You'll be assembling two 4-digit display modules, driven by 8 PN2970A transistors, a TLC59211 sink driver, 8 resistors between the sink driver and LED cathodes, a 3-to-8 decoder, and 8 more resistors between the decoder and the transistors. Another eight resistors will be used to connect the keypad to the microcontroller. With some planning, it will be possible to assemble this quickly and reliably. Here are several suggestions to make it as easy as possible...
 
 #### 1.5.1 Place the transistors next to the displays
 
-[wire transistors](transistors.png)  
+[wire transistors](images/transistors.png)  
 
 The collector of a PN2907A transistor must be connected to each of pins 1, 2, 6, and 8 of both display modules. Notice that these pins are all on one side of the display, and that two of them are near the ends of the row of pins. There are no connections to the left or right of the connector, but there is a lot of space taken up by the displays. Rather than run long wires from the transistors to the displays, put the collector of one transistor on pin 1 and the collector of another transistor on pin 8. The other pins of each transistor are placed to the left and right, respectively. Add another two transistors further out by combining the emitters on the same breadboard row. Finally, connect the collectors of the outermost transistors to pins 2 and 6. Looking from left to right, the first backward-facing transitor will connect power to D2 (pin 2). The next forward-facing transistor will connect power to D1 (pin 1). The next transistor will connect power to D4 (pin 8), and the fourth transistor will connect power to D3 (pin 6). Note the alternating backward-facing, forward-facing manner in which the transistors are placed. The base (middle pin) of each of the transistors is what will be driven, through a 150Ω resistor, by the decoder.
 
 #### 1.5.2 Wire the resistors directly to the display
-[wire resistors](resistors.png)  
+[wire resistors](images/resistors.png)  
 
-Five of the LED cathodes are on the "top" side row of connectors (pins 16,15,14,13,11) of the display, and three of them are on the "bottom" row of connectors (pins 3,5,7). Each of the eight cathodes must be connected to an output of the TLC59211 sink driver via a series 47 Ω resistor. If you have bulk 22 gauge copper wire, you can remove a suitable amount of insulation and put it on each of the five resistors to keep them from touching the pins they run near. Run the resistor leads between the pins below the display. [Resistors wired directly to cathodes and TLC59211](resistors2.png)  
+Five of the LED cathodes are on the "top" side row of connectors (pins 16,15,14,13,11) of the display, and three of them are on the "bottom" row of connectors (pins 3,5,7). Each of the eight cathodes must be connected to an output of the TLC59211 sink driver via a series 47 Ω resistor. If you have bulk 22 gauge copper wire, you can remove a suitable amount of insulation and put it on each of the five resistors to keep them from touching the pins they run near. Run the resistor leads between the pins below the display. [Resistors wired directly to cathodes and TLC59211](images/resistors2.png)  
 
 Place the TLC59211 on an adjacent breadboard, in the right position to directly connect the resistors. The other three resistors are easy to wire between pins 3,5,7 and the sink driver. Place the resistors between the cathodes and the TLC59211 outputs in the most convenient way possible. Connect the wires between the STM32 Port C and the TLC59211 so that PB0 lights segment A, PB1 lights segment B, ... , PB6 lights segment G, and PB7 lights segment DP.
 
-[Resistors with long wires between cathodes and TLC59211](resistors3.png)   
+[Resistors with long wires between cathodes and TLC59211](images/resistors3.png)    
+
 If you are not able to insulate resistor leads in this way, leave some space on the right side of the rightmost display module, connect the resistors on the top side of the display module, and run wires from the other side of the resistors to the TLC59211. It's your choice. Either way will work well. Neatness of connections will avoid a great deal of problems when you reach the point of debugging. A maze of wires that loop far over the breadboard will not only block the LED segments, it will be difficult to diagnose, and be prone to damage when the wires are snagged on objects while in transport.
 
 #### 1.5.3 Chain the cathodes from one display to the other
@@ -157,12 +158,12 @@ The eight connections to the cathodes of display on the right should be made to 
 
 #### 1.5.4 Connect resistors to the decoder
 
-[Resistors on decoder outputs wired to transistor bases](decoder-resistors.png)  
+[Resistors on decoder outputs wired to transistor bases](images/decoder-resistors.png)  
 
 The 150Ω resistors should be placed directly on the 74HC138 decoder. If you want to be tidy, you might cut the leads to minimize the amount that they stick out of the breadboard. If you do so, make sure that leads of every resistor is wide enough to span four breadboard holes. A width of only three would mean, for instance, that the resistor on the Y2 output would connect to the VCC pin of the chip. Wires should be run from the other ends of the resistors to the bases of the transistors. Connect output Y0 through a 150Ω resistor to the base of the PNP transistor connected to pin 1 of the left display. Note that output Y7 is on the bottom side of the 74HC138 decoder on pin 7. Pin 8 is the ground connection. The decoder's select lines, A0, A1, and A2 (pins 1,2, and 3, respectively) should be connected to PC6, PC7, and PC8. Pins 4, 5, and 6 should be connected to GND, GND, and VCC, respectively. These three pins are the enable pins for the decoder. Unless all three of these pins are enabled, none of the decoder outputs will be asserted (driven low).
 
 #### 1.5.5 Check your wiring
-[Wrong numbers displayed](wrong_number.png)  
+[Wrong numbers displayed](images/wrong_number.png)  
 
 To test your wiring, write an assembly language program that sets GPIOB pins 0 - 10 to be outputs. Then write the following values to GPIOB_ODR in rapid succession:
 ```
@@ -174,7 +175,7 @@ You might also look ahead to Section 2 of this lab document to find out how to s
 
 As the decimal point illuminates, make sure that the other segments of each digit remain at the same brightness. If the other segments of a digit grow dimmer, it may be that the driver transistor for that digit is backward. A BJT transistor normally amplifies a small base-emitter current with a large collector-emitter current, but a BJT can also work backward so that it amplifies a small base-collector current to a larger emitter-collector current. The amplification is not as high, and it limits the current provided to a digit. The more segments per digit are lit, the dimmer they are. Carefully note the orientation of the transistors connected to the D1, D2, D3, and pins of each display.
 
-[All wiring complete and correct](wiring_complete)  
+[All wiring complete and correct](images/wiring_complete)  
 Once the display is showing the correct digits and the decimal point is repeatedly moving from left to right, try pressing buttons on the keypad. Each button will cause a corresponding letter to be shifted onto the display to the rightmost digit, and the other seven digits will shift left. The asterisk is represented with a Greek Xi (Ξ), and the octothorpe is represented with an "H". (You think I'm inventing a new word here? Go look that up.) If you press the '1' button, and a new 'A' gets shifted in on the right, it means you've switched the Row1 and Row4 wires on the keypad. If you press the '3' button, and a new '0' is shifted in on the right, it means that the wires to Row2 and Row3, as well as the wires to Col1 and Col4, are switched. By pressing buttons and looking at the outcome, you can determine which wires are incorrect.
 
 ## Step 2.0 Experiment
