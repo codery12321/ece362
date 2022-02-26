@@ -320,19 +320,19 @@ Our tradition is to give you code with the expectation that you will type it in.
 Type in the following .equ definitions just below the comment in main.s for Step 6.
 
 
-[Figure 2: Some .equ initializations](images/figure2.jpg)
+![Figure 2: Some .equ initializations](images/figure2.jpg)
 
 #### Configure GPIO
 Type in the following assembly language subroutine to initialize the RCC clock for Port C and set up the mode register for Port C to configure four pins for output.
 
 
-[Figure 3: Configure Port C](images/figure3.jpg)
+![Figure 3: Configure Port C](images/figure3.jpg)
 
 #### Toggle LEDs
 Type in the following assembly language subroutine that will toggle all four of the pins connected to the LEDs.
 
 
-[Figure 4: Toggle the LEDs](figure4.jpg)
+![Figure 4: Toggle the LEDs](figure4.jpg)
 If you have typed everything in correctly, you should see all four LEDs on the development blink at a rate of 1 Hz. You can feel free to modify the toggle_leds subroutine to try different values. (For instance, consider what happens if you change the line that says
 ```
             ldr r2,=PINS6_TO_9

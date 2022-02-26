@@ -40,14 +40,14 @@ By default, every subsystem in a microcontroller is disabled in order to reduce 
 First, the Reset & Clock Control (RCC) subsystem must be configured to enable a GPIO port for use. This is done by turning on the specific bit in the AHBENR (Advanced High-Performance Bus Enable Register). In doing so, be sure not to turn OFF important bits such as the SRAMEN bit. Use your lecture notes to determine how to do this. For this lab, in particular, you should enable Ports B and C by ORing the appropriate values into the AHBENR register.
 
 
-[Figure 1: Reset and Clock Control](images/figure1.jpg)  
+![Figure 1: Reset and Clock Control](images/figure1.jpg)  
 
 Second, an enabled port must have its pins configured as either inputs or outputs (or some other functions that we will use in future labs). For this lab, we will initially use Port B pins as inputs and Port C pins as outputs. For instance, the inputs used will be pins PB3 and PB4 (pins 3 and 4 of Port B). For both ports there are some pins whose function you should not modify. In particular, you should not change PA13, PA14, PC14, or PC15 since these are used for an External Oscillator, Debugging, and Programming interfaces. Instead, use code from your lecture notes to learn how to set and clear only the bits you want without altering other bits.
 
 A functional diagram for an STM32F0 GPIO port is shown in Figure 2, below:
 
 
-[Figure 2: GPIO Pin Functional Diagram](images/figure2.jpg)  
+![Figure 2: GPIO Pin Functional Diagram](images/figure2.jpg)  
 
 In this experiment, you will enable general purpose (digital) inputs and outputs. That will involve using the input data register (IDR) and output data register (ODR) for each port. We will consider analog inputs and outputs in future lab experiments.
 
@@ -78,7 +78,7 @@ When debugging individual subroutines you should leave the call to `autotest` co
 Hint: When debugging your code, you may consult the "I/O Registers" tab in the Monitor window. This tab provides a hierarchical listing of all of the various peripherals utilized by the microcontroller and their sub-registers. By default their values are not shown; double clicking on a given entry will cause the debugger to track the values of that entry and its lower elements. Use this to confirm that the various registers you are writing to are taking on the values which you expect. An example of this is shown in Figure 3, below. When you cannot understand why a GPIO port is behaving as you expect, take a look at the registers and make sure their contents are being set correctly. This is a process that you will use for the rest of the semester.
 
 
-[Figure 3: I/O Registers Viewer](images/figure3.jpg)  
+![Figure 3: I/O Registers Viewer](images/figure3.jpg)  
 
 You can also use the I/O Registers viewer to modify values to experiment with register settings. As you progress through the lab experiment, you will find that you can use the I/O Registers viewer to deposit values into the ODR of Port C. This will cause LEDs to illuminate. You can also examine the value of the Port B IDR in real time to determine if a button is pressed. Note that the same rules apply just as if you wrote code to do things programmatically. You will not be able to view or adjust values for any of the registers of a GPIO port before enabling the clock to that subsystem in the RCC AHBENR. You can experiment with doing that manually as well.
 
@@ -105,27 +105,27 @@ Complete the subroutine `readpin` in main.s. This function accepts a bit number 
 After you remove the power from your development board, wire your circuit as shown in Figure 4, below. Ensure that you are connecting resistors for the buttons to the 3V power. You are advised to connect the power buses on your breadboard array to the GND and 3V connections on the development board. (Leave the 5V pins unconnected to avoid using them.)
 
 
-[Figure 4: Schematic for wiring LEDs and push buttons](images/figure3.jpg)  
+![Figure 4: Schematic for wiring LEDs and push buttons](images/figure3.jpg)  
 
 Use your choice of red, yellow, and green LEDs to build the circuit in Figure 4. To determine the orientation of an LED, look at the length of the leads. The long lead of the LED is usually the anode (the positive terminal) and the short lead is the cathode (the side connected to ground in the schematic). You can also search for a flattened section of the circular rim of the LED. That also indicates the cathode.
 
 Use four-lead "tactile" push buttons for the switches. The 6x6mm push buttons work the same way as the 12x12mm push buttons. Note that pins 1 and 2 are connected together internally as well are pins 3 and 4. The push button is "normally open". When it is pressed, pins 1 and 2 are connected to pins 3 and 4. See the diagrams in Figure 5 for more details.
 
 
-[Figure 5: Tactile switch diagrams](images/figure5.jpg)  
+![Figure 5: Tactile switch diagrams](images/figure5.jpg)  
 
 You will use a 16-button keypad for this lab experiment. One configuration for such an arrangement of buttons would be to have two wires for each button (32 wires total) so that each button could be independently monitored. That would require a lot of pins on the keypad which might make it difficult to use on a breadboard. An optimization might be to have one common power connector and one more connector per button (17 wires total) so that each button could still be monitored individually. But this is still too many pins on the keypad than manufacturers will usually support, and the numbers would only be much worse for keypads with even more buttons.
 
 
-[Figure 6: Keypad internal schematic](images/figure6.jpg)  
+![Figure 6: Keypad internal schematic](images/figure6.jpg)  
 
 The typical concession for keypads is to have multiple common pins that connect to groups of buttons. The logical extension to this trend is to configure a keypad as a matrix of rows and columns. If the number of rows and columns is about equal, this practice minimizes the number of pins on the keypad. The added challenge is that the keypad must be scanned one row or column at a time. For instance, a voltage can be applied to a row of buttons, and the columns can be sensed to detect if any of the buttons in the row are being pressed. Then the voltage can be removed from the row and re-applied to another row. By cycling through all the rows, all keys can eventually be detected.
 
 When you are finished, your circuitry should look something like Figure 7, below. You can, of course, arrange your circuitry in any manner you want, but we will be using the keypad in this configuration for the rest of the semester, It might be good if you keep it as close to this picture as possible. In particular, look at those blue resistors whose leads have been cut short to let them sit flush in on the breadboard. You are strongly encouraged to do the same. Later in the semester, we'll put the resistors under the keypad, and there is no good way to do that without making the leads short. Cut each lead so that only 8mm - 10mm extends from each side. Bend the leads at an angle, and push the resistor down into the breadboard. (Resistors are inexpensive. Don't feel bad about snipping them.)
 
 
-[Figure 7: Breadboard wiring](images/figure7.jpg)
-  
+![Figure 7: Breadboard wiring](images/figure7.jpg)
+
 ### 2.6 Buttons and LEDs
 Complete the subroutine `buttons` in main.s. This function will be called repeatedly in a loop. The purpose of this function is to map the button presses (inputs on PB0 and PB4) to two of the 4 LEDs (on PB8-PB11). So if a button is pressed an LED should turn on and once it is released the LED should turn off. Same goes for the other button and a different LED. A sample implementation in C is given below, but yours doesn't have to be implemented like this.
 ```

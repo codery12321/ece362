@@ -193,8 +193,8 @@ Once everything works reliably, use autotest to confirm that everything is confi
 The SysTick subsystem is a "core peripheral" of the microcontroller that cannot be disabled, so there is no RCC clock to enable to make it work. It consists of a 24-bit down-counter that automatically reloads a new 24-bit value each time it reaches zero. See the illustration in Figure 1 for the organization of the counter and its control registers. Since they are limited to 24-bit values, the maximum value of the counter and reload value are 224-1 = 16,777,215.
 
 
-[Figure 1: SysTick subsystem](images/figure1.png)
-  
+![Figure 1: SysTick subsystem](images/figure1.png)
+
 All that is needed to enable the SysTick counter is to set the ENABLE bit in the SysTick Control and Status Register (STK_CSR). Thereafter, the counter decrements once per clock tick. The clock used for the counter is selectable by the CLKSOURCE bit of the CSR. When the CLKSOURCE bit is set to 1, the counter runs at 48 MHz. When CLKSOURCE is set to 0, a divide-by-8 prescaler is used to create a 6 MHz clock for the counter.
 
 The value of the down-counter can be read (or set) at any time by accessing the SysTick Current Value Register (STK_CVR). When the value decrements to zero, the next clock tick will cause a new value to be loaded into the counter from the SysTick Reload Value Register (STK_RVR).
