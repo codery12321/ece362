@@ -13,13 +13,13 @@ unsigned int recur(unsigned int x) {
 //Q2: enable_portb [1 point]
 //===========================================================
 void enable_portb(void){
-    RCC->AHBENR |= IOPBEN
+    RCC->AHBENR |= RCC_AHBENR_GPIOBEN
 }
 //===========================================================
 //Q3: enable_portc [1 point]
 //===========================================================
 void enable_portb(void){
-    RCC->AHBENR |= IOPCEN
+    RCC->AHBENR |= RCC_AHBENR_GPIOCEN
 }
 //===========================================================
 //Q4: setup_pb3 [1 point]
@@ -82,13 +82,13 @@ void action9(void){
 //===========================================================
 void EXTI2_3_IRQHandler(void){
     EXTI->PR |= 1<<2
-    int counter += 1
+    extern int counter += 1
 }
 //===========================================================
 //Q11: enable_exti [1 point]
 //===========================================================
 void enable_exti(void){
-    RCC->APB2ENR |= SYSCFGCOMPEN
+    RCC->APB2ENR |= SYSCFGEN
     SYSCFG->EXTICR1 &= ~0xf00
     SYSCFG->EXTICR1 |= 0x100
     EXTI->RTSR |= 0x4
@@ -99,7 +99,7 @@ void enable_exti(void){
 //Q12: (the interrupt handler for Timer 3) [1 point]
 //===========================================================
 void TIM3_IRQHandler(void){
-    TIM3->TIMSR &= ~TIM_SR_UIF
+    TIM3->SR &= ~TIM_SR_UIF
     GPIOC->ODR &= 1<<9
     if(GPIOC->ODR != 0){
         GPIOC->BRR = 1<<9
@@ -117,5 +117,5 @@ void enable_tim3(void){
     TIM3->ARR = 250-1
     TIM3->DIER |= 1<<0
     NVIC->ISER[0] = 1<<16
-    TIM3->TIMCR1 |= 1<<0
+    TIM3->CR1 |= 1<<0
 }
