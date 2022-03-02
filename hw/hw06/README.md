@@ -130,7 +130,7 @@ Choose any timer other than Timer 2. In the main() subroutine, enable the RCC cl
     char time[8];
     sprintf(time, "%02d%02d%02d  ", hrs, min, sec);
     set_string(time);
-    ```
+```
 
 When you run it, you should see a clock. The rightmost digit should change once per second.
 
