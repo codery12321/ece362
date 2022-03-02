@@ -13,29 +13,29 @@ Direct Memory Access (DMA) allows you to automatically transfer a region of memo
 
 ## Table of Contents
 Step	Description	Points
-0	Prelab Exercises	30
-1	Background
-2	Experiment
-2.1	DMA Transfer to 7-segment Displays	20
-2.1.1	enable_ports
-2.1.2	Configure DMA transfers
-2.1.3	init_tim15
-2.2	Scanning and Debouncing a Keypad	10
-2.2.1	Timer 7 ISR
-2.2.2	Initialize Timer 7
-2.3	Reading an Analog Voltage	20
-2.3.1	Configure the ADC
-2.3.2	Timer 2 ISR
-2.3.3	Initialize Timer 2
-2.4	DAC Output	20
-2.4.1	Initialize a Wavetable
-2.4.2	set_freq()
-2.4.3	setup_dac()
-2.4.4	Timer 6 ISR
-2.4.5	Initialize Timer 6
-3	Adjust Interrupt Priorities
-4	Submit your postlab results	*
- 	Total:	100
+0	Prelab Exercises	30  
+1	Background  
+2	Experiment  
+2.1	DMA Transfer to 7-segment Displays	20  
+2.1.1	enable_ports  
+2.1.2	Configure DMA transfers  
+2.1.3	init_tim15  
+2.2	Scanning and Debouncing a Keypad	10  
+2.2.1	Timer 7 ISR  
+2.2.2	Initialize Timer 7  
+2.3	Reading an Analog Voltage	20  
+2.3.1	Configure the ADC  
+2.3.2	Timer 2 ISR  
+2.3.3	Initialize Timer 2  
+2.4	DAC Output	20  
+2.4.1	Initialize a Wavetable  
+2.4.2	set_freq()  
+2.4.3	setup_dac()  
+2.4.4	Timer 6 ISR  
+2.4.5	Initialize Timer 6  
+3	Adjust Interrupt Priorities  
+4	Submit your postlab results	*  
+ 	Total:	100  
 * All the points for this lab depend on proper completion of and submission of your post-lab results.
 
 When you are ready for your lab evaluation, review this checklist.
@@ -104,10 +104,10 @@ Once an analog-to-digital conversion has been completed, the converted data can 
 >In this lab, you will be using pins on Port A for analog operations. This means you will modify the GPIOA_MODER configuration. Remember that, if you modify the configuration for pins PA13 or PA14, you will lose the ability to debug or even re-program the microcontroller. Double-check your MODER updates to make sure they will not change pins 13 or 14.
 
 >When you misconfigure GPIO Port A, remember that you can restore the ability to use the debug/programming interface by:
-1. repairing your program,
-2. pressing and holding the reset (SW1) button,
-3. pressing "Run" on SystemWorkbench to reprogram the microcontroller
-Depending on what kind of mistake you made, you might have to hold down the reset button for only one second after pressing "Run". You may also need to reprogram the microcontroller twice before it works again. Be patient. Do not give up. Ask a TA for help with this process.
+    - repairing your program,
+    - pressing and holding the reset (SW1) button,
+    - pressing "Run" on SystemWorkbench to reprogram the microcontroller
+>Depending on what kind of mistake you made, you might have to hold down the reset button for only one second after pressing "Run". You may also need to reprogram the microcontroller twice before it works again. Be patient. Do not give up. Ask a TA for help with this process.
 
 ### 1.6 Digital-to-Analog Conversion
 A digital-to-analog converter (DAC) is similar to analog-to-digital conversion in reverse. An n-bit digital quantity is written to a data register, the conversion is triggered, and the quantized analog value appears on an output pin. One significant difference is that, since the conversion mechanism uses only a resistor network, the conversion is nearly instant. There is no need to continually check a DAC to find out if the conversion is complete.
@@ -133,10 +133,8 @@ will deposit the 12-bit value 0xd70 into the 12-bit hardware register waiting to
 ### 1.9 Wiring for this lab
 For this lab, you will use a USB oscilloscope (e.g., the Digilent Analog Discovery 2) to observe the output of the DAC.
 
-You will use potentiometers to connected between 3V and Gnd with the center tap acting as a voltage divider. The center tap of the potentiometer will be connected to analog inputs. As long as you are certain to connect the potentiometers only between 3V and Gnd, no damage to the analog inputs is possible.
-
-
-![Figure 2: Potentiometer and headphone jack](images\figure2.png)  
+You will use potentiometers to connected between 3V and Gnd with the center tap acting as a voltage divider. The center tap of the potentiometer will be connected to analog inputs. As long as you are certain to connect the potentiometers only between 3V and Gnd, no damage to the analog inputs is possible.  
+![Figure 2: Potentiometer and headphone jack](images/figure2.png)  
 
 ## Step 2 Experiment
 Create a project in SystemWorkbench called "lab6", and replace the automatically-generated main.c file with the main.c skeleton file provided for you.
@@ -186,7 +184,8 @@ Have you determined which DMA channel Timer 15 can trigger? Good. Write a C subr
     - Set the channel for CIRCular operation.
 
 Write one more C subroutine named `enable_dma()` that does only the following operation:
-- Enable the channel.
+- Enable the channel.  
+
 There is a lot of variation in students' work. On occasions when we use autotest to check their work, it's check all possible cases once a DMA channel is enabled and running. We want you get used to keeping this step separate. Remember to not enable the DMA channel in setup_dma.
 
 #### 2.1.3 init_tim15()
