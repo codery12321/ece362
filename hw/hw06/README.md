@@ -74,7 +74,7 @@ int main(void)
 The program calls set_string() to configure the digit array like so:
 ```
 	0x050, 0x11c, 0x254, 0x354, 0x410, 0x554, 0x66f, 0x780
-    ```
+```
 
 Successive iterations of the "display loop" will select digit 0 and write 0x50, select digit 1 and write 0x1c, select digit 2,, and write 0x54, and so on. If you run this program, you should see "running." shown on the seven-segment displays. No surprises.
 
