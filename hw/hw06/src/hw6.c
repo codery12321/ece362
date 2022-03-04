@@ -50,10 +50,10 @@ void set_string(const char *s)
 //===================================================================
 // Step 1 Use DMA instead
 //===================================================================
-void dma(void){
+void setup_dma(void){
 	//Enable the RCC clock to the DMA controller
-	RCC->AHBENR |= 0x1;
-	//disable DMA
+	RCC->AHBENR |= 0x1;    //bit 0 of AHBENR
+	//disable DMA to configure the channel
 	DMA1_Channel2->CCR &= ~DMA_CCR_EN;
 	//Set CMAR to the address of the beginning of the digit array
     DMA1_Channel2->CMAR &= ~(uint32_t) digit;
@@ -72,7 +72,8 @@ void dma(void){
     //Set the MINC bit so that the memory address is incremented by 2 after each transfer.	Bit 7: 1
     //Set the CIRC bit so that, once all 8 transfers complete, the entire transaction is restarted, over and over again. Bit 5: 1
     //Last: Set the EN bit to enable the DMA channel. 										Bit 0: 1
-	DMA1_Channel2->CCR |= 0x5b1;			//0101 1011 0001
+    DMA1_Channel2->CCR &= ~0xfb1;               //1111 1011 0001
+    DMA1_Channel2->CCR |= 0x5b1;			//0101 1011 0001
 }
 void init_tim2(void){
 	RCC->APB1ENR |= 0x1;		//bit 0 of APB1ENR
@@ -86,7 +87,6 @@ void init_tim2(void){
 // Step 2 Create a clock
 //===================================================================
 void TIM7_IRQHandler(void){
-
 	// Acknowledge the interrupt here
 	TIM7->SR &= ~TIM_SR_UIF;
 
@@ -105,14 +105,13 @@ void TIM7_IRQHandler(void){
     }
 }
 
-
 int main(void){
 	/*
     RCC->AHBENR |= RCC_AHBENR_GPIOBEN;
     GPIOB->MODER |= 0x155555;
     set_string("running.");
 	*/
-	dma();
+	setup_dma();
 	init_tim2();
     //enable the RCC clock to the selected timer
     RCC->APB1ENR |= 0x20;     	//TIM7EN bit 5 of RCC_APB1ENR

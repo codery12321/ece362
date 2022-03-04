@@ -141,8 +141,8 @@ void setup_adc(void)
     // Enable the clock to GPIO Port A
 	RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
     // Set the configuration for analog operation only for the appropriate pins
-	//ADC_IN1 is PA1 so configure GPIO Port B and set MODER 1 to high
-	GPIOA->MODER |= 0x2;    //10
+	//ADC_IN1 is PA1 so configure GPIO Port A and set MODER 1 to high
+	GPIOA->MODER |= 0xC;    //11
     // Enable the clock to the ADC peripheral
 	RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;
     // Turn on the "high-speed internal" 14 MHz clock (HSI14)
@@ -154,6 +154,7 @@ void setup_adc(void)
     // Wait for the ADC to be ready
 	while(!(ADC1->ISR & ADC_ISR_ADRDY));
     // Select the corresponding channel for ADC_IN1 in the CHSELR
+	ADC1->CHSELR = 0;
 	ADC1->CHSELR |= 1<<1;
     // Wait for the ADC to be ready
 	while(!(ADC1->ISR & ADC_ISR_ADRDY));
@@ -176,7 +177,7 @@ void TIM2_IRQHandler(void){
 	// Start the ADC by turning on the ADSTART bit in the CR.
 	ADC1->CR |= ADC_CR_ADSTART;
 	// Wait until the EOC bit is set in the ISR.
-	while(!(ADC1->ISR & ADC_ISR_ADRDY));
+	while(!(ADC1->ISR & ADC_ISR_EOC));
 	// Implement boxcar averaging
     bcsum -= boxcar[bcn];
     bcsum += boxcar[bcn] = ADC1->DR;
@@ -197,7 +198,7 @@ void init_tim2(void)
     TIM2->CR1 |= TIM_CR1_CEN; 	//bit 0 of TIM2_CR1
     NVIC->ISER[0] = 1<<TIM2_IRQn;
 
-    NVIC_SetPriority(TIM2_IRQn, 3);
+    //NVIC_SetPriority(TIM2_IRQn, 3);
 }
 
 
@@ -253,7 +254,7 @@ void setup_dac(void)
 	//Enable the RCC clock for the DAC
 	RCC->APB1ENR |= RCC_APB1ENR_DACEN;
 	//Select a TIM6 TRGO trigger for the DAC with the TSEL field of the CR register
-	DAC->CR &= ~380000;		//11 1000 0000 0000 0000 0000
+	DAC->CR &= ~DAC_CR_TSEL1;
 	//Enable the trigger for the DAC
 	DAC->CR |= DAC_CR_TEN1;
 	//Enable the DAC
@@ -286,14 +287,15 @@ void TIM6_DAC_IRQHandler(){
 //============================================================================
 void init_tim6(void)
 {
-    RCC->APB1ENR |= 0x1;     	//TIM6EN bit 0 of RCC_APB1ENR
-    TIM6->ARR = 5-1;
-    TIM6->PSC = 4800-1;        //48Mhz/(48000-1) = (100-1)*(10)
+    RCC->APB1ENR |= 0x10;     	//TIM6EN bit 4 of RCC_APB1ENR
+    TIM6->PSC = 480-1;        //48Mhz/(4800-1) = (100-1)*(RATE)
+    TIM6->ARR = (100000 / RATE)-1;
     TIM6->DIER = TIM_DIER_UIE;
     TIM6->CR1 |= TIM_CR1_CEN; 	//bit 0 of TIM6_CR1
     NVIC->ISER[0] = 1<<TIM6_DAC_IRQn;
-
-    TIM6->CR2 |= 0x20;
+    //tim6 configured to trigger the DAC
+    TIM6->CR2 &= ~0x70;
+    TIM6->CR2 |= 0x20;    //10 0000
 
 }
 
