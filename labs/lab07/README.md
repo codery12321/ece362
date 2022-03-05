@@ -1,6 +1,6 @@
 # ECE 362 Lab Experiment 7: Pulse Width Modulation
 ## Introduction
-![intro](images\intro.png)
+![intro](images/intro.png)
 A microcontroller’s interaction with the real world (and real humans) often requires the generation of voltages that can vary over a continuous spectrum. Although your microcontroller has an on-board digital-to-analog converter (DAC), it is too weak to drive any load that requires high power. Even with amplification, a DAC is inefficient for the purpose of driving heavy loads. Digital electronic systems are well-suited to switching circuits on and off. In circumstances where a load can be switched on and off in such a way that the average output voltage is treated (or perceived) as the signal, a solution is Pulse-Width Modulation (PWM). In this experiment, you will learn about configuring and using PWM to control a high-power load (a light) and generate a variable duty-cycle waveform.
 
 ## Instructional Objectives
@@ -13,7 +13,7 @@ A microcontroller’s interaction with the real world (and real humans) often re
 | 0     | Prelab Exercises                     | 15     |
 | 1     | Background                           |        |
 | 2     | Experiment                           |        |
-| 2.1	| Preliminary Experiments with Timer 3 | 5      |
+| 2.1	| Preliminary Experiments with Timer 3 | 25     |
 | 2.2	| PWM Output Configuration	           | 20     |
 | 2.3	| PWM Sine Wave Synthesis	           | 20     |
 | 2.4	| setrgb()	                           | 20     |
@@ -37,7 +37,9 @@ There is no autotest for this lab so all scores will be determined by demonstrat
 Consider a digital logic circuit which outputs a repeating, periodic signal over a known time period, tS. Within the signal period, the circuit can output logic '1' for a subinterval, tH, and for the remaining time, outputs a logic '0'. This is illustrated in Figure 1, below.
 ![Figure 1: Simple Periodic Output](images/figure1.png)  
 
+
 Expanding on the output above, suppose the circuit can be made to vary the logic '1' interval tH to any value between 0 and tS. A variety of potential outputs could result:
+
 ![Figure 2: Periodic Output: a) tH = 0 b) tH = tS/4 c) tH = 3tS/4 d) tH = tS](images/figure2.png)  
 
 The relationship between the time the periodic signal spends high (t<sub>H</sub>) and the total period of the repeating signal (t<sub>S</sub>) is known as the signal’s duty cycle and is usually expressed as a percentage. In figure 2, signal 2a could be said to have a 0% duty cycle, signal 2b, 25%, 2c, 75%, and 2d, 100%. By controlling the duty cycle of the repeating, periodic output signal, a pulse-width modulator is capable of controlling average delivered current or power to a given load, and can further be used, possibly in conjunction with filtering, for crude approximations of analog values. Sometimes these values must be low-pass filtered to yield an analog value. For devices such as LEDs, the human visual system acts as a natural low-pass filter.
@@ -72,7 +74,7 @@ Other than these changes to the Timer 6 ISR, all other subroutines like `init_wa
 ### 1.4 Wiring for this lab
 For this lab, you will use a USB oscilloscope (such as a Digilent Analog Discovery 2 or an Analog Devices ADALM2000) to observe the timer PWM outputs.
 
-Figure 3 shows the wiring for the new components for this lab. **Be sure to leave all of the other lab 5 wiring in place. You will be using it for number entry and display.** The LOW-PASS signal can be connected to the audio jack (where the DAC was connected to from the previous lab). A set of powered speakers will have a high impedance and can be directly connected to the LOW-PASS signal. If you're using it to drive low-impedance headphones or earbuds, you should use the LM324 op-amp between the LOW-PASS signal and the headphones.
+Figure 3 shows the wiring for the new components for this lab.**Be sure to leave all of the other lab 5 wiring in place. You will be using it for number entry and display.** The LOW-PASS signal can be connected to the audio jack (where the DAC was connected to from the previous lab). A set of powered speakers will have a high impedance and can be directly connected to the LOW-PASS signal. If you're using it to drive low-impedance headphones or earbuds, you should use the LM324 op-amp between the LOW-PASS signal and the headphones.
 ![Figure 3: RGB LED and low-pass filter wiring](images/figure3.png)  
 
 The RGB LED looks like a white LED with four leads rather than two. The RGB LEDs in your lab kit are common-anode devices. The anode is connected to 3 V, and each of three color component LEDs has a separate cathode. By connecting a cathode to a low voltage, the particular color of the LED is illuminated. In an additive color scheme red, green, and blue combine to produce white light. **Remember that, since the *cathodes* of the LEDs are connected to the pins of the STM32, they will be illuminated when the pin outputs are in the low state.**
