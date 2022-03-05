@@ -33,18 +33,16 @@ There is no autotest for this lab so all scores will be determined by demonstrat
 - After doing the previous steps, including reading the entire lab document, then do the prelab exercises and submit them before attempting the lab experiment.
 
 ## Step 1: Background
-1.1 Pulse-Width Modulation
+### 1.1 Pulse-Width Modulation
 Consider a digital logic circuit which outputs a repeating, periodic signal over a known time period, tS. Within the signal period, the circuit can output logic '1' for a subinterval, tH, and for the remaining time, outputs a logic '0'. This is illustrated in Figure 1, below.
+![Figure 1: Simple Periodic Output](images/figure1.png)  
 
-
-Figure 1: Simple Periodic Output
 Expanding on the output above, suppose the circuit can be made to vary the logic '1' interval tH to any value between 0 and tS. A variety of potential outputs could result:
+![Figure 2: Periodic Output: a) tH = 0 b) tH = tS/4 c) tH = 3tS/4 d) tH = tS](images/figure2.png)  
 
+The relationship between the time the periodic signal spends high (t<sub>H</sub>) and the total period of the repeating signal (tS) is known as the signal’s duty cycle and is usually expressed as a percentage. In figure 2, signal 2a could be said to have a 0% duty cycle, signal 2b, 25%, 2c, 75%, and 2d, 100%. By controlling the duty cycle of the repeating, periodic output signal, a pulse-width modulator is capable of controlling average delivered current or power to a given load, and can further be used, possibly in conjunction with filtering, for crude approximations of analog values. Sometimes these values must be low-pass filtered to yield an analog value. For devices such as LEDs, the human visual system acts as a natural low-pass filter.
 
-Figure 2: Periodic Output: a) tH = 0 b) tH = tS/4 c) tH = 3tS/4 d) tH = tS
-The relationship between the time the periodic signal spends high (tH) and the total period of the repeating signal (tS) is known as the signal’s duty cycle and is usually expressed as a percentage. In figure 2, signal 2a could be said to have a 0% duty cycle, signal 2b, 25%, 2c, 75%, and 2d, 100%. By controlling the duty cycle of the repeating, periodic output signal, a pulse-width modulator is capable of controlling average delivered current or power to a given load, and can further be used, possibly in conjunction with filtering, for crude approximations of analog values. Sometimes these values must be low-pass filtered to yield an analog value. For devices such as LEDs, the human visual system acts as a natural low-pass filter.
-
-1.2 PWM on the STM32F0
+### 1.2 PWM on the STM32F0
 On STM32 microcontrollers, pulse-width modulation is integrated into the various TIM peripherals. For the purposes of this experiment, TIM1 will be used for PWM outputs; you may wish to revisit the basics of timer operation from Lab Experiment 5.
 
 As with all other peripheral configurations, the first step for configuring a peripheral is to enable the clock signal to it. This is done within the reset and clock control (RCC) system of the processor. Use of PWM, as well as other non-analog microcontroller peripherals, requires the use of alternative pin input functions. Alternate pin functions are detailed in the pin definitions table of the STM32F091RCT6 datasheet. Alternate function mode is specified using the GPIOx_MODER register for the appropriate GPIO port. Some pins can have more than one alternate function associated with them; specifying which alternate function is to be used is the purpose of the GPIOx_AFRL and GPIOx_AFRH registers.
