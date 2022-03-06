@@ -11,17 +11,19 @@ Now that you know that the hardware in your lab kit works, you are comfortable w
 - Practice writing assembly language routines which perform simple tasks.
 
 ## Table of Contents
-Step	Description	Points
-0	Prelab Exercises	10
-1	Background understanding for program generation
-2	Create a Project
-3	Arithmetic Exercises	40
-4	Logical Operation Exercises	20
-5	Shift Operation Exercises	20
-6	Make the Lights Blink	10
-7	Testing
-8	Submit your postlab results	*
- 	Total:	100
+| Step | Description	                                 | Points |
+| ---- | -----------	                                 | ------ |
+| 0	   | Prelab Exercises	                             | 10     |
+| 1	   | Background understanding for program generation |        |
+| 2	   | Create a Project                                |        |
+| 3	   | Arithmetic Exercises	                         | 40     |
+| 4	   | Logical Operation Exercises	                 | 20     |
+| 5	   | Shift Operation Exercises	                     | 20     |
+| 6	   | Make the Lights Blink	                         | 10     |
+| 7	   | Testing                                         |        |
+| 8	   | Submit your postlab results	                 | *      |
+| 	   | Total:	                                         | 100    |
+
 * All the points for this lab depend on proper completion of and submission of your post-lab results.
 
 When you are ready for your lab evaluation, review this checklist.
@@ -31,13 +33,12 @@ When you are ready for your lab evaluation, review this checklist.
 - Read this entire lab document. Complete the prelab exercises and submit your answers before attempting the lab experiment
 - Read the user manual for the STM32F091 development board.
 - Do the prelab exercises and submit them before attempting the lab experiment.
+
 ## Step 1: Background understanding for program generation
 ### 1.1 Programming, Compilation, and assembly
 Microcontrollers can be programmed in a manner similar to that of a general purpose computer system. However, due to memory size constraints of most microcontrollers, the software development environment must be hosted on a separate computer system. A program written in a high-level language such as C or C++ can be translated into assembly language by a compiler. In the case where the host system CPU differs from the target system CPU, this translator is called a cross-compiler. The compiler used for ECE 362 is the same as the one you used for your introductory programming classes, gcc. This version of gcc has been configured as a cross-compiler to produce assembly language specifically for the ARM Cortex M0 architecture. Assembly language is changed into machine code (also known as object code) by an assembler. In the past, you have seen gcc apparently produce object code directly as object files with a “.o” suffix. It does this by invoking the assembler automatically in a way that you never see the intermediate assembly language. GCC also knows how to directly accept assembly language files with “.s” suffixes and pass them to the assembler to generate an object file without ever needing initial C code.
 
 An object file contains raw machine instructions and other data in chunks known as segments. Two of these segments are the text and data segments. The object file format is known as the Executable and Linking Format (ELF). An ELF object file produced for your C or assembly language program cannot be directly executed by a computer because it lacks various hidden setup and configuration procedures. For instance, there is a special procedure that is responsible for calling the main() function as well as setting up its arguments. These procedures are held in other object files. These object files are combined into an executable by a linker. The linker searches each object file to find references to symbols that remain undefined in that file. For instance, object file containing startup code refers to main(), but that function is not defined in that file. The linker combines the text, data, and other segments of multiple object files so that all of those references are defined. The resulting file is called an ELF executable which can be executed directly by a general purpose computer. Unfortunately, the microcontroller on your development board has neither an operating system nor any kind of loader to interpret an ELF executable. A final step of the program compilation, assembly, and linking process involves converting the ELF executable into a raw binary image of the desired memory configuration that has no segments. This binary file is written directly into the flash ROM of your development system. All of the steps of compiling, assembling, linking, and converting are automated and hidden by the integrated development environment. You might look at the project directories that are created in the course of this lab exercise to find the object files, executables, and binary images that are produced. The resulting flow of files for a project might look like Figure 1:
-
-
 ![Figure 1: Flow of files during a project build](images/figure1.jpg)
 
 ### 1.2 ARM Cortex-M0 specific assembler directives
