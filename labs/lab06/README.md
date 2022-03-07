@@ -1,5 +1,4 @@
 # ECE 362 Lab Experiment 6: Analog Input/Output
-
 ## Introduction
 Interfacing a microcontroller with real-world devices often means working with analog voltages that are not constrained by digital logic’s high/low dichotomy. In this lab, you will gain experience using the digital-to-analog converter and the analog-to-digital converter built in to your microcontroller. You will also practice writing code to manipulate the converted values as well as display them on an output device.
 
@@ -12,30 +11,32 @@ Direct Memory Access (DMA) allows you to automatically transfer a region of memo
 - to use DMA to automatically transfer data to and from peripherals
 
 ## Table of Contents
-Step	Description	Points
-0	Prelab Exercises	30  
-1	Background  
-2	Experiment  
-2.1	DMA Transfer to 7-segment Displays	20  
-2.1.1	enable_ports  
-2.1.2	Configure DMA transfers  
-2.1.3	init_tim15  
-2.2	Scanning and Debouncing a Keypad	10  
-2.2.1	Timer 7 ISR  
-2.2.2	Initialize Timer 7  
-2.3	Reading an Analog Voltage	20  
-2.3.1	Configure the ADC  
-2.3.2	Timer 2 ISR  
-2.3.3	Initialize Timer 2  
-2.4	DAC Output	20  
-2.4.1	Initialize a Wavetable  
-2.4.2	set_freq()  
-2.4.3	setup_dac()  
-2.4.4	Timer 6 ISR  
-2.4.5	Initialize Timer 6  
-3	Adjust Interrupt Priorities  
-4	Submit your postlab results	*  
- 	Total:	100  
+| Step  | Description	| Points |
+| ----  | -----------   | ------ |
+| 0	| Prelab Exercises	| 30  |
+| 1	| Background  | |
+| 2	| Experiment  | |
+| 2.1	| DMA Transfer to 7-segment Displays	| 20  |
+| 2.1.1	| enable_ports  | |
+| 2.1.2	| Configure DMA transfers  | |
+| 2.1.3	| init_tim15  | |
+| 2.2	| Scanning and Debouncing a Keypad	| 10  |
+| 2.2.1	| Timer 7 ISR  | |
+| 2.2.2	| Initialize Timer 7  | |
+| 2.3	| Reading an Analog Voltage	| 20  |
+| 2.3.1	| Configure the ADC  | |
+| 2.3.2	| Timer 2 ISR  | |
+| 2.3.3	| Initialize Timer 2  | |
+| 2.4	| DAC Output	| 20  |
+| 2.4.1	| Initialize a Wavetable  | |
+| 2.4.2	| set_freq()  | |
+| 2.4.3	| setup_dac()  | |
+| 2.4.4	| Timer 6 ISR  | |
+| 2.4.5	| Initialize Timer 6  | |
+| 3	| Adjust Interrupt Priorities  | |
+| 4	| Submit your postlab results	| *  |
+|  	| Total:	| 100  |  
+
 * All the points for this lab depend on proper completion of and submission of your post-lab results.
 
 When you are ready for your lab evaluation, review this checklist.
