@@ -1,5 +1,4 @@
 # ECE 362 Lab Experiment 1: "First Blinks"
-
 ## Introduction
 Traditionally, the "first steps" taken to verify that a microcontroller works and that you know how to use it, is to make a light blink. In this introductory exercise, you will use an integrated development environment (IDE) to interact with a microcontroller. You will type in, compile, and debug a few programs that we have prepared for you. One of the programs will cause the built-in LEDs of the STM32F091 development board to blink. You will also write a few simple assembly language subroutines.
 

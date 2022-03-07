@@ -9,35 +9,37 @@ Microprocessors consistently follow a straight sequence of instructions, and it 
 - Implement Interrupt Service Routines
 
 ## Table of Contents
-Step	Description	Points
-0	Prelab Exercises	25
-1	Background  
-2	Experiment  
-2.1	Setting up a long-running program  
-2.2	Implement several GPIO subroutines	15  
-2.2.1	initc  
-2.2.2	initb  
-2.2.3	togglexn  
-2.3	External interrupt service routines	15  
-2.3.1	An ISR for PB0  
-2.3.2	An ISR for PB2 and PB3  
-2.3.3	An ISR for PB4  
-2.4	init_exti	20  
-2.4.1	Enable the SYSCFG subsystem  
-2.4.2	Configure the port-to-pin assignments  
-2.4.3	Initialize the RTSR  
-2.4.4	Initialize the IMR  
-2.4.5	Initialize the ISER  
-2.5	Implement a SysTick handler	20  
-2.5.1	SysTick_Handler  
-2.5.2	Enabling the SysTick interrupt  
-3	Observations  
-3.1	Unacknowledged interrupts  
-3.2	OPTIONAL: Adjusting interrupt priority  
-3.2.1	OPTIONAL: The adjust_priorities subroutine  
-3.3	OPTIONAL: Repairing the acknoledgement problem  
-4	Submit your postlab results	*  
- 	Total:	100  
+| Step	| Description	                                 | Points|
+| ----  | -----------                                    | ------|
+| 0	    | Prelab Exercises	                             | 25    |
+| 1	    | Background                                     |       |
+| 2	    | Experiment                                     |       |
+| 2.1	| Setting up a long-running program              |       |
+| 2.2	| Implement several GPIO subroutines	         | 15    |
+| 2.2.1	| initc                                          |       |
+| 2.2.2	| initb                                          |       |
+| 2.2.3	| togglexn                                       |       |
+| 2.3	| External interrupt service routines	         | 15    |
+| 2.3.1	| An ISR for PB0                                 |       |
+| 2.3.2	| An ISR for PB2 and PB3                         |       |   
+| 2.3.3	| An ISR for PB4                                 |       |  
+| 2.4	| init_exti	                                     | 20    |
+| 2.4.1	| Enable the SYSCFG subsystem                    |       |
+| 2.4.2	| Configure the port-to-pin assignments          |       |
+| 2.4.3	| Initialize the RTSR                            |       |
+| 2.4.4	| Initialize the IMR                             |       |
+| 2.4.5	| Initialize the ISER                            |       |
+| 2.5	| Implement a SysTick handler	                 | 20    |
+| 2.5.1	| SysTick_Handler                                |       |
+| 2.5.2	| Enabling the SysTick interrupt                 |       |
+| 3	    | Observations                                   |       |
+| 3.1	| Unacknowledged interrupts                      |       |
+| 3.2	| OPTIONAL: Adjusting interrupt priority         |       |
+| 3.2.1	| OPTIONAL: The adjust_priorities subroutine     |       |
+| 3.3	| OPTIONAL: Repairing the acknoledgement problem |       |  
+| 4	    | Submit your postlab results	                 | *     |
+| 	    | Total:	                                     | 100   |
+
 * All the points for this lab depend on proper completion of and submission of your post-lab results.  
 
 When you are ready for your lab evaluation, review this checklist.
