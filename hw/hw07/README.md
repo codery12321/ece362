@@ -356,7 +356,7 @@ We can fairly easily have a more gradual drop-off at the end of a note. We don't
 Then, change the sound mixer as follows:
 
 - The line that looks like  
-	`sample += (wavetable[voice[x].offset>>16] * voice[x].volume) >> 4;`
+	`sample += (wavetable[voice[x].offset>>16] * voice[x].volume) >> 4;`  
     should change, instead, to  
 	`voice[x].last_sample = wavetable[voice[x].offset>>16];`  
 	`sample += (voice[x].last_sample * voice[x].volume) >> 4;`  
@@ -383,7 +383,7 @@ Are we creating all of these songs for you? No. They are commonly available in a
 - [kunsterfuge.com](http://www.kunstderfuge.com/)  
 Some of them may have license restrictions on what you may do with them. Please honor the licenses.
 
-Once you have a Standard MIDI Format file, you simply convert the entire file into an array of unsigned characters. If you have a Unix-like system, you can use the [mkcfile](/src/mkcfile.c) utility to do the conversion. You may have other means. We should probably put a conversion service on this web page.
+Once you have a Standard MIDI Format file, you simply convert the entire file into an array of unsigned characters. If you have a Unix-like system, you can use the [mkcfile](src/mkcfile.c) utility to do the conversion. You may have other means. We should probably put a conversion service on this web page.
 
 ### Multi-Instrument Support
 So far, we've used only one instrument at a time although MIDI files allow each channel to have a unique instrument with its own distinctive sound. A set of preconfigured sounds is often supplied with a MIDI synthesizer and a [standard mapping of numbers](https://www.midi.org/specifications-old/item/gm-level-1-sound-set) to sounds has been decided. Selection of an instrument for a channel in a MIDI file is called a *Program Change* and it invokes the following function:
