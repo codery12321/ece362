@@ -18,6 +18,8 @@ asynchronous serial interface (USART), applications
 - **lab04**: Interrupts
 - **lab05**: Timers
 - **lab06**: Analog Input/Output
+- **lab07**: Pulse-Width Modulation  
+- **lab08**: Serial Peripheral Interface (and DMA)     
 
 ## List of Homework Assignments
 - **hw01**: Instructions  
@@ -27,3 +29,4 @@ asynchronous serial interface (USART), applications
 - **hw05**: Practical preparation  
 - **hw5.2**: C language warmup for GPIO, timers, and interrupts
 - **hw06**: Fading Digit Clock (with DMA)
+- **hw07**: Playing MIDI Files

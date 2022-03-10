@@ -8,3 +8,4 @@
 - **hw5**: Practical preparation
 - **hw5.2**: C language warmup for GPIO, timers, and interrupts
 - **hw6**: Fading Digit Clock (with DMA)
+- **hw7**: Playing MIDI Files
