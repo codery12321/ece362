@@ -295,6 +295,7 @@ void init_tim6(void)
     NVIC->ISER[0] = 1<<TIM6_DAC_IRQn;
     //tim6 configured to trigger the DAC
     TIM6->CR2 &= ~0x70;
+    //update event for tim6 TRGO 
     TIM6->CR2 |= 0x20;    //10 0000
 
 }
