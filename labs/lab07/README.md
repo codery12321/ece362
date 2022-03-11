@@ -101,6 +101,7 @@ Complete the `setup_tim3` subroutine to visualize what PWM channels look like. T
     - TIM3_CCR2 = 400
     - TIM3_CCR3 = 200
     - TIM3_CCR4 = 100
+
 Once these steps are done, uncomment the #define TEST_TIMER3 stanza in main().
 
 **Have a TA check you off for this step.** (TA Instructions: You should see the lights for PC6 - PC9 flashing in the expected pattern. Ask the student to change the Timer 3 prescaler to 480 instead of 48000. You should see that the LEDs now have an apparent brightness proportional to their CCR value).
@@ -143,10 +144,8 @@ Copy the implementation of following subroutines from your lab 6 solution to you
     - the Timer 6 ISR  
 Make the following changes outlined in the background section:
 - Turn off TRGO generation for Timer 6.
-- Reduce the final combined sample with:
-```
-sample = ((sample * volume)>>18) + 1200;
-```
+- Reduce the final combined sample with:  
+    `sample = ((sample * volume)>>18) + 1200;`  
 - Instead of writing sample to the DAC DHR12R1 register, write it to Timer 1 CCR4.  
 
 Once you put each of the subroutines in place and modify the ISR, the code in `main()` will produce a 1 kHz sine wave. If you have earphones, and feel so inclined, you can listen to the result on the **LOW-PASS** signal connection. It should sound as smooth as if it was generated using the DAC. Observe the wave with an oscilloscope by connecting it to the **LOW-PASS** signal connection. The wave should appear smooth, with no glitches or drop-outs:  
