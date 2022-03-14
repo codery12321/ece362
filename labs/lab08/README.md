@@ -104,7 +104,7 @@ After these initialization steps are complete, the LCD is ready to display chara
         ; // wait for the transmit buffer to be empty
     SPI2->DR = 0x200 + 'A';
 ```
-To understand why 0x41 is the same thing as 'A', you should consult the [ASCII manual](../.../manuals/ascii_table.md).
+To understand why 0x41 is the same thing as 'A', you should consult the [ASCII manual](../../manuals/ascii_table.md).
 
 ## 2.0 Experiment
 For this experiment, you will write the subroutines to write to the shift registers to drive the 7-segment LED displays and to initialize and write to the SOC1602A OLED LCD display through the SPI interface and using DMA.
@@ -189,7 +189,7 @@ The subroutine should then configure the SPI2 channel as follows:
 
 It may be helpful to review slides 16, 17, and 18 of the lecture on SPI.
 
-**Consider what you've achieved here...**
+**Consider what you've achieved here...**  
 In labs 6 and 7, you used DMA to copy 16-bit words into an 11-bit GPIO ODR to drive the 7-segment displays. Now you've moved the 7-segment driver to a synchronous serial interface. Since there is a built-in peripheral that *serializes* bits, you can now do the same thing, with the same software. The only things you had to change were the initialization code to set up the SPI peripheral instead of parallel GPIO lines, and the output target of the DMA channel.
 
 #### 2.2.3 Demonstrate SPI2 and 7-Segment Display
@@ -198,7 +198,7 @@ H**ave a TA check you off for this section** (TA Instructions: Check that the co
 ### 2.3 Trigger DMA with SPI_TX
 An SPI peripheral can be configured to trigger the DMA channel all by itself. No timer is needed! It just so happens that the SPI2 transmitter triggers the same DMA channel that Timer 15 triggers. (See the entry in Table 32 for SPI2_TX.) The only additional work to do is to configure the SPI peripheral to trigger the DMA. Subroutine to do this are provided for you. They are named `spi2_setup_dma()` and `spi2_enable_dma()`. They call the code you wrote in `setup_dma()` and `enable_dma()`.
 
-**Consider what you've achieved here...**
+**Consider what you've achieved here...**  
 You now have a system that can automatically transfer 16-bit chunks from an 8-entry array to the LED displays. Instead of needing a timer to trigger the DMA channel, the SPI peripheral does that automatically. As soon as one word is transferred, it requests the next word. The SPI system can run fast enough that words can be transferred 1500000 times per second. That would make the digits change faster than the 74HC138 could settle, and the letters would blur together. By setting the SPI clock rate as low as possible, 187.5 kHz, it means that each 16-bit word is delivered 187500/16 = 11719 times per second. You may notice that this makes the digits a little dimmer than they were when driven by the timer.
 
 #### 2.3.1 Demonstrate Trigger DMA with SPI_TX
@@ -221,78 +221,76 @@ Write a C subroutine named `init_spi1()` to configure the SPI1 peripheral. The c
 >Depending on what kind of mistake you made, you might have to hold down the reset button for only one second after pressing "Run". You may also need to reprogram the microcontroller twice before it works again. Be patient. Do not give up. Ask a TA for help with this process.
 
 #### 2.4.2 spi_cmd()
-A C subroutine named spi_cmd() is provided for you. It accepts a single integer parameter and does the following:
+A C subroutine named `spi_cmd()` is provided for you. It accepts a single integer parameter and does the following:
+- Waits until the SPI_SR_TXE bit is set.
+- Copies the parameter to the SPI_DR.
 
-Waits until the SPI_SR_TXE bit is set.
-Copies the parameter to the SPI_DR.
 That's all you need to do to write 10 bits of data to the SPI channel. The hardware does all the rest.
-2.4.3 spi_data()
-A C subroutine named spi_data() is provided for you. It accepts a single integer parameter, and does the same thing as spi_cmd(), except that it ORs the value 0x200 with the parameter before it copies it to the SPI_DR. This will set the RS bit to 1 for the 10-bit word sent. For instance, if you call the subroutine with the argument 0x41, it should send the 10-bit value 0x241 to the SPI_DR. This will perform a character write to the OLED LCD.
 
-2.4.4 spi1_init_oled()
-A C subroutine named spi1_init_oled() is provided for you. It performs each operation of the OLED LCD initialization sequence:
+#### 2.4.3 spi_data()
+A C subroutine named `spi_data()` is provided for you. It accepts a single integer parameter, and does the same thing as `spi_cmd()`, except that it ORs the value 0x200 with the parameter before it copies it to the SPI_DR. This will set the RS bit to 1 for the 10-bit word sent. For instance, if you call the subroutine with the argument 0x41, it should send the 10-bit value 0x241 to the SPI_DR. This will perform a character write to the OLED LCD.
 
-Use nano_wait() to wait 1 ms for the display to power up and stabilize.
-cmd(0x38); // set for 8-bit operation
-cmd(0x08); // turn display off
-cmd(0x01); // clear display
-Use nano_wait() to wait 2 ms for the display to clear.
-cmd(0x06); // set the display to scroll
-cmd(0x02); // move the cursor to the home position
-cmd(0x0c); // turn the display on
-2.4.5 spi1_display1()
-A C subroutine named spi1_display1() is provided for you. It accepts a const char * parameter (also known as a string) and does the following:
+#### 2.4.4 spi1_init_oled()
+A C subroutine named `spi1_init_oled()` is provided for you. It performs each operation of the OLED LCD initialization sequence:
+- Use `nano_wait()` to wait 1 ms for the display to power up and stabilize.
+- `cmd(0x38); // set for 8-bit operation`
+- `cmd(0x08); // turn display off`
+- `cmd(0x01); // clear display`
+- Use `nano_wait()` to wait 2 ms for the display to clear.
+- `cmd(0x06); // set the display to scroll`
+- `cmd(0x02); // move the cursor to the home position`
+- `cmd(0x0c); // turn the display on`
 
-cmd(0x02); // move the cursor to the home position
-Call data() for each non-NUL character of the string.
-2.4.6 spi1_display2()
-A C subroutine named spi1_display2() is provided for you. It accepts a const char * parameter (also known as a string) and does the following:
+#### 2.4.5 spi1_display1()
+A C subroutine named `spi1_display1()` is provided for you. It accepts a const char * parameter (also known as a string) and does the following:
+- `cmd(0x02); // move the cursor to the home position`
+- Call `data()` for each non-NUL character of the string.
 
-cmd(0xc0); // move the cursor to the lower row (offset 0x40)
-Call data() for each non-NUL character of the string.
+#### 2.4.6 spi1_display2()
+A C subroutine named `spi1_display2()` is provided for you. It accepts a `const char *` parameter (also known as a string) and does the following:
+- `cmd(0xc0); // move the cursor to the lower row (offset 0x40)`
+- Call `data()` for each non-NUL character of the string.
+
 The display hardware allows for scroll buffers for each line, so the beginning of the second line is actually position 64 (0x40). That offset is combined with the "Set DDRAM address" command (0x80) to position the cursor.
-2.4.7 Demonstrate the SPI OLED Display
-At this point, you should be able to comment and previous stanzas and uncomment the SPI_OLED stanza. It uses the init_spi1() you wrote along with the support code to initialize and write things to the OLED display.
 
-Have a TA check you off for this part (TA Instructions: the OLED display should display "Hello again,\n[Their login]")
+#### 2.4.7 Demonstrate the SPI OLED Display
+At this point, you should be able to comment and previous stanzas and uncomment the SPI_OLED stanza. It uses the `init_spi1()` you wrote along with the support code to initialize and write things to the OLED display.
 
-2.5 Trigger SPI1 DMA
-After going through the initialization process for the OLED display, it is able to receive new character data and cursor placement commands at the speed of SPI. In this step, we will configure SPI1 for DMA. Instead of using the spi1_display1() and spi1_display2() subroutines to place the cursor and write characters, they will be continually copied from a circular buffer named display[]. It consists of 34 16-bit entries. Element 0 of the array holds the 10-bit command to set the display cursor at position 0 (the beginning of the top line) of the display. This is the "home command" for the display. The next 16 entries are characters that are copied into the first line of the display. Element 17 of the array holds the 10-bit command to set the cursor position to the beginning of the second line. It is followed by 16 more characters. (Remember that each character must be sent with the 0x200 prefix.)
+**Have a TA check you off for this part** (TA Instructions: the OLED display should display "Hello again,\n[Their login]")
 
-2.5.1 spi1_setup_dma()
-Write a subroutine named spi1_setup_dma(). It should circular copy of the 16-bit entries from the display[] array to the SPI1->DR address. You should also configure the SPI1 device to trigger a DMA operation when the transmitter is empty.
+### 2.5 Trigger SPI1 DMA
+After going through the initialization process for the OLED display, it is able to receive new character data and cursor placement commands at the speed of SPI. In this step, we will configure SPI1 for DMA. Instead of using the `spi1_display1()` and `spi1_display2()` subroutines to place the cursor and write characters, they will be continually copied from a circular buffer named `display[]`. It consists of 34 16-bit entries. Element 0 of the array holds the 10-bit command to set the display cursor at position 0 (the beginning of the top line) of the display. This is the "home command" for the display. The next 16 entries are characters that are copied into the first line of the display. Element 17 of the array holds the 10-bit command to set the cursor position to the beginning of the second line. It is followed by 16 more characters. (Remember that each character must be sent with the 0x200 prefix.)
+
+#### 2.5.1 spi1_setup_dma()
+Write a subroutine named `spi1_setup_dma()`. It should circular copy of the 16-bit entries from the `display[]` array to the SPI1->DR address. **You should also configure the SPI1 device to trigger a DMA operation when the transmitter is empty.**
 
 Which DMA channel should you use for this step? You know how to determine this.
 
-2.5.2 spi1_enable_dma()
-Write a subroutine named spi1_enable_dma(). The only thing it should do is enable the DMA channel for operation.
+#### 2.5.2 spi1_enable_dma()
+Write a subroutine named `spi1_enable_dma()`. The only thing it should do is enable the DMA channel for operation.
 
 The array is set up, and circular DMA transfer is triggered by SPI1_TX to write it to the SPI1->DR address. Thereafter, the display is effectively "memory-mapped". As characters are written to the array values, they are quickly copied to the display. This allows you to easily create very complicated patterns and animations on the display.
 
-An example of subroutines to update the display[] array is provided in the support.c file. Two subroutines named spi1_dma_display1() and spi1_dma_display2() do the work of converting a string of at most 16 characters to 16-bit entries at the right location in the display[] array. These are used for the game at the end of the lab experiment.
+An example of subroutines to update the `display[]` array is provided in the support.c file. Two subroutines named `spi1_dma_display1()` and `spi1_dma_display2()` do the work of converting a string of at most 16 characters to 16-bit entries at the right location in the `display[]` array. These are used for the game at the end of the lab experiment.
 
-2.5.3 Demonstrate your work
-Uncomment the SPI_OLED_DMA stanza and comment all other stanzas. You should see the message encoded into the display[] array. (TA instructions: Once this works, try commenting all stanzas so that the game is invoked.)
+#### 2.5.3 Demonstrate your work
+Uncomment the `SPI_OLED_DMA` stanza and comment all other stanzas. You should see the message encoded into the `display[]` array. (TA instructions: Once this works, try commenting all stanzas so that the game is invoked.)
 
-3 Play the game
+## Step 3 Play the game
 If you have properly implemented all of your subroutines, you should be able to comment all of the test stanzas and play the game provided for you. This game provides several examples that will be useful to you when you implement a mini-project:
+- It starts a free-running timer counter (TIM17) while it waits on the player to press a button. Once a button is pressed, the value of the counter is read and used as a seed for the random number generator. In doing so, each game will be different.
+- This is an example of how to wait for key events and update multiple display devices (the 7-segment displays and the OLED display).
+- All of the game logic is encoded into the Timer 17 ISR.
+- The ARPE bit of the timer is set. This allows us to safely modify the ARR during the operation of the game. As the game progresses, the action gets faster.
+- A *critical* section is set up where all interrupts are temporarily disabled when a key is pressed. In this way, the display array can be safely updated rather than have two things modify it in an overlapping fashion.
 
-It starts a free-running timer counter (TIM17) while it waits on the player to press a button. Once a button is pressed, the value of the counter is read and used as a seed for the random number generator. In doing so, each game will be different.
-This is an example of how to wait for key events and update multiple display devices (the 7-segment displays and the OLED display).
-All of the game logic is encoded into the Timer 17 ISR.
-The ARPE bit of the timer is set. This allows us to safely modify the ARR during the operation of the game. As the game progresses, the action gets faster.
-A critical section is set up where all interrupts are temporarily disabled when a key is pressed. In this way, the display array can be safely updated rather than have two things modify it in an overlapping fashion.
 It is an easy game to play. Use the A and B keys to move the '>' character on the left of the display. Use it to hit as many 'x' characters as you can. Each time you hit an 'x', you gain a point. Each time an 'x' goes by you, you lose a point. As your score gets higher, the game goes faster. If you can reach 100 points, you win.
 
-Lab Evaluation Checklist
+## Lab Evaluation Checklist
 Normally, we'll have a checklist of things that you should review before going into your evaluation. There will be no evaluation for this lab experiment.
+[ ] Do your bit-bang subroutines work with and without a delay?
+[ ] Is your AD2 SPI protocol transaction capture in the postlab?
+[ ] Do the SPI2 functions properly drive the 7-segment display?
+[ ] Does the OLED display initialize correctly and display the requested text? Does it update if the login is changed and the program is rerun?
 
-
-Do your bit-bang subroutines work with and without a delay?
-
-Is your AD2 SPI protocol transaction capture in the postlab?
-
-Do the SPI2 functions properly drive the 7-segment display?
-
-Does the OLED display initialize correctly and display the requested text? Does it update if the login is changed and the program is rerun?
-Questions or comments about the course and/or the content of these webpages should be sent to the Course Webmaster. All the materials on this site are intended solely for the use of students enrolled in ECE 362 at the Purdue University West Lafayette Campus. Downloading, copying, or reproducing any of the copyrighted materials posted on this site (documents or videos) for anything other than educational purposes is forbidden.
+>Questions or comments about the course and/or the content of these webpages should be sent to the Course Webmaster. All the materials on this site are intended solely for the use of students enrolled in ECE 362 at the Purdue University West Lafayette Campus. Downloading, copying, or reproducing any of the copyrighted materials posted on this site (documents or videos) for anything other than educational purposes is forbidden.
