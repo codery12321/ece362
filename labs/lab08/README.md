@@ -84,13 +84,13 @@ We cannot check the BUSY flag, because we did not connect the MISO pin to the di
 ```
     0 0 0 0 1 D C B
 ```
-    where D enables the display output, C set the cursor to be visible, and B set the cursor to blink. Turn the display off with the 8-bit code 0x08.
+where D enables the display output, C set the cursor to be visible, and B set the cursor to blink. Turn the display off with the 8-bit code 0x08.
 - **Display Clear**: Clear the display. **Note that this command requires 2ms to complete**. Delay for that long before continuing. The 8-bit command is 0x01.
 - **Entry Mode Set**: Set the *entry mode* to move the cursor right after each new character is displayed without shifting the display. This is done with the command
 ```
     0 0 0 0 0 1 D S
 ```
-    where D represents the direction to advance in, and S configures shifting the display. We'll use the 8-bit command 0x06 to move the cursor left-to-right and not shift the display.
+where D represents the direction to advance in, and S configures shifting the display. We'll use the 8-bit command 0x06 to move the cursor left-to-right and not shift the display.
 - **Home Command**: This will set the cursor to position zero (the top left corner) of the display. The command to use is 0x02.
 - **Display ON**: Turn the display back on again with the command
 ```
