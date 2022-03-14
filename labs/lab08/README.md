@@ -26,10 +26,10 @@ When you are ready for your lab evaluation, review this checklist.
 
 ## Step 0: Prelab Exercises:
 - Be familiar with lectures up to and including the Serial Peripheral Interface.
-- Read Chapter 27 of the [STM32F0 Family Reference Manual](ece362/manuals/STM32F0x1_STM32F0x2_STM32F0x8 advanced ARM®-based 32-bit MCUs.pdf) to become familiar with the SPI subsystem.
+- Read Chapter 27 of the [STM32F0 Family Reference Manual](./manuals/STM32F0x1_STM32F0x2_STM32F0x8 advanced ARM®-based 32-bit MCUs.pdf) to become familiar with the SPI subsystem.
 - Read Chapter 11 of the Family Reference Manual to understand how to configure the proper DMA channel.
 - Read Section 22.3 of the textbook
-- Read the datasheet for the [SOC1602A OLED LCD display](ece362/manuals/SOC1602A_datasheet.pdf).
+- Read the datasheet for the [SOC1602A OLED LCD display](./manuals/SOC1602A_datasheet.pdf).
 - Read this entire lab document.
 - Leave the devices and wiring you did for Lab 5 in place and add the things described in section 1.5.
 - After doing the previous steps, including reading the entire lab document, complete the [prelab exercises](prelab8.pdf) and submit them **before** attempting the lab experiment.
@@ -74,31 +74,36 @@ Page 7 of the SOC1602A datasheet lists the set of possible commands that can be 
 
 The operations to be done are as follows:
 - Wait 1ms for the display power to stabilize.
-- Function set: The reason for issuing this command first is to set the data length for 8-bit operation. This is set by the DL bit in the command description for the 8-bit Function Set operation:
-```0 0 1 DL 1 0 FT1 FT0```
-
+- **Function set**: The reason for issuing this command first is to set the data length for 8-bit operation. This is set by the DL bit in the command description for the 8-bit Function Set operation:
+```
+    0 0 1 DL 1 0 FT1 FT0
+```
 To set the data length to 8-bit, we use DL=1. The FT[1:0] bits select a font. We'll select 0 0 to use the English/Japanese font. The 8-bit command will be 00111000 or 0x38.
-We cannot check the BUSY flag, because we did not connect the MISO pin to the display. Instead, we will simply wait long enough that the display can be guaranteed to finish the command. This command will complete in 600µs, at most. In practice, it will finish much faster.
+We cannot check the BUSY flag, because we did not connect the MISO pin to the display. Instead, we will simply wait long enough that the display can be guaranteed to finish the command. This command will complete in 600µs, at most. In practice, it will finish much faster.  
+- **Display OFF**: The recommendation is to turn the display off with the 8-bit command
+```
+    0 0 0 0 1 D C B
+```
+    where D enables the display output, C set the cursor to be visible, and B set the cursor to blink. Turn the display off with the 8-bit code 0x08.
+- **Display Clear**: Clear the display. **Note that this command requires 2ms to complete**. Delay for that long before continuing. The 8-bit command is 0x01.
+- **Entry Mode Set**: Set the *entry mode* to move the cursor right after each new character is displayed without shifting the display. This is done with the command
+```
+    0 0 0 0 0 1 D S
+```
+    where D represents the direction to advance in, and S configures shifting the display. We'll use the 8-bit command 0x06 to move the cursor left-to-right and not shift the display.
+- **Home Command**: This will set the cursor to position zero (the top left corner) of the display. The command to use is 0x02.
+- **Display ON**: Turn the display back on again with the command
+```
+    0 0 0 0 1 D C B
+```
+    This time, we will set D=1 and leave C=0, B=0. The 8-bit command is 0x0c.
 
-Display OFF: The recommendation is to turn the display off with the 8-bit command
- 0 0 0 0 1 D C B
-
-where D enables the display output, C set the cursor to be visible, and B set the cursor to blink. Turn the display off with the 8-bit code 0x08.
-Display Clear: Clear the display. Note that this command requires 2ms to complete. Delay for that long before continuing. The 8-bit command is 0x01.
-Entry Mode Set: Set the entry mode to move the cursor right after each new character is displayed without shifting the display. This is done with the command
-            0 0 0 0 0 1 D S
-
-where D represents the direction to advance in, and S configures shifting the display. We'll use the 8-bit command 0x06 to move the cursor left-to-right and not shift the display.
-Home Command: This will set the cursor to position zero (the top left corner) of the display. The command to use is 0x02.
-Display ON: Turn the display back on again with the command
-            0 0 0 0 1 D C B
-
-This time, we will set D=1 and leave C=0, B=0. The 8-bit command is 0x0c.
 After these initialization steps are complete, the LCD is ready to display characters starting in the upper left corner. Data can be sent with a 10-bit SPI transfer where the first bit is a 1. For instance, the 10-bit word 10 0100 0001 (0x241) would tell the LCD to display the character ‘A’ at the current cursor position. In the C programming language, a character is treated as an 8-bit integer. In general, any character can be sent to the display by adding the character to 0x200 to produce a 16-bit result that can be sent to the SPI transmitter. For instance, to write an ‘A’ to the display after initialization, the following statement could be used:
-        while((SPI2->SR & SPI_SR_TXE) == 0)
-            ; // wait for the transmit buffer to be empty
-	SPI2->DR = 0x200 + 'A';
-
+```
+    while((SPI2->SR & SPI_SR_TXE) == 0)
+        ; // wait for the transmit buffer to be empty
+    SPI2->DR = 0x200 + 'A';
+```
 To understand why 0x41 is the same thing as 'A', you should consult the ASCII manual.
 2.0 Experiment
 For this experiment, you will write the subroutines to write to the shift registers to drive the 7-segment LED displays and to initialize and write to the SOC1602A OLED LCD display through the SPI interface and using DMA.
