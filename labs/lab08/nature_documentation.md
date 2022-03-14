@@ -23,11 +23,11 @@ This is not an indictment of Chinese writers. It's possible that this incident s
 
 Sometimes documentation errors go beyond the basic difficulty of reading mispellings, grammar errors, and clumsy prose. Often, documentation will contain fundamental errors for specifications. For instance, there may be two conflicting sentences like this:
 
-    *If the serial configuration value 01001011 is issued to the Bake-o-tron 3000, it will commence automatic cupcake production.*
+*If the serial configuration value 01001011 is issued to the Bake-o-tron 3000, it will commence automatic cupcake production.*
 
 and
 
-    *If the serial configuration value 01001011 is ever accidentally sent to the Bake-o-tron 3000, it will rapidly overheat and explode violently.*
+*If the serial configuration value 01001011 is ever accidentally sent to the Bake-o-tron 3000, it will rapidly overheat and explode violently.*
 
 This documentation is actually extremely helpful in properly alerting an astute reader to the reality of the poor design philosophy of the product. Once again, it is important to consider how well one would be getting along without this documentation! ...subjected to the Faustian bargain of delicious cupcakes and fiery demise.
 
@@ -64,4 +64,4 @@ The only true documentation for a system is its software source code and hardwar
 
 Someday, I may write a note about the process of writing documentation. That's going to be an interesting read. The techniques I've mentioned when reading documentation also apply for when you're writing documentation.
 
-Questions or comments about the course and/or the content of these webpages should be sent to the Course Webmaster. All the materials on this site are intended solely for the use of students enrolled in ECE 362 at the Purdue University West Lafayette Campus. Downloading, copying, or reproducing any of the copyrighted materials posted on this site (documents or videos) for anything other than educational purposes is forbidden.
+>Questions or comments about the course and/or the content of these webpages should be sent to the Course Webmaster. All the materials on this site are intended solely for the use of students enrolled in ECE 362 at the Purdue University West Lafayette Campus. Downloading, copying, or reproducing any of the copyrighted materials posted on this site (documents or videos) for anything other than educational purposes is forbidden.
