@@ -73,10 +73,9 @@ When the register select bit is zero, the transmission issues an 8-bit command t
 Page 7 of the SOC1602A datasheet lists the set of possible commands that can be sent to the display. Pay special attention to the column labeled "Max Execution Time". Regardless of how fast data is sent to the display, some operations take significant time to complete. The sender must not start a new command before the previous one has finished. On the next page, details of the instruction format are given. Page 20 lists the initialization sequence (under the header **LNITIALIATION SWUENCE[\[*\]](nature_documentation.md))** that must be used to prepare the display for use. Until each step is properly completed, the display will not show anything. The greatest problem that students have with new hardware (other than poor documentation) is finding the patience to carefully implement each step of the initialization sequence.
 
 The operations to be done are as follows:
-
-Wait 1ms for the display power to stabilize.
-Function set: The reason for issuing this command first is to set the data length for 8-bit operation. This is set by the DL bit in the command description for the 8-bit Function Set operation:
-            0 0 1 DL 1 0 FT1 FT0
+- Wait 1ms for the display power to stabilize.
+- Function set: The reason for issuing this command first is to set the data length for 8-bit operation. This is set by the DL bit in the command description for the 8-bit Function Set operation:
+```0 0 1 DL 1 0 FT1 FT0```
 
 To set the data length to 8-bit, we use DL=1. The FT[1:0] bits select a font. We'll select 0 0 to use the English/Japanese font. The 8-bit command will be 00111000 or 0x38.
 We cannot check the BUSY flag, because we did not connect the MISO pin to the display. Instead, we will simply wait long enough that the display can be guaranteed to finish the command. This command will complete in 600µs, at most. In practice, it will finish much faster.
