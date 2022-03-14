@@ -242,7 +242,7 @@ A C subroutine named `spi1_init_oled()` is provided for you. It performs each op
 - `cmd(0x0c); // turn the display on`
 
 #### 2.4.5 spi1_display1()
-A C subroutine named `spi1_display1()` is provided for you. It accepts a const char * parameter (also known as a string) and does the following:
+A C subroutine named `spi1_display1()` is provided for you. It accepts a `const char *` parameter (also known as a string) and does the following:
 - `cmd(0x02); // move the cursor to the home position`
 - Call `data()` for each non-NUL character of the string.
 
@@ -288,9 +288,9 @@ It is an easy game to play. Use the A and B keys to move the '>' character on th
 
 ## Lab Evaluation Checklist
 Normally, we'll have a checklist of things that you should review before going into your evaluation. There will be no evaluation for this lab experiment.
-[ ] Do your bit-bang subroutines work with and without a delay?
-[ ] Is your AD2 SPI protocol transaction capture in the postlab?
-[ ] Do the SPI2 functions properly drive the 7-segment display?
-[ ] Does the OLED display initialize correctly and display the requested text? Does it update if the login is changed and the program is rerun?
+- [ ] Do your bit-bang subroutines work with and without a delay?
+- [ ] Is your AD2 SPI protocol transaction capture in the postlab?
+- [ ] Do the SPI2 functions properly drive the 7-segment display?
+- [ ] Does the OLED display initialize correctly and display the requested text? Does it update if the login is changed and the program is rerun?
 
 >Questions or comments about the course and/or the content of these webpages should be sent to the Course Webmaster. All the materials on this site are intended solely for the use of students enrolled in ECE 362 at the Purdue University West Lafayette Campus. Downloading, copying, or reproducing any of the copyrighted materials posted on this site (documents or videos) for anything other than educational purposes is forbidden.
