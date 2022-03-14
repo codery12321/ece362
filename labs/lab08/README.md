@@ -96,7 +96,7 @@ where D represents the direction to advance in, and S configures shifting the di
 ```
     0 0 0 0 1 D C B
 ```
-    This time, we will set D=1 and leave C=0, B=0. The 8-bit command is 0x0c.
+This time, we will set D=1 and leave C=0, B=0. The 8-bit command is 0x0c.
 
 After these initialization steps are complete, the LCD is ready to display characters starting in the upper left corner. Data can be sent with a 10-bit SPI transfer where the first bit is a 1. For instance, the 10-bit word 10 0100 0001 (0x241) would tell the LCD to display the character ‘A’ at the current cursor position. In the C programming language, a character is treated as an 8-bit integer. In general, any character can be sent to the display by adding the character to 0x200 to produce a 16-bit result that can be sent to the SPI transmitter. For instance, to write an ‘A’ to the display after initialization, the following statement could be used:
 ```
