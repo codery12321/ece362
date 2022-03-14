@@ -23,11 +23,11 @@ This is not an indictment of Chinese writers. It's possible that this incident s
 
 Sometimes documentation errors go beyond the basic difficulty of reading mispellings, grammar errors, and clumsy prose. Often, documentation will contain fundamental errors for specifications. For instance, there may be two conflicting sentences like this:
 
-    > *If the serial configuration value 01001011 is issued to the Bake-o-tron 3000, it will commence automatic cupcake production.*
+> *If the serial configuration value 01001011 is issued to the Bake-o-tron 3000, it will commence automatic cupcake production.*
 
 and
 
-    > *If the serial configuration value 01001011 is ever accidentally sent to the Bake-o-tron 3000, it will rapidly overheat and explode violently.*
+> *If the serial configuration value 01001011 is ever accidentally sent to the Bake-o-tron 3000, it will rapidly overheat and explode violently.*
 
 This documentation is actually extremely helpful in properly alerting an astute reader to the reality of the poor design philosophy of the product. Once again, it is important to consider how well one would be getting along without this documentation! ...subjected to the Faustian bargain of delicious cupcakes and fiery demise.
 
