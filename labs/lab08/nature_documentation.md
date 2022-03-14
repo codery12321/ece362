@@ -46,8 +46,9 @@ Often, documentation may be written properly, but before the device it describes
 
 The fact is that you will read a great deal of documentation in your future career. It will be filled with mistakes. Your success will be based, to a great degree, on your ability to not only understand the documentation, but also to anticipate and overcome the inaccuracies. The best way to do that is maintain an extreme skepticism about the correctness of the documentation. For instance, read this table of values:
 
-|**Value**|	**Color**|
-|0|	Black|
+|Value|	Color|
+|---|--------|
+| 0 |	Black|
 |1|	Blue|
 |2|	Green|
 |3|	Yellow|
