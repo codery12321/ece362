@@ -26,10 +26,10 @@ When you are ready for your lab evaluation, review this checklist.
 
 ## Step 0: Prelab Exercises:
 - Be familiar with lectures up to and including the Serial Peripheral Interface.
-- Read Chapter 27 of the [STM32F0 Family Reference Manual](/ece362/manuals/FRM.pdf) to become familiar with the SPI subsystem.
+- Read Chapter 27 of the [STM32F0 Family Reference Manual](../manuals/FRM.pdf) to become familiar with the SPI subsystem.
 - Read Chapter 11 of the Family Reference Manual to understand how to configure the proper DMA channel.
 - Read Section 22.3 of the textbook
-- Read the datasheet for the [SOC1602A OLED LCD display](/ece362/manuals/SOC1602A_datasheet.pdf).
+- Read the datasheet for the [SOC1602A OLED LCD display](../manuals/SOC1602A_datasheet.pdf).
 - Read this entire lab document.
 - Leave the devices and wiring you did for Lab 5 in place and add the things described in section 1.5.
 - After doing the previous steps, including reading the entire lab document, complete the [prelab exercises](prelab8.pdf) and submit them **before** attempting the lab experiment.
