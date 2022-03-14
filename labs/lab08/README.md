@@ -29,7 +29,7 @@ When you are ready for your lab evaluation, review this checklist.
 - Read Chapter 27 of the [STM32F0 Family Reference Manual](../../manuals/FRM.pdf) to become familiar with the SPI subsystem.
 - Read Chapter 11 of the Family Reference Manual to understand how to configure the proper DMA channel.
 - Read Section 22.3 of the textbook
-- Read the datasheet for the [SOC1602A OLED LCD display](SOC1602A_datasheet.pdf).
+- Read the datasheet for the [SOC1602A OLED LCD display](../../manuals/SOC1602A_datasheet.pdf).
 - Read this entire lab document.
 - Leave the devices and wiring you did for Lab 5 in place and add the things described in section 1.5.
 - After doing the previous steps, including reading the entire lab document, complete the [prelab exercises](prelab8.pdf) and submit them **before** attempting the lab experiment.
@@ -47,7 +47,7 @@ The baud rate (another name for the rate at which bits are sent) for an STM32 SP
 ### 1.2 Shift Registers and 7-Segment Display
 In Lab 5, you built an eight-character display out of multiplexed 7-segment LED displays. Since then, you have been using it through a parallel interface — you need to output 11 bits on Port B at the same time in order to display a character at a particular position. To reduce the number of STM32F091RC pins needed to drive your display, it is possible to use external shift registers as a serial interface for it.
 
-Since each [74HC595](ece362/manuals/74hc595.pdf) shift register in your lab kit only provides 8 output pins, you will need to cascade two together to effectively build a 16-bit shift register. Connect the serial input of one 74HC595 shift reigster to PB15 (MOSI). Connect the serial input of the other shift register to the serial output (Q7') of the first. Tie both shift register clock inputs (SH_CP) together, and connect them to PB13 (SCK). The outputs of the shift registers replace your previous Port B connections.
+Since each [74HC595](../../manuals/74hc595.pdf) shift register in your lab kit only provides 8 output pins, you will need to cascade two together to effectively build a 16-bit shift register. Connect the serial input of one 74HC595 shift reigster to PB15 (MOSI). Connect the serial input of the other shift register to the serial output (Q7') of the first. Tie both shift register clock inputs (SH_CP) together, and connect them to PB13 (SCK). The outputs of the shift registers replace your previous Port B connections.
 
 *Note: You may find it useful to place the 74HC595 shift registers on your breadboard upside-down, so the outputs of the shift registers are facing the inputs of the decoder and sink driver.*
 
@@ -58,7 +58,7 @@ The schematic for this setup is shown below.
 ![Figure 2: Shift Register Schematic](images/figure2.png)  
 
 ### 1.3 OLED Hardware Configuration
-Page 4 of the datasheet for the [SOC1602A OLED LCD display](ece362/manuals/SOC1602A_datasheet.pdf) describes the pins for the serial interfaces. Like many SPI devices, the documented pin names differ from the canonical description of the SPI protocol. Pin 12 (SCL) is the SPI clock. Pin 14 (SDI) is the MOSI signal. Pin 16 (/CS) is a "negated chip select", which is connected to NSS. Figure 3 describes the connection to the STM32F091 development board.
+Page 4 of the datasheet for the [SOC1602A OLED LCD display](../../manuals/SOC1602A_datasheet.pdf) describes the pins for the serial interfaces. Like many SPI devices, the documented pin names differ from the canonical description of the SPI protocol. Pin 12 (SCL) is the SPI clock. Pin 14 (SDI) is the MOSI signal. Pin 16 (/CS) is a "negated chip select", which is connected to NSS. Figure 3 describes the connection to the STM32F091 development board.
 ![Figure 3: OLED LCD wiring](images/figure3.png)  
 
 ![Figure 4: Preferred placement and example wiring of the OLED LCD](images/figure4.png)  
@@ -105,7 +105,8 @@ After these initialization steps are complete, the LCD is ready to display chara
     SPI2->DR = 0x200 + 'A';
 ```
 To understand why 0x41 is the same thing as 'A', you should consult the ASCII manual.
-2.0 Experiment
+
+## 2.0 Experiment
 For this experiment, you will write the subroutines to write to the shift registers to drive the 7-segment LED displays and to initialize and write to the SOC1602A OLED LCD display through the SPI interface and using DMA.
 
 Create a project in SystemWorkbench called "lab8", and replace the automatically-generated main.c file with the main.c skeleton file provided for you.
