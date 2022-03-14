@@ -8,6 +8,7 @@ The Serial Peripheral Interface (SPI) is a widely-used method for communicating 
 - to use DMA to automatically transfer data to an SPI device
 ## Table of Contents
 |Step|Description|Points|
+|----|-----------|------|
 |0	|Prelab Exercises	|25|
 |1	|Background||
 |2	|Experiment|
@@ -69,7 +70,7 @@ Most SPI devices use a 4-, 8-, or 16-bit word size. The SOC1602A uses a 2+8-bit 
 
 When the register select bit is zero, the transmission issues an 8-bit command to the display. When the register select bit is one, the transmission represents a character to write to the display.
 
-Page 7 of the SOC1602A datasheet lists the set of possible commands that can be sent to the display. Pay special attention to the column labeled "Max Execution Time". Regardless of how fast data is sent to the display, some operations take significant time to complete. The sender must not start a new command before the previous one has finished. On the next page, details of the instruction format are given. Page 20 lists the initialization sequence (under the header LNITIALIATION SWUENCE[*]) that must be used to prepare the display for use. Until each step is properly completed, the display will not show anything. The greatest problem that students have with new hardware (other than poor documentation) is finding the patience to carefully implement each step of the initialization sequence.
+Page 7 of the SOC1602A datasheet lists the set of possible commands that can be sent to the display. Pay special attention to the column labeled "Max Execution Time". Regardless of how fast data is sent to the display, some operations take significant time to complete. The sender must not start a new command before the previous one has finished. On the next page, details of the instruction format are given. Page 20 lists the initialization sequence (under the header **LNITIALIATION SWUENCE[\[*\]](nature_documentation.md))** that must be used to prepare the display for use. Until each step is properly completed, the display will not show anything. The greatest problem that students have with new hardware (other than poor documentation) is finding the patience to carefully implement each step of the initialization sequence.
 
 The operations to be done are as follows:
 
