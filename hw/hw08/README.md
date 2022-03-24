@@ -7,7 +7,7 @@ To hurry things along, we give you the initialization software as well as a libr
 
 ## Step 0: Physical circuitry
 Wire the display as show in Figure 1. You may still have Port B pins 0 - 10 wired to the 7-segment display. By now, you've switched over to using the SPI interface for that. **Remove the old connections for PB0 - PB10.** You won't use them for the 7-segment display any longer.
-![Figure 1: TFT LCD and SD card interface wiring](figure1.png)  
+![Figure 1: TFT LCD and SD card interface wiring](images/figure1.png)  
 
 Figure 1 includes wiring for both the LCD display (9-pin connector) and the SDcard interface (5-pin connector). Don't wire anything to the five-pin connector for this exercise.
 
