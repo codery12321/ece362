@@ -1,5 +1,4 @@
 # ECE 362 Microprocessor Systems and Interfacing
-
 ## List of Homework Assignments
 - **hw1**: Instructions
 - **hw2**: CPU Instruction Encodings and Operation
@@ -9,3 +8,4 @@
 - **hw5.2**: C language warmup for GPIO, timers, and interrupts
 - **hw6**: Fading Digit Clock (with DMA)
 - **hw7**: Playing MIDI Files
+- **hw8**: Using the TFT LCD

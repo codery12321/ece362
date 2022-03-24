@@ -30,3 +30,4 @@ asynchronous serial interface (USART), applications
 - **hw5.2**: C language warmup for GPIO, timers, and interrupts
 - **hw06**: Fading Digit Clock (with DMA)
 - **hw07**: Playing MIDI Files
+- **hw08**: Using the TFT LCD
