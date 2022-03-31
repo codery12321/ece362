@@ -1,7 +1,7 @@
 # ECE 362 Lab Experiment 9: I2C
 ## Introduction
 ![intro](images/intro.png)
-<img src="https://engineering.purdue.edu/ece362/lab/lab9/i2c-wiring.png" width="100" height="100">
+<img src="https://github.com/codery12321/ece362/blob/744f41cc56ad9f871f6f235a81f383a68a9740be/labs/lab09/images/intro.png" width="100" height="100">
 Serial interface formats are convenient because they require a small number of physical connections. They are often limited in the number of devices that can be connected at once, or they require cumbersome control logic to enable and disable devices. Inter-Integrated Circuit (I2C) is a synchronous serial interface that uses an addressing scheme to select between multiple communication targets on a shared bus. Although it is generally slower than SPI, the flexibility of easily connecting multiple devices is useful when communication speed is not critical. In this lab, you will gain experience using and testing I2C devices. You will examine I2C protocol using a USB logic analyzer to identify correct and incorrect interface signals.
 
 ## Instructional Objectives
