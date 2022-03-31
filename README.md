@@ -19,7 +19,8 @@ asynchronous serial interface (USART), applications
 - **lab05**: Timers
 - **lab06**: Analog Input/Output
 - **lab07**: Pulse-Width Modulation  
-- **lab08**: Serial Peripheral Interface (and DMA)     
+- **lab08**: Serial Peripheral Interface (and DMA)    
+- **lab09**: Inter-Integrated Circuit (I2C) Interface   
 
 ## List of Homework Assignments
 - **hw01**: Instructions  

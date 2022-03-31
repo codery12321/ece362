@@ -33,3 +33,5 @@
 
 ### lab8: Serial Peripheral Interface (and DMA)     
 > The Serial Peripheral Interface (SPI) is a widely-used method for communicating with digital devices with an economy of wires and connections. It is possible to control such devices by "bit-banging" the protocol using GPIO, but your microcontroller has high-level support for SPI devices that simplifies the use of such interfaces. This support also allows for the use of Direct Memory Access (DMA) to automatically transfer a region of memory to the device. In this lab, you will gain experience using SPI and DMA with display devices.
+
+### lab9: Inter-Integrated Circuit (I2C) Interface
