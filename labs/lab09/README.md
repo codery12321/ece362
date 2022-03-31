@@ -91,7 +91,8 @@ If you have not yet clipped the leads on your keypad resistors so that they are 
  a|b|c|d|
 :---:|:---:|:---:|:---|
 ![a](images/wiring1.png) | ![b](images/wiring2.png) | ![c](images/wiring3.png) | ![d](images/wiring4.png)
-[Figure 2: Recommended component layout]
+
+**[Figure 2: Recommended component layout]**
 
 ### 1.5 Basic Protocol
 I2C peripheral devices operate with streams of writes and reads. The initial byte identifies the device that the stream is intended to interact with (its 7-bit identifier) as well as one bit to indicate if the stream is being written to or read from the device.
@@ -180,7 +181,7 @@ Write a C subroutine named `init_i2c()` that configures PB6 and PB7 to be, respe
 - Turn on the AUTOEND setting to enable automatic end.
 - Enable the channel by setting the PE bit in CR1.
 
-The code shown on page 23 of the I2C lecture will be a helpful starting point for writing this subroutine.
+The code shown on page 23 of the I2C lecture will be a helpful starting point for writing this subroutine.  
 **_If the TIMINGR values were far enough off that they did not work, would you be able to diagnose why? This is a very realistic situation for hardware debugging._**
 
 **Have a TA check you off for this step** (TA Instructions: check for subroutine completion).
@@ -198,10 +199,12 @@ Test your subroutines using something like the code on page 30 of the lecture no
             i2c_stop();
         }
 ```
-View the results of a zero-byte write to the I2C device address of the MCP23008 on your USB logic analyzer. Make sure you see something like Figure 3. Note the presence of the acknowledge bit in the single-byte transfer. **Follow the instructions in step 1.3.1 to set up the AD2 to observe a transaction.**
+View the results of a zero-byte write to the I2C device address of the MCP23008 on your USB logic analyzer. Make sure you see something like Figure 3. Note the presence of the acknowledge bit in the single-byte transfer. **Follow the instructions in step 1.3.1 to set up the AD2 to observe a transaction.**  
+
 ![Figure 3: An acknowledged zero-byte write to the MCP23008](images/figure3.png)
 
 If you change your test subroutine to use the incorrect I2C device address, you should see something like Figure 4. Because no device responds to this address, no acknowledgement is sent.
+
 ![Figure 4: An unacknowledged zero-byte write to a vacant I2C device address](images/figure4.png)
 
 There is some advice on page 39 of the lecture notes for debugging I2C problems. The instructions are useful for more than only this lab experiment. When something does not work, it is most helpful to reduce the speed, remove extraneous devices, reduce the system to a minimum to be able to analyze it. Note that not all devices respond to the "general call" address. Neither the MCP23008 nor the 24AA32AF appear to.
