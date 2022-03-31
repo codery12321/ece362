@@ -80,6 +80,7 @@ Refer to the datasheet for the 24AA32AF I2C EEPROM on the ECE 362 reference web 
 
 Refer to the datasheet for the MCP23008 on the ECE362 reference web page. Connect the VDD of the chip to 3V, GND to GND, and SCL and SDA to the corresponding pins on your STM32 development board. Connect the active-low RESET (pin 6) to 3V. Connect A0, A1 and A2 to 3V. Connect GP0 through GP7 to the keypad through 1K resistors as shown in Figure 1, below.
 ![Figure 1: I2C device wiring](images/schem.png)
+*Figure 1: I2C device wiring*
 
 #### 1.4.1 Physical Component Layout
 To simplify wiring and keep the system compact, we recommend you install the MCP23008 "upside-down" and connect it to the resistors you used when the keypad was driven by GPIOC. Because you will not be using GPIOC (you will leave it in the default state where all pins are configured as inputs), you may leave the wires that connect it to the keypad resistors so long as you do not enable PC0-PC7 as outputs. In fact, for this lab experiment, you will not use general-purpose I/O at all. You can disconnect the wires from PC0-PC8 once you're ready.
@@ -202,10 +203,12 @@ Test your subroutines using something like the code on page 30 of the lecture no
 View the results of a zero-byte write to the I2C device address of the MCP23008 on your USB logic analyzer. Make sure you see something like Figure 3. Note the presence of the acknowledge bit in the single-byte transfer. **Follow the instructions in step 1.3.1 to set up the AD2 to observe a transaction.**  
 
 ![Figure 3: An acknowledged zero-byte write to the MCP23008](images/figure3.png)
+*Figure 3: An acknowledged zero-byte write to the MCP23008*
 
 If you change your test subroutine to use the incorrect I2C device address, you should see something like Figure 4. Because no device responds to this address, no acknowledgement is sent.
 
 ![Figure 4: An unacknowledged zero-byte write to a vacant I2C device address](images/figure4.png)
+*Figure 4: An unacknowledged zero-byte write to a vacant I2C device address*
 
 There is some advice on page 39 of the lecture notes for debugging I2C problems. The instructions are useful for more than only this lab experiment. When something does not work, it is most helpful to reduce the speed, remove extraneous devices, reduce the system to a minimum to be able to analyze it. Note that not all devices respond to the "general call" address. Neither the MCP23008 nor the 24AA32AF appear to.
 
@@ -223,6 +226,7 @@ To write data to the MCP23008, consider the following code that uses the i2c_sen
 ```
 This sets the IODIR register of the GPIO expander to its default value of 0xff. It should produce a trace that looks like Figure 5.
 ![Figure 5: An acknowledged 2-byte write to the MCP23008](images/figure5.png)
+*Figure 5: An acknowledged 2-byte write to the MCP23008*
 
 Upon seeing proper AD2 traces for I2C write, you should try a read operation. In reading from the MCP23008, it will read whatever register values it points to, and then advance to the next. By doing a zero-byte write to the IODIR register (register 0), the internal pointer for the GPIO expander will be ready to read back the IODIR register. To do so, try the following code:
 ```
@@ -235,6 +239,7 @@ Upon seeing proper AD2 traces for I2C write, you should try a read operation. In
 And this should produce a trace similar to that shown in Figure 5. The initial write prepares the MCP23008 to refer to register 0. The subsequent read indicates the setting of the IODIR register (which is 0xff, by default). You should see the value 0xff in element zero of the `data` array.
 
 ![Figure 6: An acknowledged 1-byte write to and 1-byte read from the MCP23008](images/figure6.png)
+*Figure 6: An acknowledged 1-byte write to and 1-byte read from the MCP23008*
 
 **Have a TA check you off for this step** (TA Instructions: have the student demonstrate back-to-back I2C write/read transactions that show the value of the IODIR register on the AD2 or oscilliscope). Ensure that the data shown on the scope trace is read into the array.
 
