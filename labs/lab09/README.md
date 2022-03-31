@@ -1,6 +1,6 @@
 # ECE 362 Lab Experiment 9: I2C
 ## Introduction
-![intro](intro.png)
+![intro](images/intro.png)
 Serial interface formats are convenient because they require a small number of physical connections. They are often limited in the number of devices that can be connected at once, or they require cumbersome control logic to enable and disable devices. Inter-Integrated Circuit (I2C) is a synchronous serial interface that uses an addressing scheme to select between multiple communication targets on a shared bus. Although it is generally slower than SPI, the flexibility of easily connecting multiple devices is useful when communication speed is not critical. In this lab, you will gain experience using and testing I2C devices. You will examine I2C protocol using a USB logic analyzer to identify correct and incorrect interface signals.
 
 ## Instructional Objectives
@@ -13,7 +13,7 @@ Serial interface formats are convenient because they require a small number of p
 | 0	| Prelab Exercises	| 35 |
 | 1	| Background| |
 | 2	| Experiment| |
-| 2.1	init_i2c()	| 10|
+| 2.1 |	init_i2c()	| 10|
 | 2.2	| Create I2C helper subroutines	| 10|
 | 2.3	| Reading and writing data	| 10|
 | 2.4	| Using the GPIO Expander to scan the keypad| 	15|
@@ -88,8 +88,9 @@ Figure 2 shows the progression from the old keypad wiring to the new form. Figur
 
 If you have not yet clipped the leads on your keypad resistors so that they are flush with the breadboard, you need to do that now.
 
-
-![a](images/wiring1.png)![b](images/wiring2.png)![c](images/wiring3.png)![d](images/wiring4.png)
+ a|b|c|d|
+:---:|:---:|:---:|:---|
+![a](images/wiring1.png) | ![b](images/wiring2.png) | ![c](images/wiring3.png) | ![d](images/wiring4.png)
 [Figure 2: Recommended component layout]
 
 ### 1.5 Basic Protocol
