@@ -11,9 +11,6 @@ extern const char font[128];
 void drive_column(int);
 int read_rows();
 void update_history(col, rows);
-//============================================================================
-// enable_dma()
-//============================================================================
 
 uint8_t col;
 void TIM7_IRQHandler(void) {
@@ -63,11 +60,8 @@ void init_spi2(void) {
 	// Enable the SPI channel.
 	SPI2->CR1 |= SPI_CR1_SPE;
 }
-//============================================================================
+
 // setup_dma()
-// Copy this from lab 6 or lab 7.
-// Write to SPI2->DR instead of GPIOB->ODR.
-//============================================================================
 void setup_dma(void)
 {
 	RCC->AHBENR |= RCC_AHBENR_DMAEN;            //bit 0 of RCC_AHBENR
@@ -88,6 +82,7 @@ void setup_dma(void)
 	DMA1_Channel5->CCR |= 0x5b0;    //0101 1011 0000;
 	// SPI1->CR2 |= SPI_CR2_TXDMAEN;
 }
+// enable_dma()
 void enable_dma(void)
 {
 	DMA1_Channel5->CCR |= DMA_CCR_EN;
@@ -149,11 +144,9 @@ void init_i2c(void) {
 
 }
 
-
 //===========================================================================
 // 2.2 I2C helpers
 //===========================================================================
-
 void i2c_waitidle(void) {
 	while((I2C1->ISR & I2C_ISR_BUSY) == I2C_ISR_BUSY);
 }
@@ -239,15 +232,34 @@ int i2c_recvdata(uint8_t devaddr, void *data, uint8_t size) {
 	i2c_stop();
 	return 0;
 }
-// ===================
-/* 2.2 check 
-// ===================
+// =========================
+/* 2.2 check
+// =========================
 i2c_init();
 for(;;) {
     i2c_waitidle();
     i2c_start(0x20,0,0);
     i2c_clearnack();
     i2c_stop();
+}
+*/
+// ===========================
+// 2.3 write data to MCP23008
+// ===========================
+/*
+for(;;) {
+	uint8_t data[2] = { 0x00, 0xff };
+	i2c_senddata(0x20, data, 2);
+}
+*/
+// ===========================
+// 2.3 read data from MCP23008
+// ===========================
+/*
+for(;;) {
+    uint8_t data[2] = { 0x00, 0x00 };
+    i2c_senddata(0x20, data, 1); // Select IODIR register
+    i2c_recvdata(0x20, data, 1);
 }
 */
 //===========================================================================
@@ -257,21 +269,27 @@ void gpio_write(uint8_t reg, uint8_t val) {
 	//Set the MCP23008 register number reg to the val in the second argument.
 	//To do this, set up a two-byte array with the two parameters and
 	//use the i2c_senddata() subroutine to send them to the MCP23008.
-
-	i2c_senddata(uint8_t devaddr, const void *data, uint8_t size);
+	uint8_t regval_arr[2] = {reg,val};
+    i2c_senddata(0x20, regval_arr, 2);
 }
 
 uint8_t gpio_read(uint8_t reg) {
 	// Get the value of the MCP23008 register number reg. Return this value.
 	// To do this, set up a one-byte array with the register number, send it with i2c_senddata().
 	// Reuse the one-byte array to read one byte from the MCP23008 with i2c_recvdata().
-
+	uint8_t return_val[1] = {reg};
+    i2c_senddata(0x20, return_val, 1);
+    i2c_recvdata(0x20, return_val, 1);
+    return return_val[0];
 }
 
 void init_expander(void) {
 	// uses void gpio_write(uint8_t reg, uint8_t value) to configure the GPIO Expander.
 	// It should configure the IODIR register so that GP0-3 are outputs and GP4-7 are inputs.
 	// It should also turn on the internal pull ups on pins GP4-7 and reverse their polarity.
+	gpio_write(0x0,0xf0);
+	gpio_write(0x1,0xf0);
+	gpio_write(0x6,0xf0);
 }
 
 void drive_column(int c) {
@@ -290,21 +308,39 @@ int read_rows() {
     return data & 0xf;
 }
 
-
 //===========================================================================
-// 2.4 EEPROM functions
+// 2.5 EEPROM functions
 //===========================================================================
 void eeprom_write(uint16_t loc, const char* data, uint8_t len) {
+	uint8_t addr[34] = {(loc >>8) & 0xff, loc & 0xff};
+	for(int i = 0; i < len; i++){
+		addr[i+2] = data[i];
+	}
+	i2c_senddata(0x50, addr, len + 2);
 }
 
 int eeprom_write_complete(void) {
+	i2c_waitidle(); //wait for the I2C channel to be idle
+	i2c_start(0x50, 0, 0);
+	while((I2C1->ISR & I2C_ISR_TC) == 0 && (I2C1->ISR & I2C_ISR_NACKF) == 0);
+	if(i2c_checknack()){
+		i2c_clearnack();
+		i2c_stop();
+		return 0;
+	}
+	else{
+		i2c_stop();
+		return 1;
+	}
 }
 
 void eeprom_read(uint16_t loc, char data[], uint8_t len) {
     TIM7->CR1 &= ~TIM_CR1_CEN; // Pause keypad scanning.
 
     // ... your code here
-
+	uint8_t address[2] = {(loc >> 8) & 0xff, loc & 0xff};
+	i2c_senddata(0x50, address, 2);
+	i2c_recvdata(0x50, data, len);
     TIM7->CR1 |= TIM_CR1_CEN; // Resume keypad scanning.
 }
 
@@ -334,13 +370,13 @@ int main(void)
     msg[6] |= font['2'];
     msg[7] |= font[' '];
 
-
     // LED array SPI
     setup_spi2_dma();
     enable_spi2_dma();
     init_spi2();
 
     // This LAB
+	//autotest();
 
     // 2.1 Initialize I2C
     init_i2c();
