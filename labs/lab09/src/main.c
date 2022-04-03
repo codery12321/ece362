@@ -316,12 +316,12 @@ void eeprom_write(uint16_t loc, const char* data, uint8_t len) {
 	for(int i = 0; i < len; i++){
 		addr[i+2] = data[i];
 	}
-	i2c_senddata(0x50, addr, len + 2);
+	i2c_senddata(0x57, addr, len + 2);
 }
 
 int eeprom_write_complete(void) {
 	i2c_waitidle(); //wait for the I2C channel to be idle
-	i2c_start(0x50, 0, 0);
+	i2c_start(0x57, 0, 0);
 	while((I2C1->ISR & I2C_ISR_TC) == 0 && (I2C1->ISR & I2C_ISR_NACKF) == 0);
 	if(i2c_checknack()){
 		i2c_clearnack();
@@ -339,8 +339,8 @@ void eeprom_read(uint16_t loc, char data[], uint8_t len) {
 
     // ... your code here
 	uint8_t address[2] = {(loc >> 8) & 0xff, loc & 0xff};
-	i2c_senddata(0x50, address, 2);
-	i2c_recvdata(0x50, data, len);
+	i2c_senddata(0x57, address, 2);
+	i2c_recvdata(0x57, data, len);
     TIM7->CR1 |= TIM_CR1_CEN; // Resume keypad scanning.
 }
 
@@ -382,7 +382,7 @@ int main(void)
     init_i2c();
 
     // 2.2 Example code for testing
-#define STEP22
+//#define STEP22
 #if defined(STEP22)
     for(;;) {
         i2c_waitidle();
@@ -393,7 +393,7 @@ int main(void)
 #endif
 
     // 2.3 Example code for testing
-#define STEP23
+//#define STEP23
 #if defined(STEP23)
     for(;;) {
         uint8_t data[2] = { 0x00, 0xff };
