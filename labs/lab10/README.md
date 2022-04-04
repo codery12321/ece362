@@ -66,7 +66,7 @@ Press the "Run" button in the Logic tool and, while continuous serial communicat
 **[Figure 1: Logic tool trace of a <space> character being sent and received]**
 
 ### 1.4 Using a serial terminal emulator program
-![Image from Wikipedia DEC VT100 article CC licence](images/DEC_VT100_terminal.png) Decades ago, most *mainframe* computing equipment was large and was usually centralized in special rooms. Devices called *serial terminals*, like the one pictured on the left, were used to interact with the computers from a distance. The only function of these terminals was to take characters typed on a keyboard and send them through an asynchronous serial connection to the computer and receive characters back through the serial connection and display them on the screen. They were often called *dumb terminals* because they did not constitute a programmable computer system by themselves. All programmable computation happened on the remote computer.
+![Image from Wikipedia DEC VT100 article CC licence](images/DEC_VT100_terminal.jpeg) Decades ago, most *mainframe* computing equipment was large and was usually centralized in special rooms. Devices called *serial terminals*, like the one pictured on the left, were used to interact with the computers from a distance. The only function of these terminals was to take characters typed on a keyboard and send them through an asynchronous serial connection to the computer and receive characters back through the serial connection and display them on the screen. They were often called *dumb terminals* because they did not constitute a programmable computer system by themselves. All programmable computation happened on the remote computer.
 
 It was very easy for a personal computer to do everything a dumb terminal could, and more. All that was needed was a program to connect the keyboard and text screen to the bidirectional serial port. This program was called a *terminal emulator*. There are several kinds available for any computer. Read about them [on the serial adapter reference page.](../../manuals/serial_adapter_ref.md)
 
@@ -376,7 +376,7 @@ The SD card transfer protocol consists of single-byte commands that are always f
 
 The initialization and block read/write subroutines for SD card access are provided for you in the diskio.c and diskio.h files. Reading and writing simple 512-byte blocks would force an embedded system designer to come up with allocation and organization mechanisms for coordinating storage — a daunting task. Instead, these subroutines are meant to work with the [FatFs filesystem module](http://elm-chan.org/fsw/ff/00index_e.html). This system provides a higher-level file system view of the SD card. This is generally what you think of when you work with an SD card. It also allows you to move the SD card between the STM32 and your computer to share these files. All that is necessary is a program on the STM32 that uses the FatFs subroutines to read and write the files.
 
-## s5 Using a command line interpreter
+## 5 Using a command line interpreter
 Copy the following files into your project:
 - commands.c
 - diskio.c

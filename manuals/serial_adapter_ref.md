@@ -2,7 +2,7 @@
 The FTDI USB-to-serial board is a device that allows modern computer systems with USB ports to communicate with simple serial devices. The I/O for this adapter is not RS-232, but something called TTL serial which is a similar protocol but different voltage levels for signalling. The STM32 has two Universal Synchronous/Asynchronous Receiver/Transmitters that can be routed to a variety of pins. This document describes how to connect and use the serial adapter.
 
 ## STM32 Pin Selection
-Tables 14 – 19 of the [STM32F091xBC datasheet](../../manuals/STM32F091xBC_datasheet.pdf) lists the possible pins to which the USARTs can be routed. The possibilities are as follows:
+Tables 14 – 19 of the [STM32F091xBC datasheet](STM32F091xBC_datasheet.pdf) lists the possible pins to which the USARTs can be routed. The possibilities are as follows:
 | Pin Name	| Function	| Alternate Function Code|
 | ----------| ----------| -----------------------|
 | PA0	| USART4_TX	| AF4|
