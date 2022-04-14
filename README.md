@@ -21,6 +21,7 @@ asynchronous serial interface (USART), applications
 - **lab07**: Pulse-Width Modulation  
 - **lab08**: Serial Peripheral Interface (and DMA)    
 - **lab09**: Inter-Integrated Circuit (I2C) Interface   
+- **lab10**: Asynchronous Serial Interface
 
 ## List of Homework Assignments
 - **hw01**: Instructions  
@@ -32,3 +33,4 @@ asynchronous serial interface (USART), applications
 - **hw06**: Fading Digit Clock (with DMA)
 - **hw07**: Playing MIDI Files
 - **hw08**: Using the TFT LCD
+- **hw10**: Final Lab Practical Preparation
