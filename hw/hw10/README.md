@@ -33,8 +33,8 @@ You can use the audio circuitry you used for lab 6, but it will be necessary to 
 ## Step 1: Decide on a timer and DMA channel
 
 There are two ways that this system can be implemented:
-1.The timer can trigger both the DAC, as well as a DMA channel.
-2.The timer can trigger the DAC, and the DAC can trigger the DMA channel.
+1. The timer can trigger both the DAC, as well as a DMA channel.
+2. The timer can trigger the DAC, and the DAC can trigger the DMA channel.
 
 Either way will work just as well as the other. The common factor is that the DAC must be triggered with a timer. When you look at the Family Reference Manual for the TSEL1 field of the DAC_CR register, you can see that it can be triggered by the following sources:
 | Setting  	| Trigger source|
@@ -116,7 +116,7 @@ To debug your work, look at one system at a time. Open the I/O Register Debug ta
 - Check the DAC DHR12R1 register in the I/O Register debug tab. Click on the DHR12R1 multiple times to see the last value deposited. If it is not changing, either the DMA channel is not copying correctly or it is copying the wrong thing.
 - If the DAC DHR12R1 is changing, perhaps you did not enable the PA4 output?
 Hopefullly, you will now see the fre Hz sinusoid on an oscilloscope connected between PA4 and GND. It should range between 0.3 V to 2.9 V and should be smooth with no flat peaks or troughs.
-![one-freq](images/one-freq/png)
+![one-freq](images/one-freq.png)
 
 ## Step 7: Turn it in
 Once it works, turn it in. submit your main.c file. We'll try to grade this automatically by removing your `main()` function and calling your `setfreq()` function repeatedly to check the peripheral configuration values. Make sure that you enable only one timer and one DMA channel. Otherwise, you should expect it to get a low score. We may need to look over your code manually and then watch the results of running it while looking at an oscilloscope. That would take a long time, so we'll try to avoid that.
@@ -143,7 +143,7 @@ Suppose `setfreq()` was called with the value 20000. In the ISR, read the curren
 Remember to acknowledge the interrupt in the ISR. This is done by setting the appropriate bits of the DMA IFCR register. If the ISR does not acknowledge the interrupt, the ISR will be continually reinvoked and updating the timer ARR. It will almost always result in the same frequency of resulting waveform.
 
 Each time the DMA channel has copied all the wavetable samples, it tells the timer to change its rate. That rate change will be deferred until the next update of the timer. That will be just in time for the second sample of the next wavetable cycle. What you will see is as follows:  
-![two-freq](images/two-freq/png)
+![two-freq](images/two-freq.png)
 
 ## Discussion
 
