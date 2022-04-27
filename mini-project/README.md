@@ -26,7 +26,7 @@ Timer(in): update the display, button
 SPI(ex)(in): 7 - segment display
 DAC(in): music
 Analog(ex): sound
-
+```
 
 \. _(9>  			|
 \==_)  				|
@@ -57,10 +57,10 @@ A couple seconds later, if the player doesn't move the bird. Player loses.
 |			|
 |			|
 |			|
-
+```
 Starting from the original, if the player does move the bird down and the bird
 goes through the gap without touching the wall, the player gains a point.
-
+```
 |
 |
 | <- the wall		<- 2nd gap
@@ -76,7 +76,7 @@ goes through the gap without touching the wall, the player gains a point.
 |			|
 |			|
 |			|
-
+```
 ## How will you demonstrate it?
 The game starts by pressing the start button. The player can move the character
 by using the two buttons for the up and down movement of the character. Walls
@@ -88,7 +88,7 @@ display.
 
 ## What are the criteria for a successful project?
 Game should generate obstacles on all except one lane for the bird to go
-through. 
+through.
 
 The walls should get closer as time goes on, and the player fails the game
 when the bird fails to get to the clear lane in time (otherwise goes on to
